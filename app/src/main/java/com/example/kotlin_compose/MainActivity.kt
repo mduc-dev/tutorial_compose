@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.kotlin_compose.navigation.BottomTabNavigator
 import com.example.kotlin_compose.ui.theme.Kotlin_composeTheme
 
 class MainActivity : ComponentActivity() {
@@ -34,7 +35,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun HomeScreen() {
     Scaffold(
@@ -44,19 +45,11 @@ fun HomeScreen() {
     ) { padding ->
         Column(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(padding),
+            Modifier
+                .fillMaxSize()
+                .padding(padding),
         ) {
             Spacer(modifier = Modifier.height(16.dp))
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomPreview() {
-    Kotlin_composeTheme {
-        HomeScreen()
     }
 }

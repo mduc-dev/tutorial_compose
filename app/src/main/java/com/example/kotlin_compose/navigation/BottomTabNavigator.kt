@@ -1,4 +1,4 @@
-package com.example.kotlin_compose
+package com.example.kotlin_compose.navigation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
@@ -11,8 +11,12 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
 import com.example.kotlin_compose.data.BottomNavigation
 
 val items =
@@ -34,14 +38,21 @@ val items =
 @Preview
 @Composable
 fun BottomTabNavigator() {
+    val navController = rememberNavController()
+    val selectedItem by rememberSaveable {
+        mutableIntStateOf(0)
+    }
     NavigationBar {
         Row(
             modifier = Modifier.background(MaterialTheme.colorScheme.inverseOnSurface),
         ) {
             items.forEachIndexed { index, item ->
                 NavigationBarItem(
-                    selected = index == 0,
-                    onClick = {},
+                    selected = selectedItem == index,
+
+                    onClick = {
+                        navController.navigate(item.title)
+                    },
                     icon = {
                         Icon(
                             imageVector = item.icon,
