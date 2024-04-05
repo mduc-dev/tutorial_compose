@@ -1,4 +1,4 @@
-package com.example.kotlin_compose.data
+package com.example.kotlin_compose.data.local
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

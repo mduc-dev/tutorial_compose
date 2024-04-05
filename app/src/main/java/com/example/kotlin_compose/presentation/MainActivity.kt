@@ -1,4 +1,4 @@
-package com.example.kotlin_compose
+package com.example.kotlin_compose.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

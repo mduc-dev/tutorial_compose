@@ -1,4 +1,4 @@
-package com.example.kotlin_compose.screens
+package com.example.kotlin_compose.presentation.screens.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,11 +10,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun Home(){
-    Box(modifier = Modifier.fillMaxSize()){
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .align(Alignment.Center), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
+fun Home() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .align(Alignment.Center),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text(text = "Home")
         }
     }

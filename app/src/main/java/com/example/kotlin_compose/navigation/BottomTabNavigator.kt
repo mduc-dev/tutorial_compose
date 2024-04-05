@@ -17,7 +17,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
-import com.example.kotlin_compose.data.BottomNavigation
+import com.example.kotlin_compose.data.local.BottomNavigation
 
 val items =
     listOf(
