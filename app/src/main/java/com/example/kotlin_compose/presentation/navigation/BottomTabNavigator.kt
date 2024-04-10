@@ -1,10 +1,7 @@
-package com.example.kotlin_compose.navigation
+package com.example.kotlin_compose.presentation.navigation
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AccountCircle
-import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -19,21 +16,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.kotlin_compose.data.local.BottomNavigation
 
-val items =
-    listOf(
-        BottomNavigation(
-            title = "Home",
-            icon = Icons.Rounded.Home,
-        ),
-        BottomNavigation(
-            title = "Notifications",
-            icon = Icons.Rounded.Notifications,
-        ),
-        BottomNavigation(
-            title = "Account",
-            icon = Icons.Rounded.AccountCircle,
-        ),
-    )
 
 @Preview
 @Composable
@@ -46,12 +28,12 @@ fun BottomTabNavigator() {
         Row(
             modifier = Modifier.background(MaterialTheme.colorScheme.inverseOnSurface),
         ) {
-            items.forEachIndexed { index, item ->
+            BOTTOM_TAB.forEachIndexed { index, item ->
                 NavigationBarItem(
                     selected = selectedItem == index,
 
                     onClick = {
-                        navController.navigate(item.title)
+                        navController.navigate(item.route)
                     },
                     icon = {
                         Icon(
