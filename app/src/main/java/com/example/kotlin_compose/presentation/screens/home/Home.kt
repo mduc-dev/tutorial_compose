@@ -8,7 +8,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 
+@Preview
 @Composable
 fun Home() {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -16,9 +18,10 @@ fun Home() {
             modifier = Modifier
                 .fillMaxSize()
                 .align(Alignment.Center),
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Home")
+            Text(text = "Hello")
         }
     }
 }

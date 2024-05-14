@@ -1,29 +1,26 @@
 package com.example.kotlin_compose.presentation.navigation
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.rememberNavController
-import com.example.kotlin_compose.data.local.BottomNavigation
+import com.example.kotlin_compose.R
+import com.example.kotlin_compose.ui.theme.Kotlin_composeTheme
 
-
-@Preview
 @Composable
-fun BottomTabNavigator() {
-    val navController = rememberNavController()
-    val selectedItem by rememberSaveable {
-        mutableIntStateOf(0)
-    }
+fun BottomTabNavigator(
+    selectedItem: Int,
+    onItemClick: (Int) -> Unit
+) {
     NavigationBar {
         Row(
             modifier = Modifier.background(MaterialTheme.colorScheme.inverseOnSurface),
@@ -33,7 +30,7 @@ fun BottomTabNavigator() {
                     selected = selectedItem == index,
 
                     onClick = {
-                        navController.navigate(item.route)
+                        onItemClick(index)
                     },
                     icon = {
                         Icon(
@@ -48,8 +45,25 @@ fun BottomTabNavigator() {
                             color = MaterialTheme.colorScheme.onBackground,
                         )
                     },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.primary,
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                        unselectedIconColor = colorResource(id = R.color.body),
+                        unselectedTextColor = colorResource(id = R.color.body),
+                        indicatorColor = MaterialTheme.colorScheme.background
+                    )
                 )
             }
         }
+    }
+}
+@Preview
+@Preview(uiMode = UI_MODE_NIGHT_YES)
+@Composable
+fun BottomTabNavigationPreview() {
+    Kotlin_composeTheme(dynamicColor = false) {
+        BottomTabNavigator(selectedItem = 0, onItemClick = {
+            println("vao day")
+        })
     }
 }
