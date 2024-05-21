@@ -40,6 +40,6 @@ val Typography =
 
 // Set custom font
 val PPNeu = FontFamily(
-    Font(R.font.ppneuemontreal_regular, FontWeight.Normal, FontStyle.Normal),
     Font(R.font.ppneuemontreal_bold, FontWeight.Bold, FontStyle.Normal),
+    Font(R.font.ppneuemontreal_regular, FontWeight.Normal, FontStyle.Normal),
 )

@@ -1,5 +1,6 @@
 package com.example.kotlin_compose.presentation.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,12 +12,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.kotlin_compose.R
 import com.example.kotlin_compose.ui.theme.PPNeu
 
 @Composable
-fun NoExistData(textNull: String = "Emptier than the void",subTextNull: String?) {
+fun NoExistData(
+    textNull: String = "Emptier than the void",
+    subTextNull: String?,
+    painterResourceName: Int? = R.drawable.sad_icon_right,
+    stringResourceName: Int? = R.string.sad_icon_right
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -25,15 +35,26 @@ fun NoExistData(textNull: String = "Emptier than the void",subTextNull: String?)
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = textNull,modifier= Modifier.padding(vertical = 5.dp), style = MaterialTheme.typography.titleMedium.copy(
-                color = Color.White,
-                fontFamily = PPNeu
-            ))
-            if (subTextNull != null) {
-                Text(text = subTextNull,style = MaterialTheme.typography.bodyMedium.copy(
+            Image(
+                painter = painterResource(id = painterResourceName!!),
+                contentDescription = stringResource(id = stringResourceName!!),
+            )
+            Text(
+                text = textNull,
+                modifier = Modifier.padding(vertical = 5.dp),
+                style = MaterialTheme.typography.titleMedium.copy(
                     color = Color.White,
-                    fontFamily = PPNeu
-                ))
+                    fontFamily = PPNeu,
+                    fontWeight = FontWeight.Bold
+                )
+            )
+            if (subTextNull != null) {
+                Text(
+                    text = subTextNull, style = MaterialTheme.typography.bodyMedium.copy(
+                        color = Color.White,
+                        fontFamily = PPNeu
+                    )
+                )
             }
 
         }
@@ -41,7 +62,11 @@ fun NoExistData(textNull: String = "Emptier than the void",subTextNull: String?)
 }
 
 @Composable
-@Preview(showBackground = true, backgroundColor = 0xFF1A1A1A, showSystemUi = true)
-fun PreviewNoExistData(){
-    NoExistData(subTextNull = "Write a post to start your profile’s never-ending journey")
+@Preview(apiLevel = 33, showBackground = true, backgroundColor = 0xFF1A1A1A, showSystemUi = true)
+fun PreviewNoExistData() {
+    NoExistData(
+        subTextNull = "Write a post to start your profile’s never-ending journey",
+        painterResourceName = R.drawable.confuse_icon,
+        stringResourceName = R.string.confuse_icon
+    )
 }

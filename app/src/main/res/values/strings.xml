@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">kotlin_compose</string>
+    <string name="sad_icon_right">sad_icon_right</string>
+    <string name="sad_icon_top">sad_icon_top</string>
+    <string name="confuse_icon">confuse_icon</string>
+
 </resources>
