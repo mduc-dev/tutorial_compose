@@ -16,19 +16,3 @@ fun isEmpty(value: Any?): Boolean {
         else -> false
     }
 }
-fun getButtonProps(
-    variant: ButtonVariant = ButtonVariant.SOLID,
-    color: ButtonColor = ButtonColor.DEFAULT,
-    size: ButtonSize = ButtonSize.MD,
-    radius: ButtonRadius = ButtonRadius.NONE
-): Map<String, String> {
-
-    val props = mutableMapOf<String, String>()
-
-    props["variant"] = variant.name
-    props["color"] = color.name
-    props["size"] = size.name
-    props["radius"] = radius.name
-
-    return props.toMap()
-}
