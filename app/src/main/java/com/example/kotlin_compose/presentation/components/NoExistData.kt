@@ -27,37 +27,29 @@ fun NoExistData(
     painterResourceName: Int? = R.drawable.sad_icon_right,
     stringResourceName: Int? = R.string.sad_icon_right
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .align(Alignment.Center),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(id = painterResourceName!!),
-                contentDescription = stringResource(id = stringResourceName!!),
+    Column(
+        modifier = Modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(id = painterResourceName!!),
+            contentDescription = stringResource(id = stringResourceName!!),
+        )
+        Text(
+            text = textNull,
+            modifier = Modifier.padding(vertical = 5.dp),
+            style = MaterialTheme.typography.titleMedium.copy(
+                color = Color.White, fontFamily = PPNeu, fontWeight = FontWeight.Bold
             )
+        )
+        if (subTextNull != null) {
             Text(
-                text = textNull,
-                modifier = Modifier.padding(vertical = 5.dp),
-                style = MaterialTheme.typography.titleMedium.copy(
-                    color = Color.White,
-                    fontFamily = PPNeu,
-                    fontWeight = FontWeight.Bold
+                text = subTextNull, style = MaterialTheme.typography.bodyMedium.copy(
+                    color = Color.White, fontFamily = PPNeu
                 )
             )
-            if (subTextNull != null) {
-                Text(
-                    text = subTextNull, style = MaterialTheme.typography.bodyMedium.copy(
-                        color = Color.White,
-                        fontFamily = PPNeu
-                    )
-                )
-            }
-
         }
+
     }
 }
 

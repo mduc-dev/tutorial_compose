@@ -23,8 +23,6 @@ import com.example.kotlin_compose.ui.theme.Green1a
 //TODO: border {color,width}, disable {color},
 @Composable
 fun CustomButton(
-//    size: ButtonSize,
-//    variant: ButtonVariant,
     color: Color = Green1a,
     enabled: Boolean? = true,
     isLoading: Boolean? = false,
