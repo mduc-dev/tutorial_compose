@@ -31,13 +31,13 @@ fun SetupNavGraph(
     selectedItem = when (backStackState?.destination?.route) {
         Route.HOME -> 0
         Route.NOTIFICATIONS -> 1
-        Route.ACCOUNT -> 2
+        Route.YOU -> 2
         else -> 0
     }
     val isBottomBarVisible = remember(key1 = backStackState) {
         backStackState?.destination?.route == Route.HOME ||
                 backStackState?.destination?.route == Route.NOTIFICATIONS ||
-                backStackState?.destination?.route == Route.ACCOUNT
+                backStackState?.destination?.route == Route.YOU
     }
     Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
         if (isBottomBarVisible) {
@@ -57,7 +57,7 @@ fun SetupNavGraph(
 
                         2 -> navigateToTab(
                             navController = navHostController,
-                            route =Route.ACCOUNT
+                            route = Route.YOU
                         )
                     }
                 }
@@ -76,8 +76,8 @@ fun SetupNavGraph(
             composable(route = Route.NOTIFICATIONS) {
                 Notifications()
             }
-            composable(route = Route.ACCOUNT) {
-             Account()
+            composable(route = Route.YOU) {
+                Account()
             }
         }
     }
