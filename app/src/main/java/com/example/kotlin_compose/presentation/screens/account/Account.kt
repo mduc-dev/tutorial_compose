@@ -107,8 +107,8 @@ fun Account() {
                 Row {
                     IconButton(onClick = {}) {
                         Icon(
-                            painter = painterResource(id = R.drawable.qr_code_icon),
-                            contentDescription = "QrCodeScanner",
+                            painter = painterResource(id = R.drawable.qr_code),
+                            contentDescription = "Qr",
                             tint = Color.White,
                             modifier = Modifier
                                 .width(22.dp)
@@ -145,6 +145,8 @@ fun Account() {
             horizontalAlignment = CenterHorizontally,
         ) {
             item {
+                //TODO: Header Account
+                //Tabs
                 TabRow(
                     selectedTabIndex = pagerState.currentPage,
                     containerColor = Color.Transparent,
@@ -188,6 +190,7 @@ fun Account() {
                         }
                     }
                 }
+                //Content Tab
                 PageContent(pagerState)
             }
         }
@@ -239,18 +242,8 @@ fun PageContent(pagerState: PagerState) {
                         )
 
                     }
-
                 }
-                if (isEmpty("hello")) {
-                    NoExistData(
-                        subTextNull = "Write a post to start your profile’s never-ending journey.",
-                        painterResourceName = R.drawable.sad_icon_top,
-                        stringResourceName = R.string.sad_icon_top
-                    )
-                } else {
-                    Content()
-                }
-
+                Content()
             }
 
             2 -> {
@@ -268,9 +261,19 @@ fun PageContent(pagerState: PagerState) {
 
 @Composable
 fun Content() {
-    (1..100).forEach { _ ->
-        Text(text = "hello world", color = Color.White)
+
+    if (isEmpty("hello")) {
+        NoExistData(
+            subTextNull = "Write a post to start your profile’s never-ending journey.",
+            painterResourceName = R.drawable.sad_icon_top,
+            stringResourceName = R.string.sad_icon_top
+        )
+    } else {
+        (1..100).forEach { _ ->
+            Text(text = "hello world", color = Color.White)
+        }
     }
+
 }
 
 //fun LazyListScope.header() {
