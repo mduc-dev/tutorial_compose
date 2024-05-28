@@ -1,10 +1,7 @@
 package com.example.kotlin_compose.presentation.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -13,7 +10,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -25,7 +21,6 @@ fun NoExistData(
     textNull: String = "Emptier than the void",
     subTextNull: String?,
     painterResourceName: Int? = R.drawable.sad_icon_right,
-    stringResourceName: Int? = R.string.sad_icon_right
 ) {
     Column(
         modifier = Modifier,
@@ -33,7 +28,7 @@ fun NoExistData(
     ) {
         Image(
             painter = painterResource(id = painterResourceName!!),
-            contentDescription = stringResource(id = stringResourceName!!),
+            contentDescription = null,
         )
         Text(
             text = textNull,
@@ -59,6 +54,5 @@ fun PreviewNoExistData() {
     NoExistData(
         subTextNull = "Write a post to start your profile’s never-ending journey",
         painterResourceName = R.drawable.confuse_icon,
-        stringResourceName = R.string.confuse_icon
     )
 }

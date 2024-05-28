@@ -59,7 +59,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kotlin_compose.R
+import com.example.kotlin_compose.presentation.components.ButtonSize
+import com.example.kotlin_compose.presentation.components.DDButton
 import com.example.kotlin_compose.presentation.components.NoExistData
+import com.example.kotlin_compose.presentation.components.Variant
 import com.example.kotlin_compose.presentation.utils.DisabledInteractionSource
 import com.example.kotlin_compose.presentation.utils.isEmpty
 import com.example.kotlin_compose.ui.theme.Black1A
@@ -89,55 +92,50 @@ fun Account() {
     }
 
     Scaffold(containerColor = Color.Black, topBar = {
-        TopAppBar(
-            title = { },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.Black
-            ),
-            navigationIcon = {
+        TopAppBar(title = { }, colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Black
+        ), navigationIcon = {
+            IconButton(onClick = {}) {
+                Icon(
+                    imageVector = Icons.Filled.Menu,
+                    contentDescription = null,
+                    tint = Color.White
+                )
+            }
+        }, actions = {
+            Row {
                 IconButton(onClick = {}) {
                     Icon(
-                        imageVector = Icons.Filled.Menu,
-                        contentDescription = "Navigation icon",
-                        tint = Color.White
+                        painter = painterResource(id = R.drawable.qr_code),
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier
+                            .width(22.dp)
+                            .height(22.dp)
                     )
                 }
-            },
-            actions = {
-                Row {
-                    IconButton(onClick = {}) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.qr_code),
-                            contentDescription = "Qr",
-                            tint = Color.White,
-                            modifier = Modifier
-                                .width(22.dp)
-                                .height(22.dp)
-                        )
-                    }
-                    IconButton(onClick = {}) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.share),
-                            contentDescription = "Share",
-                            tint = Color.White,
-                            modifier = Modifier
-                                .width(22.dp)
-                                .height(22.dp)
-                        )
-                    }
-                    IconButton(onClick = {}) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.settings),
-                            contentDescription = "Settings",
-                            tint = Color.White,
-                            modifier = Modifier
-                                .width(22.dp)
-                                .height(22 .dp)
-                        )
-                    }
+                IconButton(onClick = {}) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.share),
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier
+                            .width(22.dp)
+                            .height(22.dp)
+                    )
+                }
+                IconButton(onClick = {}) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.settings),
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier
+                            .width(22.dp)
+                            .height(22.dp)
+                    )
                 }
             }
-        )
+        })
     }) { padding ->
         LazyColumn(
             state = listState,
@@ -250,7 +248,6 @@ fun PageContent(pagerState: PagerState) {
                 NoExistData(
                     subTextNull = "Write a post to start your profile’s never-ending journey.",
                     painterResourceName = R.drawable.sad_icon_top,
-                    stringResourceName = R.string.sad_icon_top
                 )
             }
         }
@@ -261,17 +258,22 @@ fun PageContent(pagerState: PagerState) {
 
 @Composable
 fun Content() {
-
-    if (isEmpty("hello")) {
+    if (isEmpty("null")) {
         NoExistData(
             subTextNull = "Write a post to start your profile’s never-ending journey.",
             painterResourceName = R.drawable.sad_icon_top,
-            stringResourceName = R.string.sad_icon_top
         )
     } else {
-        (1..100).forEach { _ ->
-            Text(text = "hello world", color = Color.White)
-        }
+//        (0..100).forEach { it ->
+//            Text(text = it.toString(), color = Color.White)
+//        }
+        DDButton(
+            isLoading = true,
+            label = "hello",
+            onPress = {},
+            size = ButtonSize.LG,
+            variant = Variant.BORDERED
+        )
     }
 
 }
