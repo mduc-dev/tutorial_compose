@@ -1,21 +1,25 @@
 package com.example.kotlin_compose.presentation.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ripple.LocalRippleTheme
+import androidx.compose.material.ripple.RippleAlpha
+import androidx.compose.material.ripple.RippleTheme
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -27,11 +31,28 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.kotlin_compose.ui.theme.Black1A
 import com.example.kotlin_compose.ui.theme.Black20
+import com.example.kotlin_compose.ui.theme.BlackDisable
 import com.example.kotlin_compose.ui.theme.BlackF3
 import com.example.kotlin_compose.ui.theme.Green1a
 import kotlinx.coroutines.delay
 
 //TODO: border {color,width}, disable {color},
+
+private object RippleCustomTheme : RippleTheme {
+    // Here you should return the ripple color you want
+    // and not use the defaultRippleColor extension on RippleTheme.
+    // Using that will override the ripple color set in DarkMode
+    // or when you set light parameter to false
+    @Composable
+    override fun defaultColor(): Color = BlackDisable
+
+    @Composable
+    override fun rippleAlpha(): RippleAlpha = RippleTheme.defaultRippleAlpha(
+        BlackDisable,
+        lightTheme = !isSystemInDarkTheme()
+    )
+}
+
 
 enum class Variant { SOLID, BORDERED, LIGHT, FLAT, FADED, SHADOW }
 
@@ -99,39 +120,41 @@ fun DDButton(
             disabledContainerColor = Black20
         )
     }
-    Button(
-        onClick = { onPress() },
-        modifier = modifier
-            .height(size.size)
-            .testTag("dd_button"),
-        colors = buttonColors,
-        shape = RoundedCornerShape(6.dp),
-        border = if (variant == Variant.BORDERED) BorderStroke(
-            width = 0.5.dp,
-            color = BlackF3
-        ) else null
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+    CompositionLocalProvider(LocalRippleTheme provides RippleCustomTheme) {
+        Button(
+            onClick = { onPress() },
+            modifier = modifier
+                .height(size.size)
+                .testTag("dd_button"),
+            colors = buttonColors,
+            shape = RoundedCornerShape(6.dp),
+            border = if (variant == Variant.BORDERED) BorderStroke(
+                width = 0.5.dp,
+                color = BlackF3
+            ) else null
         ) {
-            if (isLoading == true) {
-                var progress by remember { mutableFloatStateOf(0f) }
-                LaunchedEffect(key1 = true) {
-                    while (progress < 1f) {
-                        delay(50)
-                        progress += 0.01f
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                if (isLoading == true) {
+                    var progress by remember { mutableFloatStateOf(0f) }
+                    LaunchedEffect(key1 = true) {
+                        while (progress < 1f) {
+                            delay(50)
+                            progress += 0.01f
+                        }
                     }
+                    CircularProgressIndicator(
+                        progress = { progress },
+                        modifier = Modifier.size(ButtonDefaults.IconSize),
+                        color = Color.White,
+                        strokeWidth = 2.dp,
+                        trackColor = Black1A,
+                    )
                 }
-                CircularProgressIndicator(
-                    progress = { progress },
-                    modifier = Modifier.size(ButtonDefaults.IconSize),
-                    color = Color.White,
-                    strokeWidth = 2.dp,
-                    trackColor = Black1A,
-                )
+                Text(text = label, style = size.textStyle(), color = Color.White)
             }
-            Text(text = label, style = size.textStyle(), color = Color.White)
         }
     }
 

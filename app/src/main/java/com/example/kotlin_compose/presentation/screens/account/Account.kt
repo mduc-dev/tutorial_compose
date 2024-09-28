@@ -20,8 +20,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -58,6 +57,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.kotlin_compose.R
 import com.example.kotlin_compose.presentation.components.ButtonSize
 import com.example.kotlin_compose.presentation.components.DDButton
@@ -95,13 +95,19 @@ fun Account() {
         TopAppBar(title = { }, colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color.Black
         ), navigationIcon = {
-            IconButton(onClick = {}) {
-                Icon(
-                    imageVector = Icons.Filled.Menu,
+            Column(modifier = Modifier
+                .padding(horizontal = 8.dp),
+                horizontalAlignment = CenterHorizontally
+            ){
+                AsyncImage(
+                    model = "https://ui-avatars.com/api/?name=D&bold=true&background=ab47bc&color=ffff&size=128",
                     contentDescription = null,
-                    tint = Color.White
+                    modifier = Modifier
+                        .width(40.dp)
+                        .height(40.dp).clip(CircleShape)
                 )
             }
+
         }, actions = {
             Row {
                 IconButton(onClick = {}) {
@@ -139,11 +145,14 @@ fun Account() {
     }) { padding ->
         LazyColumn(
             state = listState,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = padding.calculateTopPadding()),
             horizontalAlignment = CenterHorizontally,
         ) {
             item {
                 //TODO: Header Account
+                HeaderAccount()
                 //Tabs
                 TabRow(
                     selectedTabIndex = pagerState.currentPage,
@@ -257,6 +266,15 @@ fun PageContent(pagerState: PagerState) {
 
 
 @Composable
+fun HeaderAccount() {
+    AsyncImage(
+        model = "https://ui-avatars.com/api/?name=D&bold=true&background=ab47bc&color=ffff&size=512",
+        contentDescription = null
+    )
+}
+
+
+@Composable
 fun Content() {
     if (isEmpty("null")) {
         NoExistData(
@@ -264,9 +282,6 @@ fun Content() {
             painterResourceName = R.drawable.sad_icon_top,
         )
     } else {
-//        (0..100).forEach { it ->
-//            Text(text = it.toString(), color = Color.White)
-//        }
         DDButton(
             isLoading = true,
             label = "hello",
