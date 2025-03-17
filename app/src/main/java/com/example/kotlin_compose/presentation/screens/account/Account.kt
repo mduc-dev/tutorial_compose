@@ -57,7 +57,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.example.kotlin_compose.R
 import com.example.kotlin_compose.presentation.components.ButtonSize
 import com.example.kotlin_compose.presentation.components.DDButton
@@ -75,7 +75,7 @@ import kotlinx.coroutines.launch
 
 val tabs = listOf("Posts", "Saved", "Drafts")
 val enumValuesChip = listOf("All", "Gamelists", "Articles", "Videos")
-
+@Preview
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun Account() {
@@ -257,6 +257,7 @@ fun PageContent(pagerState: PagerState) {
                 NoExistData(
                     subTextNull = "Write a post to start your profile’s never-ending journey.",
                     painterResourceName = R.drawable.sad_icon_top,
+                    modifier = Modifier.padding(start = 20.dp)
                 )
             }
         }
@@ -280,6 +281,7 @@ fun Content() {
         NoExistData(
             subTextNull = "Write a post to start your profile’s never-ending journey.",
             painterResourceName = R.drawable.sad_icon_top,
+            modifier = Modifier
         )
     } else {
         DDButton(
@@ -321,9 +323,3 @@ fun Modifier.customTabIndicatorOffset(
         .width(currentTabWidth)
 }
 
-
-@Preview(apiLevel = 33, showBackground = true, showSystemUi = true)
-@Composable
-fun AccountPreview() {
-    Account()
-}

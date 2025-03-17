@@ -7,13 +7,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material.ripple.RippleAlpha
-import androidx.compose.material.ripple.RippleTheme
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalRippleConfiguration
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RippleConfiguration
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -37,21 +38,6 @@ import com.example.kotlin_compose.ui.theme.Green1a
 import kotlinx.coroutines.delay
 
 //TODO: border {color,width}, disable {color},
-
-private object RippleCustomTheme : RippleTheme {
-    // Here you should return the ripple color you want
-    // and not use the defaultRippleColor extension on RippleTheme.
-    // Using that will override the ripple color set in DarkMode
-    // or when you set light parameter to false
-    @Composable
-    override fun defaultColor(): Color = BlackDisable
-
-    @Composable
-    override fun rippleAlpha(): RippleAlpha = RippleTheme.defaultRippleAlpha(
-        BlackDisable,
-        lightTheme = !isSystemInDarkTheme()
-    )
-}
 
 
 enum class Variant { SOLID, BORDERED, LIGHT, FLAT, FADED, SHADOW }
@@ -80,6 +66,7 @@ enum class ButtonSize(val size: Dp) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DDButton(
     modifier: Modifier = Modifier,
@@ -89,6 +76,16 @@ fun DDButton(
     isLoading: Boolean? = false,
     onPress: () -> Unit
 ) {
+    val rippleConfiguration =
+        RippleConfiguration(
+            color = BlackDisable, rippleAlpha = RippleAlpha(
+                draggedAlpha = 0.16f,
+                focusedAlpha = 0.12f,
+                hoveredAlpha = 0.08f,
+                pressedAlpha = 0.24f
+            )
+        )
+
     val buttonColors = when (variant) {
         Variant.SOLID -> ButtonDefaults.buttonColors(
             containerColor = Green1a,
@@ -120,7 +117,7 @@ fun DDButton(
             disabledContainerColor = Black20
         )
     }
-    CompositionLocalProvider(LocalRippleTheme provides RippleCustomTheme) {
+    CompositionLocalProvider(LocalRippleConfiguration provides rippleConfiguration) {
         Button(
             onClick = { onPress() },
             modifier = modifier
@@ -159,6 +156,7 @@ fun DDButton(
     }
 
 }
+
 
 @Preview(apiLevel = 33, showBackground = true, showSystemUi = true)
 @Composable
