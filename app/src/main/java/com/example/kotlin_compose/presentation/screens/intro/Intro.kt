@@ -24,17 +24,28 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.animation.core.*
 import androidx.compose.runtime.*
 import androidx.compose.material3.TextButton
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.TextUnit
+import com.example.kotlin_compose.ui.theme.PPNeu
 
 val TextUnit.nonScaledSp
     @Composable get() = (this.value / LocalDensity.current.fontScale).sp
 
 @Preview
 @Composable
-fun Intro() {
+fun Intro(
+//    viewModel: IntroViewModel  = koinViewModel<IntroViewModel>(),
+    onNavigateToLogin: () -> Unit = {},
+    onNavigateToSignup: () -> Unit = {}
+) {
+//    val introState = viewModel.introUiState.collectAsState()
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -59,35 +70,51 @@ fun Intro() {
             Spacer(modifier = Modifier.weight(1f))
 
             // Third-party login section
-            ThirdLoginSection()
+            ThirdLoginSection(onNavigateToSignup)
 
             Spacer(modifier = Modifier.height(16.dp))
 
             // Login button
-            TextButton(onClick = {}, modifier = Modifier.padding(vertical = 8.dp)) {
+            TextButton(onClick = onNavigateToLogin, modifier = Modifier.padding(vertical = 8.dp)) {
                 Text(
                     "Log in",
                     color = colorResource(id = R.color.green_primary),
                     fontSize = 16.sp.nonScaledSp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Bold,
+                    fontStyle = FontStyle.Normal,
+                    fontFamily = PPNeu,
                 )
             }
 
             // Protocol text
             Text(
-                text = "By signing up or continuing, you agree \n to our Terms and Privacy", // Replace with actual protocol text
+                buildAnnotatedString {
+                    append("By signing up or continuing, you agree \n to our ")
+
+                    withStyle(SpanStyle(color = Color.White)) {
+                        append("Terms ")
+                    }
+
+                    append("and ")
+
+                    withStyle(SpanStyle(color = Color.White)) {
+                        append("Privacy")
+                    }
+                },
+                textAlign = TextAlign.Center,
                 color = Color.Gray,
                 fontSize = 12.sp.nonScaledSp,
-                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Normal,
+                fontStyle = FontStyle.Normal,
+                fontFamily = PPNeu,
                 modifier = Modifier.padding(bottom = 32.dp)
-
             )
         }
     }
 }
 
 @Composable
-fun ThirdLoginSection() {
+fun ThirdLoginSection(onNavigateToSignup: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -115,15 +142,17 @@ fun ThirdLoginSection() {
                 Text(
                     text = "Continue with Facebook",
                     color = Color.Black,
-                    fontWeight = FontWeight.Bold,
                     fontSize = 16.sp.nonScaledSp,
+                    fontWeight = FontWeight.Bold,
+                    fontStyle = FontStyle.Normal,
+                    fontFamily = PPNeu,
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
         }
 
         Button(
-            onClick = { /* Handle Facebook login */ },
+            onClick = {},
             modifier = Modifier
                 .fillMaxWidth()
                 .widthIn(max = 320.dp)
@@ -146,12 +175,14 @@ fun ThirdLoginSection() {
                     color = Color.Black,
                     fontSize = 16.sp.nonScaledSp,
                     fontWeight = FontWeight.Bold,
+                    fontStyle = FontStyle.Normal,
+                    fontFamily = PPNeu,
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
         }
         Button(
-            onClick = { /* Handle sign up */ },
+            onClick = onNavigateToSignup,
             modifier = Modifier
                 .fillMaxWidth()
                 .widthIn(max = 320.dp)
@@ -163,7 +194,9 @@ fun ThirdLoginSection() {
                 text = "Sign up",
                 color = Color.Black,
                 fontSize = 16.sp.nonScaledSp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                fontStyle = FontStyle.Normal,
+                fontFamily = PPNeu,
             )
         }
     }
@@ -173,40 +206,42 @@ fun ThirdLoginSection() {
 private fun AnimatedBackground() {
     val infiniteTransition = rememberInfiniteTransition(label = "infinite-transition")
 
-    val offset by infiniteTransition.animateFloat(
-        initialValue = 0f, targetValue = 1f, animationSpec = infiniteRepeatable(
-            animation = tween(
-                durationMillis = 10000, easing = LinearEasing
-            ), repeatMode = RepeatMode.Reverse
-        ), label = "initial-value"
+    val offsetY by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = -500f, // adjust scroll distance
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 20000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "scrollAnim"
     )
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        // Background image with parallax effect
-        Image(
-            painter = painterResource(id = R.drawable.wall_paper),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxSize()
-                .alpha(0.5f)
-                .offset(y = offset.dp * 50),
-            contentScale = ContentScale.Crop
-        )
+    // Background image with parallax effect
+    Image(
+        painter = painterResource(id = R.drawable.wall_paper),
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        modifier = Modifier
+            .graphicsLayer {
+                rotationZ = -15f // tilt ~11 o'clock
+                translationY = offsetY
+            }
+            .fillMaxSize()
+    )
 
-        // Gradient overlay
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Black.copy(alpha = 0.6f),
-                            Color.Black.copy(alpha = 0.8f),
-                            Color.Black.copy(alpha = 1f),
-                            Color.Black.copy(alpha = 2f)
-                        )
+    // Gradient overlay
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color.Black.copy(alpha = 0.6f),
+                        Color.Black.copy(alpha = 0.8f),
+                        Color.Black.copy(alpha = 1f),
+                        Color.Black.copy(alpha = 2f)
                     )
                 )
-        )
-    }
+            )
+    )
 }

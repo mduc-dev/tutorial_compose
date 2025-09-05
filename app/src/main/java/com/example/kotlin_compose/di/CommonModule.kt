@@ -2,9 +2,12 @@ package com.example.kotlin_compose.di
 
 import android.util.Log
 import com.example.kotlin_compose.data.datasources.GamesRepositoryImpl
+import com.example.kotlin_compose.data.datasources.IntroRepositoryImpl
 import com.example.kotlin_compose.domain.repositories.GamesRepository
+import com.example.kotlin_compose.domain.repositories.IntroRepository
 import com.example.kotlin_compose.domain.utils.Constants.BASE_URL
 import com.example.kotlin_compose.presentation.screens.home.HomeViewModel
+import com.example.kotlin_compose.presentation.screens.intro.IntroViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.addDefaultResponseValidation
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -55,6 +58,9 @@ fun commonModule() = module {
 
     single<GamesRepository> { GamesRepositoryImpl(get()) }
 
+    single<IntroRepository> { IntroRepositoryImpl(get()) }
+
     viewModelOf(::HomeViewModel)
+    viewModelOf(::IntroViewModel)
 }
 
