@@ -20,13 +20,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-
+import androidx.compose.ui.draw.shadow
 import androidx.compose.animation.core.*
 import androidx.compose.runtime.*
 import androidx.compose.material3.TextButton
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
@@ -54,17 +59,20 @@ fun Intro(
 
         // Content
         Column(
-            modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .fillMaxSize()
+                .systemBarsPadding(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Logo
-            Spacer(modifier = Modifier.height(120.dp))
+            Spacer(Modifier.height(64.dp))
             Image(
                 painter = painterResource(id = R.drawable.login_tap_home_logo),
                 contentDescription = "TapTap Logo",
                 modifier = Modifier
                     .width(95.dp)
                     .height(26.dp),
-                contentScale = ContentScale.FillBounds
+                contentScale = ContentScale.Fit
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -87,30 +95,52 @@ fun Intro(
             }
 
             // Protocol text
-            Text(
-                buildAnnotatedString {
-                    append("By signing up or continuing, you agree \n to our ")
-
-                    withStyle(SpanStyle(color = Color.White)) {
-                        append("Terms ")
-                    }
-
-                    append("and ")
-
-                    withStyle(SpanStyle(color = Color.White)) {
-                        append("Privacy")
-                    }
-                },
-                textAlign = TextAlign.Center,
-                color = Color.Gray,
-                fontSize = 12.sp.nonScaledSp,
-                fontWeight = FontWeight.Normal,
-                fontStyle = FontStyle.Normal,
-                fontFamily = PPNeu,
+            ProtocolText(
+                onTerms = {},
+                onPrivacy = {},
                 modifier = Modifier.padding(bottom = 32.dp)
             )
         }
     }
+}
+
+@Composable
+fun ProtocolText(
+    onTerms: () -> Unit,
+    onPrivacy: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val text: AnnotatedString = buildAnnotatedString {
+        append("By signing up or continuing, you agree\n")
+        append("to our ")
+
+        // "Terms" is a clickable link
+        pushLink(LinkAnnotation.Clickable(tag = "terms") { onTerms() })
+        pushStyle(SpanStyle(color = Color.White, fontWeight = FontWeight.SemiBold))
+        append("Terms")
+        pop()   // pop style
+        pop()   // pop link
+
+        append(" and ")
+
+        // "Privacy" is a clickable link
+        pushLink(LinkAnnotation.Clickable(tag = "privacy") { onPrivacy() })
+        pushStyle(SpanStyle(color = Color.White, fontWeight = FontWeight.SemiBold))
+        append("Privacy")
+        pop()
+        pop()
+    }
+
+    Text(
+        text = text,
+        color = Color.Gray,
+        textAlign = TextAlign.Center,
+        fontSize = 12.sp.nonScaledSp,
+        fontWeight = FontWeight.Normal,
+        fontStyle = FontStyle.Normal,
+        fontFamily = PPNeu,
+        modifier = modifier
+    )
 }
 
 @Composable
@@ -126,6 +156,7 @@ fun ThirdLoginSection(onNavigateToSignup: () -> Unit) {
                 .fillMaxWidth()
                 .widthIn(max = 320.dp)
                 .height(48.dp),
+            elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.White),
             shape = RoundedCornerShape(24.dp),
             contentPadding = PaddingValues(horizontal = 16.dp)
@@ -157,6 +188,7 @@ fun ThirdLoginSection(onNavigateToSignup: () -> Unit) {
                 .fillMaxWidth()
                 .widthIn(max = 320.dp)
                 .height(48.dp),
+            elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.White),
             shape = RoundedCornerShape(24.dp),
             contentPadding = PaddingValues(horizontal = 16.dp)
@@ -186,7 +218,8 @@ fun ThirdLoginSection(onNavigateToSignup: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .widthIn(max = 320.dp)
-                .height(48.dp),
+                .height(48.dp)
+                .shadow(elevation = 4.dp, shape = RoundedCornerShape(24.dp)),
             colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green_primary)),
             shape = RoundedCornerShape(24.dp)
         ) {
@@ -204,44 +237,68 @@ fun ThirdLoginSection(onNavigateToSignup: () -> Unit) {
 
 @Composable
 private fun AnimatedBackground() {
-    val infiniteTransition = rememberInfiniteTransition(label = "infinite-transition")
-
-    val offsetY by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = -500f, // adjust scroll distance
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 20000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "scrollAnim"
-    )
-
-    // Background image with parallax effect
-    Image(
-        painter = painterResource(id = R.drawable.wall_paper),
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        modifier = Modifier
-            .graphicsLayer {
-                rotationZ = -15f // tilt ~11 o'clock
-                translationY = offsetY
-            }
-            .fillMaxSize()
-    )
-
-    // Gradient overlay
-    Box(
+    BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color.Black.copy(alpha = 0.6f),
-                        Color.Black.copy(alpha = 0.8f),
-                        Color.Black.copy(alpha = 1f),
-                        Color.Black.copy(alpha = 2f)
+            .clipToBounds()
+    ) {
+        val w = constraints.maxWidth.toFloat()
+        val h = constraints.maxHeight.toFloat()
+
+        val rotationDeg = -22f
+        val rad = Math.toRadians(kotlin.math.abs(rotationDeg).toDouble())
+        val cos = kotlin.math.cos(rad)
+        val sin = kotlin.math.sin(rad)
+        val requiredW = (w * cos + h * sin).toFloat()
+        val requiredH = (w * sin + h * cos).toFloat()
+        val baseScale = maxOf(w / requiredW, h / requiredH) * 1.8f
+
+        val density = LocalDensity.current
+        val translateX = with(density) { 110.dp.toPx() }
+        val translateYBase = with(density) { (-125).dp.toPx() }
+        val motion = with(density) { 100.dp.toPx() }
+
+        val infinite = rememberInfiniteTransition(label = "bg")
+        // Bottom -> top first (down is +Y, so go from +motion to -motion)
+        val offsetY by infinite.animateFloat(
+            initialValue = motion,
+            targetValue  = -motion,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 22_000, easing = LinearEasing),
+                repeatMode = RepeatMode.Reverse
+            ),
+            label = "offsetY"
+        )
+
+        Image(
+            painter = painterResource(id = R.drawable.wall_paper),
+            contentDescription = null,
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier
+                .matchParentSize()
+                .graphicsLayer {
+                    rotationZ = rotationDeg
+                    translationX = translateX
+                    translationY = translateYBase + offsetY
+                    scaleX = baseScale
+                    scaleY = baseScale * 1.15f
+                }
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Black.copy(alpha = 0.6f),
+                            Color.Black.copy(alpha = 0.8f),
+                            Color.Black.copy(alpha = 1f),
+                            Color.Black.copy(alpha = 2f)
+                        )
                     )
                 )
-            )
-    )
+        )
+    }
 }
+
