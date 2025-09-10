@@ -1,24 +1,24 @@
 [versions]
-agp = "8.5.0"
-kotlin = "2.0.20"
+agp = "8.13.0"
+kotlin = "2.2.10"
 ktLint = "11.6.0"
 
-core-ktx = "1.15.0"
-lifecycle-runtime-ktx = "2.8.7"
-activity-compose = "1.10.0"
-compose-bom = "2025.01.00"
+core-ktx = "1.17.0"
+lifecycle-runtime-ktx = "2.9.3"
+activity-compose = "1.10.1"
+compose-bom = "2025.08.01"
 
-androidx-junit = "1.2.1"
-espresso-core = "3.6.1"
+androidx-junit = "1.3.0"
+espresso-core = "3.7.0"
 junit = "4.13.2"
 
-material-icons-extended = "1.7.6"
-navigation-compose = "2.8.5"
+material-icons-extended = "1.7.8"
+navigation-compose = "2.9.3"
 accompanist-systemuicontroller = "0.34.0"
 
 accompanist-navigation-animation = "0.28.0"
-coil = "3.0.0-alpha06"
-constraintlayout-compose = "1.1.0"
+coil = "3.3.0"
+constraintlayout-compose = "1.1.1"
 
 paging = "3.3.0-alpha02-0.5.1"
 
@@ -28,8 +28,8 @@ koinComposeViewModel = "1.2.0-Beta5"
 koinAndroid = "3.5.6"
 koinAndroidxCompose = "3.5.6"
 
-ktor = "2.3.12"
-kotlinxSerializationJson = "1.7.2"
+ktor = "3.1.0"
+kotlinxSerializationJson = "1.8.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -67,7 +67,7 @@ ktor-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-compose-core = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coil" }
-coil-ktor = { module = "io.coil-kt.coil3:coil-network-ktor", version.ref = "coil" }
+coil-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayout-compose" }
 

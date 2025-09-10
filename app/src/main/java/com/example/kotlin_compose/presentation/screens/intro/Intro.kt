@@ -1,61 +1,72 @@
 package com.example.kotlin_compose.presentation.screens.intro
 
 import android.graphics.BitmapFactory
-import android.util.Log
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.kotlin_compose.R
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.draw.shadow
-import androidx.compose.runtime.*
-import androidx.compose.material3.TextButton
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.kotlin_compose.R
 import com.example.kotlin_compose.ui.theme.PPNeu
-import kotlinx.coroutines.android.awaitFrame
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.math.tan
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.drawscope.withTransform
-import kotlinx.coroutines.delay
 import kotlin.math.max
+import kotlin.math.sin
 
 val TextUnit.nonScaledSp
     @Composable get() = (this.value / LocalDensity.current.fontScale).sp
 
-@Preview
+@Preview()
 @Composable
 fun Intro(
 //    viewModel: IntroViewModel  = koinViewModel<IntroViewModel>(),
-    onNavigateToLogin: () -> Unit = {},
-    onNavigateToSignup: () -> Unit = {}
+    onNavigateToLogin: () -> Unit = {}, onNavigateToSignup: () -> Unit = {}
 ) {
 //    val introState = viewModel.introUiState.collectAsState()
 
@@ -65,32 +76,31 @@ fun Intro(
             .background(colorResource(id = R.color.intl_v2_black))
     ) {
         // Wallpaper with mask
-        WallPagerImage(resId = R.drawable.wall_paper, autoScroll = true)
+        WallPagerImage(resId = R.drawable.wall_paper)
 
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    Brush.verticalGradient(
+                    brush = Brush.verticalGradient(
                         colors = listOf(
-                            Color(0xC0161616), // start
-                            Color(0xFF161616)  // end
-                        )
+                            colorResource(R.color.v3_login_home_wallpaper_mask_start_color),
+                            colorResource(R.color.v3_login_home_wallpaper_mask_end_color),
+                        ),
+                        startY = 0f,
+                        endY = with(LocalDensity.current) { 450.dp.toPx() }
                     )
                 )
         )
         // Content
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .systemBarsPadding(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Logo
-            Spacer(Modifier.height(64.dp))
+            Spacer(Modifier.height(134.dp))
             Image(
                 painter = painterResource(id = R.drawable.login_tap_home_logo),
-                contentDescription = "TapTap Logo",
+                contentDescription = "login_tap_tap_logo",
                 modifier = Modifier
                     .width(95.dp)
                     .height(26.dp),
@@ -102,16 +112,18 @@ fun Intro(
             // Third-party login section
             ThirdLoginSection(onNavigateToSignup)
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
             // Login button
-            TextButton(onClick = onNavigateToLogin, modifier = Modifier.padding(vertical = 8.dp)) {
+            TextButton(
+                onClick = onNavigateToLogin,
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp)
+            ) {
                 Text(
-                    "Log in",
+                    text = "Log in",
                     color = colorResource(id = R.color.green_primary),
-                    fontSize = 16.sp.nonScaledSp,
+                    fontSize = 14.sp.nonScaledSp,
                     fontWeight = FontWeight.Bold,
-                    fontStyle = FontStyle.Normal,
                     fontFamily = PPNeu,
                 )
             }
@@ -119,7 +131,6 @@ fun Intro(
             ProtocolText(
                 onTerms = {},
                 onPrivacy = {},
-                modifier = Modifier.padding(bottom = 32.dp)
             )
         }
     }
@@ -129,40 +140,41 @@ fun Intro(
 fun ProtocolText(
     onTerms: () -> Unit,
     onPrivacy: () -> Unit,
-    modifier: Modifier = Modifier
 ) {
-    val text: AnnotatedString = buildAnnotatedString {
+    val protocolText = buildAnnotatedString {
         append("By signing up or continuing, you agree\n")
         append("to our ")
 
-        // "Terms" is a clickable link
+        // "Terms" clickable & bold
         pushLink(LinkAnnotation.Clickable(tag = "terms") { onTerms() })
-        pushStyle(SpanStyle(color = Color.White, fontWeight = FontWeight.SemiBold))
+        pushStyle(SpanStyle(fontWeight = FontWeight.Medium, color = Color.White))
         append("Terms")
-        pop()   // pop style
-        pop()   // pop link
+        pop() // style
+        pop() // link
 
         append(" and ")
 
-        // "Privacy" is a clickable link
+        // "Privacy" clickable & bold
         pushLink(LinkAnnotation.Clickable(tag = "privacy") { onPrivacy() })
-        pushStyle(SpanStyle(color = Color.White, fontWeight = FontWeight.SemiBold))
+        pushStyle(SpanStyle(fontWeight = FontWeight.Medium, color = Color.White))
         append("Privacy")
-        pop()
-        pop()
+        pop() // style
+        pop() // link
     }
 
     Text(
-        text = text,
-        color = Color.Gray,
-        textAlign = TextAlign.Center,
+        text = protocolText,
+        color = colorResource(R.color.intl_v2_auxiliary_grey_20),
         fontSize = 12.sp.nonScaledSp,
-        fontWeight = FontWeight.Normal,
-        fontStyle = FontStyle.Normal,
         fontFamily = PPNeu,
-        modifier = modifier
+        textAlign = TextAlign.Center,
+        lineHeight = 14.sp,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 40.dp, bottom = 72.dp)
     )
 }
+
 
 @Composable
 fun ThirdLoginSection(onNavigateToSignup: () -> Unit) {
@@ -182,23 +194,24 @@ fun ThirdLoginSection(onNavigateToSignup: () -> Unit) {
             shape = RoundedCornerShape(24.dp),
             contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
-            Box(modifier = Modifier.fillMaxWidth()) {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Image(
                     painter = painterResource(id = R.drawable.icon_v2_facebook),
                     contentDescription = "Facebook",
-                    modifier = Modifier
-                        .size(24.dp)
-                        .align(Alignment.CenterStart)
+                    modifier = Modifier.size(24.dp)
                 )
 
                 Text(
                     text = "Continue with Facebook",
-                    color = Color.Black,
-                    fontSize = 16.sp.nonScaledSp,
+                    color = colorResource(id = R.color.v3_login_home_third_login_button_text_color),
+                    fontSize = 14.sp.nonScaledSp,
                     fontWeight = FontWeight.Bold,
                     fontStyle = FontStyle.Normal,
                     fontFamily = PPNeu,
-                    modifier = Modifier.align(Alignment.Center)
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 0.dp),
+                    textAlign = TextAlign.Center
                 )
             }
         }
@@ -214,23 +227,24 @@ fun ThirdLoginSection(onNavigateToSignup: () -> Unit) {
             shape = RoundedCornerShape(24.dp),
             contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
-            Box(modifier = Modifier.fillMaxWidth()) {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Image(
                     painter = painterResource(id = R.drawable.icon_v2_google),
-                    contentDescription = "Facebook",
-                    modifier = Modifier
-                        .size(24.dp)
-                        .align(Alignment.CenterStart)
+                    contentDescription = "Google",
+                    modifier = Modifier.size(24.dp)
                 )
 
                 Text(
                     text = "Continue with Google",
-                    color = Color.Black,
-                    fontSize = 16.sp.nonScaledSp,
+                    color = colorResource(id = R.color.v3_login_home_third_login_button_text_color),
+                    fontSize = 14.sp.nonScaledSp,
                     fontWeight = FontWeight.Bold,
                     fontStyle = FontStyle.Normal,
                     fontFamily = PPNeu,
-                    modifier = Modifier.align(Alignment.Center)
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 0.dp),
+                    textAlign = TextAlign.Center
                 )
             }
         }
@@ -239,15 +253,15 @@ fun ThirdLoginSection(onNavigateToSignup: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .widthIn(max = 320.dp)
-                .height(48.dp)
-                .shadow(elevation = 4.dp, shape = RoundedCornerShape(24.dp)),
+                .height(48.dp),
+            elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
             colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green_primary)),
-            shape = RoundedCornerShape(24.dp)
+            shape = RoundedCornerShape(24.dp),
         ) {
             Text(
                 text = "Sign up",
-                color = Color.Black,
-                fontSize = 16.sp.nonScaledSp,
+                color = colorResource(id = R.color.v3_login_home_third_login_button_text_color),
+                fontSize = 14.sp.nonScaledSp,
                 fontWeight = FontWeight.Bold,
                 fontStyle = FontStyle.Normal,
                 fontFamily = PPNeu,
@@ -256,69 +270,75 @@ fun ThirdLoginSection(onNavigateToSignup: () -> Unit) {
     }
 }
 
+
 @Composable
 fun WallPagerImage(
-    resId: Int,
-    angleDeg: Float = 25f,
-    autoScroll: Boolean = true
+    resId: Int, angleDeg: Float = 25f, autoScroll: Boolean = true
 ) {
-    val context = LocalContext.current
+    val resources = LocalResources.current
     val bitmap = remember(resId) {
-        BitmapFactory.decodeResource(context.resources, resId)?.asImageBitmap()
-    }
+        BitmapFactory.decodeResource(resources, resId)?.asImageBitmap()
+    } ?: return
 
-    var offsetX by remember { mutableFloatStateOf(0f) }
-    var offsetY by remember { mutableFloatStateOf(0f) }
-    var forward by remember { mutableStateOf(true) }
-    var targetScrollY by remember { mutableFloatStateOf(0f) }
+    val angleRad = Math.toRadians(angleDeg.toDouble())
 
-    if (bitmap != null) {
-        val angleRad = Math.toRadians(angleDeg.toDouble())
-        val perScrollX = tan(angleRad) * 1f
-        val perScrollY = 1f
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+        val viewW = constraints.maxWidth.toFloat()
+        val viewH = constraints.maxHeight.toFloat()
 
-        // Animation loop (postDelayed equivalent)
-        LaunchedEffect(autoScroll, bitmap, targetScrollY) {
+        val (targetScrollY, xFactor) = remember(viewW, viewH, bitmap) {
+            val dSin = sin(angleRad) * viewW
+            val dCos = cos(angleRad) * viewH
+            val targetY =
+                (cos(angleRad) * ((bitmap.height - dSin) - dCos)).toFloat().coerceAtLeast(0f)
+            val maxX = (sin(angleRad) * ((bitmap.width - dCos) - dSin)).toFloat().coerceAtLeast(0f)
+            val xFac = if (targetY != 0f) maxX / targetY else 1f
+            targetY to xFac
+        }
+
+        var offsetY by remember(viewW, viewH, bitmap) { mutableFloatStateOf(targetScrollY) }
+        var offsetX by remember(
+            viewW, viewH, bitmap
+        ) { mutableFloatStateOf(xFactor * targetScrollY) }
+        var forward by remember { mutableStateOf(true) }
+
+        LaunchedEffect(autoScroll, bitmap, targetScrollY, xFactor) {
             if (!autoScroll) return@LaunchedEffect
+            val scrollStep = 0.5f
             while (isActive) {
-                awaitFrame()
-
-                if (forward) {
-                    offsetX += perScrollX.toFloat()
-                    offsetY += perScrollY
-                    if (offsetY >= targetScrollY) forward = false
+                delay(10)
+                if (!forward) {
+                    offsetY += scrollStep
+                    offsetX += xFactor * scrollStep
+                    if (offsetY >= targetScrollY) {
+                        offsetY = targetScrollY
+                        offsetX = xFactor * targetScrollY
+                        forward = true
+                    }
                 } else {
-                    offsetX -= perScrollX.toFloat()
-                    offsetY -= perScrollY
-                    if (offsetY <= 0f) forward = true
+                    offsetY -= scrollStep
+                    offsetX -= xFactor * scrollStep
+                    if (offsetY <= 0f) {
+                        offsetY = 0f
+                        offsetX = 0f
+                        forward = false
+                    }
                 }
             }
         }
 
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            // update targetScrollY based on actual canvas size
-            val dSin = sin(angleRad) * size.width
-            val dCos = cos(angleRad) * size.height
-            targetScrollY = (cos(angleRad) * ((bitmap.height - dSin) - dCos))
-                .toFloat()
-                .coerceAtLeast(0f)
-
-            // Scale like the original Matrix scaling
-            val scale = max(
-                size.width / bitmap.width,
-                size.height / bitmap.height
-            )
+        Canvas(Modifier.fillMaxSize()) {
+            val rotatedW = (size.width * cos(angleRad) + size.height * sin(angleRad)).toFloat()
+            val rotatedH = (size.width * sin(angleRad) + size.height * cos(angleRad)).toFloat()
+            val scale = max(rotatedW / bitmap.width, rotatedH / bitmap.height)
 
             withTransform({
                 scale(scale, scale)
                 rotate(-angleDeg)
-                translate(offsetX, offsetY)
+                translate(-offsetX, -offsetY)
             }) {
                 drawImage(bitmap)
             }
         }
     }
 }
-
-
-

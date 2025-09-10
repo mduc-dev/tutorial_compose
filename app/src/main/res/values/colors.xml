@@ -951,8 +951,8 @@
     <color name="v3_login_home_close_button_text_color">#f0f0f0</color>
     <color name="v3_login_home_third_login_button_bg_color">#ffffffff</color>
     <color name="v3_login_home_third_login_button_text_color">#333333</color>
-    <color name="v3_login_home_wallpaper_mask_end_color">#ffffffff</color>
-    <color name="v3_login_home_wallpaper_mask_start_color">#c0ffffff</color>
+    <color name="v3_login_home_wallpaper_mask_end_color">#ff161616</color>
+    <color name="v3_login_home_wallpaper_mask_start_color">#c0161616</color>
     <color name="v3_login_stoke_color">#1affffff</color>
     <color name="video_fullscreen_white_20pct">#32ffffff</color>
     <color name="video_fullscreen_white_70pct">#b2ffffff</color>

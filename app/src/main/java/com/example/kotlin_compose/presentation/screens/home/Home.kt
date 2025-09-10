@@ -1,15 +1,15 @@
 package com.example.kotlin_compose.presentation.screens.home
 
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -39,7 +39,7 @@ fun Home(viewModel: HomeViewModel = koinViewModel<HomeViewModel>()) {
             if (homeUiState.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             } else if (!homeUiState.error.isNullOrEmpty()) {
-                NoExistData(subTextNull = "${homeUiState.error}", modifier = Modifier)
+                NoExistData(subTextNull = homeUiState.error, modifier = Modifier)
             } else {
                 Column(
                     modifier = Modifier
