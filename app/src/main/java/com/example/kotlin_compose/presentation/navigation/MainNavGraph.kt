@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -11,18 +12,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.kotlin_compose.presentation.screens.account.Account
-import com.example.kotlin_compose.presentation.screens.home.Home
-import com.example.kotlin_compose.presentation.screens.play.Play
-import com.example.kotlin_compose.presentation.screens.tavern.Tavern
 
 @Composable
-fun MainNavGraph() {
-    val navController = rememberNavController()
-    val backStackState = navController.currentBackStackEntryAsState().value
+fun MainNavGraph(composeNavigator: AppComposeNavigator) {
+
+    val navHostController = rememberNavController()
+    LaunchedEffect(Unit) {
+        composeNavigator.handleNavigationCommands(navHostController)
+    }
+    val backStackState = navHostController.currentBackStackEntryAsState().value
     var selectedItem by rememberSaveable { mutableIntStateOf(0) }
 
     selectedItem = when (backStackState?.destination?.route) {
@@ -41,23 +41,20 @@ fun MainNavGraph() {
         if (isBottomBarVisible) {
             BottomTabNavigator(selectedItem = selectedItem, onItemClick = { index ->
                 when (index) {
-                    0 -> navigateToTab(navController, Route.GAMES)
-                    1 -> navigateToTab(navController, Route.PLAY)
-                    2 -> navigateToTab(navController, Route.TAVERN)
-                    3 -> navigateToTab(navController, Route.YOU)
+                    0 -> navigateToTab(navHostController, Route.GAMES)
+                    1 -> navigateToTab(navHostController, Route.PLAY)
+                    2 -> navigateToTab(navHostController, Route.TAVERN)
+                    3 -> navigateToTab(navHostController, Route.YOU)
                 }
             })
         }
     }) { innerPadding ->
         NavHost(
-            navController = navController,
+            navController = navHostController,
             startDestination = Route.GAMES,
             modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())
         ) {
-            composable(Route.GAMES) { Home() }
-            composable(Route.PLAY) { Play() }
-            composable(Route.TAVERN) { Tavern() }
-            composable(Route.YOU) { Account() }
+            tapMainNavigation(composeNavigator)
         }
     }
 }

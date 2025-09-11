@@ -1,7 +1,6 @@
 package com.example.kotlin_compose.presentation.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
@@ -28,6 +27,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.kotlin_compose.ui.theme.Black1A
@@ -39,6 +40,37 @@ import kotlinx.coroutines.delay
 
 //TODO: border {color,width}, disable {color},
 
+data class DDButtonPreviewParams(
+    val label: String,
+    val isLoading: Boolean,
+    val size: ButtonSize,
+    val variant: Variant,
+)
+
+class DDButtonPreviewProvider : PreviewParameterProvider<DDButtonPreviewParams> {
+    override val values: Sequence<DDButtonPreviewParams> = sequenceOf(
+        DDButtonPreviewParams("Solid SM", false, ButtonSize.SM, Variant.SOLID),
+        DDButtonPreviewParams("Bordered MD", false, ButtonSize.MD, Variant.BORDERED),
+        DDButtonPreviewParams("Loading LG", true, ButtonSize.LG, Variant.SOLID),
+        DDButtonPreviewParams("Light LG", false, ButtonSize.LG, Variant.LIGHT),
+        DDButtonPreviewParams("Flat SM", false, ButtonSize.SM, Variant.FLAT),
+        DDButtonPreviewParams("Faded MD", false, ButtonSize.MD, Variant.FADED),
+        DDButtonPreviewParams("Shadow LG", false, ButtonSize.LG, Variant.SHADOW),
+    )
+}
+@Preview
+@Composable
+fun PreviewDDButton(
+    @PreviewParameter(DDButtonPreviewProvider::class) params: DDButtonPreviewParams
+) {
+    DDButton(
+        label = params.label,
+        isLoading = params.isLoading,
+        size = params.size,
+        variant = params.variant,
+        onPress = {}
+    )
+}
 
 enum class Variant { SOLID, BORDERED, LIGHT, FLAT, FADED, SHADOW }
 
@@ -155,17 +187,4 @@ fun DDButton(
         }
     }
 
-}
-
-
-@Preview(apiLevel = 33, showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewButton() {
-    DDButton(
-        isLoading = true,
-        label = "hello",
-        onPress = {},
-        size = ButtonSize.LG,
-        variant = Variant.SOLID
-    )
 }

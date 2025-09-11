@@ -53,7 +53,6 @@ import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -63,6 +62,7 @@ import com.example.kotlin_compose.presentation.components.ButtonSize
 import com.example.kotlin_compose.presentation.components.DDButton
 import com.example.kotlin_compose.presentation.components.NoExistData
 import com.example.kotlin_compose.presentation.components.Variant
+import com.example.kotlin_compose.presentation.navigation.AppComposeNavigator
 import com.example.kotlin_compose.presentation.utils.DisabledInteractionSource
 import com.example.kotlin_compose.presentation.utils.isEmpty
 import com.example.kotlin_compose.ui.theme.Black1A
@@ -75,10 +75,10 @@ import kotlinx.coroutines.launch
 
 val tabs = listOf("Posts", "Saved", "Drafts")
 val enumValuesChip = listOf("All", "Gamelists", "Articles", "Videos")
-@Preview
+
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun Account() {
+fun Account(composeNavigator: AppComposeNavigator) {
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { tabs.size })
@@ -92,19 +92,22 @@ fun Account() {
     }
 
     Scaffold(containerColor = Color.Black, topBar = {
-        TopAppBar(title = { }, colors = TopAppBarDefaults.topAppBarColors(
+        TopAppBar(
+            title = { }, colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color.Black
         ), navigationIcon = {
-            Column(modifier = Modifier
-                .padding(horizontal = 8.dp),
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 8.dp),
                 horizontalAlignment = CenterHorizontally
-            ){
+            ) {
                 AsyncImage(
                     model = "https://ui-avatars.com/api/?name=D&bold=true&background=ab47bc&color=ffff&size=128",
                     contentDescription = null,
                     modifier = Modifier
                         .width(40.dp)
-                        .height(40.dp).clip(CircleShape)
+                        .height(40.dp)
+                        .clip(CircleShape)
                 )
             }
 
@@ -171,7 +174,8 @@ fun Account() {
                     },
                 ) {
                     tabs.forEachIndexed { tabIndex, item ->
-                        Tab(selectedContentColor = Color.White,
+                        Tab(
+                            selectedContentColor = Color.White,
                             unselectedContentColor = BlackDisable,
                             selected = tabIndex == pagerState.currentPage,
                             interactionSource = DisabledInteractionSource(),
@@ -181,7 +185,8 @@ fun Account() {
                                     pagerState.animateScrollToPage(tabIndex)
                                 }
                             }) {
-                            Text(text = item,
+                            Text(
+                                text = item,
                                 style = MaterialTheme.typography.titleMedium.copy(
                                     fontFamily = PPNeu,
                                     fontWeight = FontWeight.Bold,

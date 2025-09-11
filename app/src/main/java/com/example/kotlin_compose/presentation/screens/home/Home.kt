@@ -18,18 +18,23 @@ import app.cash.paging.compose.collectAsLazyPagingItems
 import com.example.kotlin_compose.presentation.components.AppBar
 import com.example.kotlin_compose.presentation.components.GameCardPortraitCompact
 import com.example.kotlin_compose.presentation.components.NoExistData
+import com.example.kotlin_compose.presentation.navigation.AppComposeNavigator
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
-fun Home(viewModel: HomeViewModel = koinViewModel<HomeViewModel>()) {
+fun Home(
+    composeNavigator: AppComposeNavigator,
+    viewModel: HomeViewModel = koinViewModel<HomeViewModel>()
+) {
     val scrollState = rememberScrollState()
     val homeUiState = viewModel.homeUiState.collectAsState().value
 
-    Scaffold(modifier = Modifier
-        .fillMaxSize()
-        .padding(PaddingValues()),
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(PaddingValues()),
         topBar = { AppBar(title = "Home") }) { paddingValues ->
         Box(
             modifier = Modifier

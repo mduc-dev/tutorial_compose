@@ -15,6 +15,7 @@ val Black1A = Color(0xFF1A1A1A)
 val BlackF3 = Color(0xFF3F3F46)
 val Black20 = Color(0xFF202023)
 val BlackDisable = Color(0xFF808080)
+val BlackF16 = Color(0xFF161616)
 
 val Pink = Color(0xFFab47bc)
 

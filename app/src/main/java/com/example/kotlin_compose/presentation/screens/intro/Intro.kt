@@ -47,11 +47,12 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kotlin_compose.R
+import com.example.kotlin_compose.presentation.navigation.AppComposeNavigator
+import com.example.kotlin_compose.presentation.navigation.Route
 import com.example.kotlin_compose.ui.theme.PPNeu
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -62,12 +63,14 @@ import kotlin.math.sin
 val TextUnit.nonScaledSp
     @Composable get() = (this.value / LocalDensity.current.fontScale).sp
 
-@Preview()
+
 @Composable
 fun Intro(
 //    viewModel: IntroViewModel  = koinViewModel<IntroViewModel>(),
-    onNavigateToLogin: () -> Unit = {}, onNavigateToSignup: () -> Unit = {}
+//    onNavigateToLogin: () -> Unit = {}, onNavigateToSignup: () -> Unit = {}
+    composeNavigator: AppComposeNavigator,
 ) {
+
 //    val introState = viewModel.introUiState.collectAsState()
 
     Box(
@@ -86,10 +89,7 @@ fun Intro(
                         colors = listOf(
                             colorResource(R.color.v3_login_home_wallpaper_mask_start_color),
                             colorResource(R.color.v3_login_home_wallpaper_mask_end_color),
-                        ),
-                        startY = 0f,
-                        endY = with(LocalDensity.current) { 450.dp.toPx() }
-                    )
+                        ), startY = 0f, endY = with(LocalDensity.current) { 450.dp.toPx() })
                 )
         )
         // Content
@@ -110,14 +110,15 @@ fun Intro(
             Spacer(modifier = Modifier.weight(1f))
 
             // Third-party login section
-            ThirdLoginSection(onNavigateToSignup)
+            ThirdLoginSection(composeNavigator)
 
             Spacer(modifier = Modifier.height(30.dp))
 
             // Login button
             TextButton(
-                onClick = onNavigateToLogin,
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp)
+                onClick = {
+                    composeNavigator.navigate(Route.LOGIN)
+                }, modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp)
             ) {
                 Text(
                     text = "Log in",
@@ -177,7 +178,7 @@ fun ProtocolText(
 
 
 @Composable
-fun ThirdLoginSection(onNavigateToSignup: () -> Unit) {
+fun ThirdLoginSection(composeNavigator: AppComposeNavigator) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -249,7 +250,9 @@ fun ThirdLoginSection(onNavigateToSignup: () -> Unit) {
             }
         }
         Button(
-            onClick = onNavigateToSignup,
+            onClick = {
+                composeNavigator.navigate(Route.SIGNUP)
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .widthIn(max = 320.dp)

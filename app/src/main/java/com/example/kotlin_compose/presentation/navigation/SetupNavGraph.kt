@@ -5,20 +5,22 @@ import androidx.compose.runtime.collectAsState
 import org.koin.compose.viewmodel.koinViewModel
 import com.example.kotlin_compose.presentation.screens.intro.IntroViewModel
 import com.example.kotlin_compose.presentation.utils.AuthState
+import org.koin.compose.koinInject
 import org.koin.core.annotation.KoinExperimentalAPI
 
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
-fun SetupNavGraph(
-    viewModel: IntroViewModel = koinViewModel<IntroViewModel>()
-) {
+fun SetupNavGraph() {
+    val viewModel: IntroViewModel = koinViewModel()
     val authState = viewModel.introUiState.collectAsState().value
+    val navigator: AppComposeNavigator = koinInject()
+
     when (authState) {
         is AuthState.Loading -> {}
-        is AuthState.Authenticated -> MainNavGraph()
-        is AuthState.Unauthenticated -> AuthNavGraph()
-        is AuthState.Error -> AuthNavGraph()
+        is AuthState.Authenticated -> MainNavGraph(composeNavigator = navigator)
+        is AuthState.Unauthenticated -> AuthNavGraph(composeNavigator = navigator)
+        is AuthState.Error -> AuthNavGraph(composeNavigator = navigator)
     }
 }
 
