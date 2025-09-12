@@ -15,9 +15,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 
+//TODO: maybe need rewrite this
 @Composable
 fun MainNavGraph(composeNavigator: AppComposeNavigator) {
-
     val navHostController = rememberNavController()
     LaunchedEffect(Unit) {
         composeNavigator.handleNavigationCommands(navHostController)

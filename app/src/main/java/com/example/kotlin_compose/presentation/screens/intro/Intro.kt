@@ -189,7 +189,7 @@ fun ThirdLoginSection(composeNavigator: AppComposeNavigator) {
             modifier = Modifier
                 .fillMaxWidth()
                 .widthIn(max = 320.dp)
-                .height(48.dp),
+                .height(44.dp),
             elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.White),
             shape = RoundedCornerShape(24.dp),
@@ -222,7 +222,7 @@ fun ThirdLoginSection(composeNavigator: AppComposeNavigator) {
             modifier = Modifier
                 .fillMaxWidth()
                 .widthIn(max = 320.dp)
-                .height(48.dp),
+                .height(44.dp),
             elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.White),
             shape = RoundedCornerShape(24.dp),
@@ -256,7 +256,7 @@ fun ThirdLoginSection(composeNavigator: AppComposeNavigator) {
             modifier = Modifier
                 .fillMaxWidth()
                 .widthIn(max = 320.dp)
-                .height(48.dp),
+                .height(44.dp),
             elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
             colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green_primary)),
             shape = RoundedCornerShape(24.dp),

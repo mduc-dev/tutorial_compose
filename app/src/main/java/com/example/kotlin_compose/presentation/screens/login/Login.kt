@@ -3,6 +3,7 @@ package com.example.kotlin_compose.presentation.screens.login
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -20,6 +21,7 @@ fun Login(composeNavigator: AppComposeNavigator) {
         modifier = Modifier
             .fillMaxWidth()
             .background(BlackF16)
+            .statusBarsPadding()
     ) {
         AppBar("Log in", navigationIcon = {
             IconButton(
