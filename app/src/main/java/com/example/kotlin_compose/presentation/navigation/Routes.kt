@@ -15,6 +15,7 @@ object Route {
     const val INTRO = "intro"
     const val LOGIN = "login"
     const val SIGNUP = "signup"
+    const val FORGOT_PASSWORD = "forgot_password"
 
     // Main routes
     const val GAMES = "games"

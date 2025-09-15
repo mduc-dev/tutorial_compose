@@ -20,6 +20,7 @@
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Kotlin_compose"
+            android:windowSoftInputMode="adjustResize"
             tools:ignore="DiscouragedApi">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

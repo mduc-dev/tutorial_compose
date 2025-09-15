@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,8 +42,10 @@ fun Input(
     enabled: Boolean = true,
     maxLines: Int = Int.MAX_VALUE,
     border: BorderStroke = BorderStroke(1.dp, color = colorResource(R.color.border)),
+    shape: RoundedCornerShape = RoundedCornerShape(24.dp),
     innerPadding: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
     keyboardOptions: KeyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
+    visualTransformation: VisualTransformation = VisualTransformation.None,
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit,
 ) {
     var textState by remember { mutableStateOf(TextFieldValue(text = value)) }
@@ -60,8 +63,8 @@ fun Input(
 
     BasicTextField(
         modifier = modifier
-            .border(border = border, shape = RoundedCornerShape(24.dp))
-            .clip(shape = RoundedCornerShape(24.dp))
+            .border(border = border, shape = shape)
+            .clip(shape = shape)
             .background(color = colorResource(R.color.primary_material_dark))
             .padding(innerPadding)
             .semantics { contentDescription = description },
@@ -85,6 +88,7 @@ fun Input(
 //            )
 //            TransformedText(styledText, OffsetMapping.Identity)
 //        },
+        visualTransformation = visualTransformation,
         textStyle = TextStyle(
             fontSize = 16.sp,
             fontWeight = FontWeight.Normal,

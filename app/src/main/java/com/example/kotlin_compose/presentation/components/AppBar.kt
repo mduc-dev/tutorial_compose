@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.kotlin_compose.ui.theme.BlackF16
 import com.example.kotlin_compose.ui.theme.PPNeu
 
 object AppBarDefaults {
@@ -50,7 +51,7 @@ fun AppBar(
     title: String,
     modifier: Modifier = Modifier,
     navigationIcon: @Composable (() -> Unit)? = null,
-    backgroundColor: Color = Color(0xFF161616),
+    backgroundColor: Color = BlackF16,
     contentColor: Color = Color.White,
     actions: @Composable RowScope.() -> Unit = {}
 ) {

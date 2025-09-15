@@ -3,6 +3,7 @@ package com.example.kotlin_compose.presentation.navigation
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.kotlin_compose.presentation.screens.account.Account
+import com.example.kotlin_compose.presentation.screens.forgotpassword.ForgotPassword
 import com.example.kotlin_compose.presentation.screens.home.Home
 import com.example.kotlin_compose.presentation.screens.intro.Intro
 import com.example.kotlin_compose.presentation.screens.login.Login
@@ -21,6 +22,9 @@ fun NavGraphBuilder.tapAuthNavigation(
     }
     composable(route = Route.SIGNUP) {
         Signup(composeNavigator)
+    }
+    composable(route = Route.FORGOT_PASSWORD) {
+        ForgotPassword(composeNavigator)
     }
 }
 

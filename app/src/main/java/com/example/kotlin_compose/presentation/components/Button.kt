@@ -27,15 +27,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.kotlin_compose.R
+import com.example.kotlin_compose.presentation.screens.intro.nonScaledSp
 import com.example.kotlin_compose.ui.theme.Black1A
 import com.example.kotlin_compose.ui.theme.Black20
 import com.example.kotlin_compose.ui.theme.BlackDisable
+import com.example.kotlin_compose.ui.theme.BlackF16
 import com.example.kotlin_compose.ui.theme.BlackF3
 import com.example.kotlin_compose.ui.theme.Green1a
+import com.example.kotlin_compose.ui.theme.PPNeu
 import kotlinx.coroutines.delay
 
 //TODO: border {color,width}, disable {color},
@@ -58,6 +66,7 @@ class DDButtonPreviewProvider : PreviewParameterProvider<DDButtonPreviewParams> 
         DDButtonPreviewParams("Shadow LG", false, ButtonSize.LG, Variant.SHADOW),
     )
 }
+
 @Preview
 @Composable
 fun PreviewDDButton(
@@ -68,16 +77,13 @@ fun PreviewDDButton(
         isLoading = params.isLoading,
         size = params.size,
         variant = params.variant,
-        onPress = {}
-    )
+        onPress = {})
 }
 
 enum class Variant { SOLID, BORDERED, LIGHT, FLAT, FADED, SHADOW }
 
 enum class ButtonSize(val size: Dp) {
-    SM(ButtonDefaults.MinHeight),
-    MD(ButtonDefaults.MinHeight),
-    LG(ButtonDefaults.MinHeight);
+    SM(ButtonDefaults.MinHeight), MD(ButtonDefaults.MinHeight), LG(ButtonDefaults.MinHeight);
 
     fun iconSize(): Dp = when (this) {
         SM -> 16.dp
@@ -106,47 +112,39 @@ fun DDButton(
     variant: Variant = Variant.SOLID,
     size: ButtonSize = ButtonSize.SM,
     isLoading: Boolean? = false,
+    enable: Boolean = true,
     onPress: () -> Unit
 ) {
-    val rippleConfiguration =
-        RippleConfiguration(
-            color = BlackDisable, rippleAlpha = RippleAlpha(
-                draggedAlpha = 0.16f,
-                focusedAlpha = 0.12f,
-                hoveredAlpha = 0.08f,
-                pressedAlpha = 0.24f
-            )
+    val rippleConfiguration = RippleConfiguration(
+        color = BlackDisable, rippleAlpha = RippleAlpha(
+            draggedAlpha = 0.16f, focusedAlpha = 0.12f, hoveredAlpha = 0.08f, pressedAlpha = 0.24f
         )
+    )
 
     val buttonColors = when (variant) {
         Variant.SOLID -> ButtonDefaults.buttonColors(
-            containerColor = Green1a,
-            disabledContainerColor = Black20
+            containerColor = colorResource(R.color.primary_color),
+            disabledContainerColor = colorResource(R.color.primary_color).copy(alpha = 0.3f)
         )
 
         Variant.BORDERED -> ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent,
-            disabledContainerColor = Black20
+            containerColor = Color.Transparent, disabledContainerColor = Black20
         )
 
         Variant.LIGHT -> ButtonDefaults.buttonColors(
-            containerColor = Color.White,
-            disabledContainerColor = Black20
+            containerColor = Color.White, disabledContainerColor = Black20
         )
 
         Variant.FLAT -> ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent,
-            disabledContainerColor = Black20
+            containerColor = Color.Transparent, disabledContainerColor = Black20
         )
 
         Variant.FADED -> ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent,
-            disabledContainerColor = Black20
+            containerColor = Color.Transparent, disabledContainerColor = Black20
         )
 
         Variant.SHADOW -> ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent,
-            disabledContainerColor = Black20
+            containerColor = Color.Transparent, disabledContainerColor = Black20
         )
     }
     CompositionLocalProvider(LocalRippleConfiguration provides rippleConfiguration) {
@@ -156,10 +154,10 @@ fun DDButton(
                 .height(size.size)
                 .testTag("dd_button"),
             colors = buttonColors,
-            shape = RoundedCornerShape(6.dp),
+            enabled = enable,
+            shape = RoundedCornerShape(24.dp),
             border = if (variant == Variant.BORDERED) BorderStroke(
-                width = 0.5.dp,
-                color = BlackF3
+                width = 0.5.dp, color = BlackF3
             ) else null
         ) {
             Row(
@@ -182,7 +180,15 @@ fun DDButton(
                         trackColor = Black1A,
                     )
                 }
-                Text(text = label, style = size.textStyle(), color = Color.White)
+                Text(
+                    text = label,
+                    style = size.textStyle(),
+                    color = BlackF16,
+                    fontWeight = FontWeight.W600,
+                    fontStyle = FontStyle.Normal,
+                    fontSize = 15.sp.nonScaledSp,
+                    fontFamily = PPNeu
+                )
             }
         }
     }
