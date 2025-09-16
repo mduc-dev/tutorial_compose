@@ -83,7 +83,7 @@ fun LoginWithoutPassword(composeNavigator: AppComposeNavigator) {
                         )
                     }
                     innerTextField()
-                    if (!email.isEmpty()) {
+                    if (email.isNotEmpty()) {
                         Image(
                             painterResource(R.drawable.login_input_number_clear),
                             contentDescription = "",

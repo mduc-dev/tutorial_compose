@@ -84,10 +84,10 @@ fun ForgotPassword(composeNavigator: AppComposeNavigator) {
                         )
                     }
                     innerTextField()
-                    if (!email.isEmpty()) {
+                    if (email.isNotEmpty()) {
                         Image(
                             painterResource(R.drawable.login_input_number_clear),
-                            contentDescription = "",
+                            contentDescription = "Clear email",
                             Modifier
                                 .align(Alignment.CenterEnd)
                                 .clickable(onClick = { email = "" })
