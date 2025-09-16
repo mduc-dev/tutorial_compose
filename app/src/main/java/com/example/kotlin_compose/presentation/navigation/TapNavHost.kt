@@ -11,21 +11,19 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun TapNavHost(
-    navHostController: NavHostController,
-    composeNavigator: AppComposeNavigator
+    navHostController: NavHostController, composeNavigator: AppComposeNavigator
 ) {
     val viewModel: WelcomeViewModel = koinViewModel()
     val authState = viewModel.welcomeUiState.collectAsState().value
     LaunchedEffect(authState) {
         when (authState) {
             is AuthState.Authenticated -> {
-                navHostController.navigate(TapTapScreens.Home.route) {
-                    popUpTo(0) { inclusive = true }
+                navHostController.navigate(TapTapScreens.MainGraph.route) {
+                    popUpTo(TapTapScreens.AuthGraph.route) { inclusive = true }
                 }
             }
 
-            is AuthState.Unauthenticated,
-            is AuthState.Error -> {
+            is AuthState.Unauthenticated, is AuthState.Error -> {
                 navHostController.navigate(TapTapScreens.Welcome.route) {
                     popUpTo(0) { inclusive = true }
                 }
