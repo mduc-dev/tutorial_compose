@@ -27,6 +27,7 @@ sealed class TapTapScreens(
     data object LoginWithoutPassword : TapTapScreens("login_without_password")
 
     //main screens
+    data object MainScaffold : TapTapScreens("main_scaffold")
     data object Home : TapTapScreens("home")
     data object Play : TapTapScreens("play")
     data object Tavern : TapTapScreens("tavern")

@@ -53,9 +53,9 @@ fun NavGraphBuilder.tapAuthNavigation(
 
 fun NavGraphBuilder.tapMainNavigation(composeNavigator: AppComposeNavigator) {
     navigation(
-        route = TapTapScreens.MainGraph.route, startDestination = TapTapScreens.MainGraph.route
+        route = TapTapScreens.MainGraph.route, startDestination = TapTapScreens.MainScaffold.route
     ) {
-        composable(TapTapScreens.MainGraph.route) {
+        composable(TapTapScreens.MainScaffold.route) {
             MainNavGraph(composeNavigator)
         }
     }
