@@ -1,4 +1,4 @@
-package com.example.kotlin_compose.presentation.screens.intro
+package com.example.kotlin_compose.presentation.screens.welcome
 
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Canvas
@@ -52,7 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kotlin_compose.R
 import com.example.kotlin_compose.presentation.navigation.AppComposeNavigator
-import com.example.kotlin_compose.presentation.navigation.Route
+import com.example.kotlin_compose.presentation.navigation.TapTapScreens
 import com.example.kotlin_compose.ui.theme.PPNeu
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -65,7 +65,7 @@ val TextUnit.nonScaledSp
 
 
 @Composable
-fun Intro(
+fun Welcome(
 //    viewModel: IntroViewModel  = koinViewModel<IntroViewModel>(),
 //    onNavigateToLogin: () -> Unit = {}, onNavigateToSignup: () -> Unit = {}
     composeNavigator: AppComposeNavigator,
@@ -117,7 +117,9 @@ fun Intro(
             // Login button
             TextButton(
                 onClick = {
-                    composeNavigator.navigate(Route.LOGIN)
+                    composeNavigator.navigate(TapTapScreens.Login.route) {
+                        launchSingleTop = true
+                    }
                 }, modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp)
             ) {
                 Text(
@@ -251,7 +253,9 @@ fun ThirdLoginSection(composeNavigator: AppComposeNavigator) {
         }
         Button(
             onClick = {
-                composeNavigator.navigate(Route.SIGNUP)
+                composeNavigator.navigate(TapTapScreens.SignUp.route) {
+                    launchSingleTop = true
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()

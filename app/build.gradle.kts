@@ -98,8 +98,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.tooling.manifest)
 
-    // System UI Controller
-    implementation(libs.accompanist.systemuicontroller)
 
     // Navigation
     implementation(libs.androidx.navigation.compose)
@@ -107,6 +105,4 @@ dependencies {
     // Extend icons
     implementation(libs.androidx.material.icons.extended)
 
-    // Navigation Animation
-    implementation(libs.accompanist.navigation.animation)
 }

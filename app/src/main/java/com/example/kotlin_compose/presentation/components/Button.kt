@@ -36,13 +36,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kotlin_compose.R
-import com.example.kotlin_compose.presentation.screens.intro.nonScaledSp
+import com.example.kotlin_compose.presentation.screens.welcome.nonScaledSp
 import com.example.kotlin_compose.ui.theme.Black1A
 import com.example.kotlin_compose.ui.theme.Black20
 import com.example.kotlin_compose.ui.theme.BlackDisable
 import com.example.kotlin_compose.ui.theme.BlackF16
 import com.example.kotlin_compose.ui.theme.BlackF3
-import com.example.kotlin_compose.ui.theme.Green1a
 import com.example.kotlin_compose.ui.theme.PPNeu
 import kotlinx.coroutines.delay
 

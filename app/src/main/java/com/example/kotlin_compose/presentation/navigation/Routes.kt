@@ -1,53 +1,69 @@
 package com.example.kotlin_compose.presentation.navigation
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Games
-import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
+import androidx.navigation.NamedNavArgument
 import com.example.kotlin_compose.R
 import com.example.kotlin_compose.data.local.BottomNavigation
-import androidx.compose.ui.res.vectorResource
 
-object Route {
-    // Auth routes
-    const val INTRO = "intro"
-    const val LOGIN = "login"
-    const val SIGNUP = "signup"
-    const val FORGOT_PASSWORD = "forgot_password"
 
-    // Main routes
-    const val GAMES = "games"
-    const val PLAY = "play"
-    const val TAVERN = "tavern"
-    const val YOU = "account"
+sealed class TapTapScreens(
+    val route: String, val navArgument: List<NamedNavArgument> = emptyList()
+) {
+    val name: String = route.appendArguments(navArgument)
+
+    //Graph
+    data object AuthGraph : TapTapScreens("auth_graph")
+    data object MainGraph : TapTapScreens("main_graph")
+
+    //auth screens
+    data object Welcome : TapTapScreens("welcome")
+    data object Login : TapTapScreens("login")
+    data object SignUp : TapTapScreens("signup")
+    data object ForgotPassword : TapTapScreens("forgot_password")
+    data object LoginWithoutPassword : TapTapScreens("login_without_password")
+
+    //main screens
+    data object Home : TapTapScreens("home")
+    data object Play : TapTapScreens("play")
+    data object Tavern : TapTapScreens("tavern")
+    data object You : TapTapScreens("you")
 }
 
 
 val BOTTOM_TAB: List<BottomNavigation>
-    @Composable
-    get() = listOf(
+    @Composable get() = listOf(
         BottomNavigation(
             title = "Games",
             icon = ImageVector.vectorResource(id = R.drawable.cw_home_bottom_games_icon_unselect),
-            route = Route.GAMES
+            route = TapTapScreens.Home.route
         ),
         BottomNavigation(
             title = "Play",
             icon = ImageVector.vectorResource(id = R.drawable.play_icon),
-            route = Route.PLAY
+            route = TapTapScreens.Play.route
         ),
         BottomNavigation(
             title = "Tavern",
             icon = ImageVector.vectorResource(id = R.drawable.home_bottom_icon_tavern_unselect),
-            route = Route.TAVERN,
+            route = TapTapScreens.Tavern.route,
             hasBadge = true,
             badgeCount = 10
         ),
         BottomNavigation(
-            title = "You",
-            icon = Icons.Rounded.AccountCircle,
-            route = Route.YOU
+            title = "You", icon = Icons.Rounded.AccountCircle, route = TapTapScreens.You.route
         ),
     )
+
+private fun String.appendArguments(navArguments: List<NamedNavArgument>): String {
+    val mandatoryArguments =
+        navArguments.filter { it.argument.defaultValue == null }.takeIf { it.isNotEmpty() }
+            ?.joinToString(separator = "/", prefix = "/") { "{${it.name}}" }.orEmpty()
+    val optionalArguments =
+        navArguments.filter { it.argument.defaultValue != null }.takeIf { it.isNotEmpty() }
+            ?.joinToString(separator = "&", prefix = "?") { "${it.name}={${it.name}}" }.orEmpty()
+    return "$this$mandatoryArguments$optionalArguments"
+}

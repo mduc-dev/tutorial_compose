@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.example.kotlin_compose.presentation.navigation.SetupNavGraph
+import com.example.kotlin_compose.presentation.navigation.TapMain
 import com.example.kotlin_compose.ui.theme.Kotlin_composeTheme
 
 class MainActivity : ComponentActivity() {
@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
                 ) {
-                    SetupNavGraph()
+                    TapMain()
                 }
             }
         }

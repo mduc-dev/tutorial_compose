@@ -69,9 +69,9 @@ import com.example.kotlin_compose.presentation.components.DDButton
 import com.example.kotlin_compose.presentation.components.Input
 import com.example.kotlin_compose.presentation.components.NoExistData
 import com.example.kotlin_compose.presentation.navigation.AppComposeNavigator
-import com.example.kotlin_compose.presentation.navigation.Route
-import com.example.kotlin_compose.presentation.screens.intro.nonScaledSp
+import com.example.kotlin_compose.presentation.navigation.TapTapScreens
 import com.example.kotlin_compose.presentation.screens.signup.extraSafeBottomPadding
+import com.example.kotlin_compose.presentation.screens.welcome.nonScaledSp
 import com.example.kotlin_compose.presentation.utils.DisabledInteractionSource
 import com.example.kotlin_compose.ui.theme.BlackDisable
 import com.example.kotlin_compose.ui.theme.BlackF16
@@ -178,7 +178,10 @@ fun PageContent(
         state = pagerState, modifier
     ) { page ->
         Box(
-            Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
+            contentAlignment = Alignment.TopCenter
         ) {
             when (page) {
                 0 -> Column(
@@ -196,8 +199,7 @@ fun PageContent(
                         maxLines = 1,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(46.dp)
-                            .padding(horizontal = 16.dp),
+                            .height(46.dp),
                         shape = RoundedCornerShape(16.dp),
                         keyboardOptions = KeyboardOptions(
                             capitalization = KeyboardCapitalization.Unspecified,
@@ -235,8 +237,7 @@ fun PageContent(
                         maxLines = 1,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(46.dp)
-                            .padding(horizontal = 16.dp),
+                            .height(46.dp),
                         shape = RoundedCornerShape(16.dp),
                         keyboardOptions = KeyboardOptions(
                             capitalization = KeyboardCapitalization.None,
@@ -281,8 +282,7 @@ fun PageContent(
                         fontStyle = FontStyle.Normal,
                         modifier = Modifier
                             .align(Alignment.End)
-                            .padding(end = 20.dp)
-                            .clickable { composeNavigator.navigate(Route.FORGOT_PASSWORD) })
+                            .clickable { composeNavigator.navigate(TapTapScreens.ForgotPassword.route) })
 
                     Spacer(Modifier.weight(1f))
 
@@ -292,15 +292,14 @@ fun PageContent(
                         fontFamily = PPNeu,
                         fontSize = 13.sp.nonScaledSp,
                         fontWeight = FontWeight.Normal,
-                        fontStyle = FontStyle.Normal
-                    )
+                        fontStyle = FontStyle.Normal,
+                        modifier = Modifier.clickable { composeNavigator.navigate(TapTapScreens.LoginWithoutPassword.route) })
                     DDButton(
                         label = "Log in",
                         modifier = Modifier
                             .fillMaxWidth()
                             .navigationBarsPadding()
                             .imePadding()
-                            .padding(horizontal = 16.dp)
                             .padding(bottom = extraSafeBottomPadding()),
                         onPress = {},
                         enable = false

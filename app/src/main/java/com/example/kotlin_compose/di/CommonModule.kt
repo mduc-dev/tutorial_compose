@@ -3,13 +3,13 @@ package com.example.kotlin_compose.di
 import com.example.kotlin_compose.presentation.navigation.AppComposeNavigator
 import android.util.Log
 import com.example.kotlin_compose.data.datasources.GamesRepositoryImpl
-import com.example.kotlin_compose.data.datasources.IntroRepositoryImpl
+import com.example.kotlin_compose.data.datasources.WelcomeRepositoryImpl
 import com.example.kotlin_compose.domain.repositories.GamesRepository
-import com.example.kotlin_compose.domain.repositories.IntroRepository
+import com.example.kotlin_compose.domain.repositories.WelcomeRepository
 import com.example.kotlin_compose.domain.utils.Constants.BASE_URL
 import com.example.kotlin_compose.presentation.navigation.TapComposeNavigator
 import com.example.kotlin_compose.presentation.screens.home.HomeViewModel
-import com.example.kotlin_compose.presentation.screens.intro.IntroViewModel
+import com.example.kotlin_compose.presentation.screens.welcome.WelcomeViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.addDefaultResponseValidation
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -20,7 +20,7 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.URLProtocol
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import org.koin.compose.viewmodel.dsl.viewModelOf
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 fun commonModule() = module {
@@ -60,10 +60,10 @@ fun commonModule() = module {
 
     single<GamesRepository> { GamesRepositoryImpl(get()) }
 
-    single<IntroRepository> { IntroRepositoryImpl(get()) }
+    single<WelcomeRepository> { WelcomeRepositoryImpl(get()) }
     single<AppComposeNavigator> { TapComposeNavigator() }
 
     viewModelOf(::HomeViewModel)
-    viewModelOf(::IntroViewModel)
+    viewModelOf(::WelcomeViewModel)
 }
 

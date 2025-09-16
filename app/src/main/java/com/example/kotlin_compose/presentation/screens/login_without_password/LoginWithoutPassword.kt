@@ -1,9 +1,8 @@
-package com.example.kotlin_compose.presentation.screens.forgotpassword
+package com.example.kotlin_compose.presentation.screens.login_without_password
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -42,15 +41,15 @@ import com.example.kotlin_compose.presentation.screens.signup.extraSafeBottomPad
 import com.example.kotlin_compose.ui.theme.BlackF16
 import com.example.kotlin_compose.ui.theme.PPNeu
 
+
 @Composable
-fun ForgotPassword(composeNavigator: AppComposeNavigator) {
+fun LoginWithoutPassword(composeNavigator: AppComposeNavigator) {
     Column(
         Modifier
             .fillMaxSize()
             .background(BlackF16)
             .statusBarsPadding()
-            .padding(horizontal = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+            .padding(horizontal = 20.dp)
     ) {
         var email by remember { mutableStateOf("") }
         Text(
@@ -97,7 +96,7 @@ fun ForgotPassword(composeNavigator: AppComposeNavigator) {
             })
 
         Text(
-            "We’ll email you a code to reset your password.",
+            "We’ll email you a code to log in.",
             color = colorResource(R.color.primary_text_disabled_material_dark),
             fontFamily = PPNeu,
             fontSize = 14.sp.nonScaledSp,

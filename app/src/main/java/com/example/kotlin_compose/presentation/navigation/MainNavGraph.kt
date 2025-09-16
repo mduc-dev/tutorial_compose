@@ -26,32 +26,35 @@ fun MainNavGraph(composeNavigator: AppComposeNavigator) {
     var selectedItem by rememberSaveable { mutableIntStateOf(0) }
 
     selectedItem = when (backStackState?.destination?.route) {
-        Route.GAMES -> 0
-        Route.PLAY -> 1
-        Route.TAVERN -> 2
-        Route.YOU -> 3
+        TapTapScreens.Home.route -> 0
+        TapTapScreens.Play.route -> 1
+        TapTapScreens.Tavern.route -> 2
+        TapTapScreens.You.route -> 3
         else -> 0
     }
 
     val isBottomBarVisible = backStackState?.destination?.route in listOf(
-        Route.GAMES, Route.PLAY, Route.TAVERN, Route.YOU
+        TapTapScreens.Home.route,
+        TapTapScreens.Play.route,
+        TapTapScreens.Tavern.route,
+        TapTapScreens.You.route
     )
 
     Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
         if (isBottomBarVisible) {
             BottomTabNavigator(selectedItem = selectedItem, onItemClick = { index ->
                 when (index) {
-                    0 -> navigateToTab(navHostController, Route.GAMES)
-                    1 -> navigateToTab(navHostController, Route.PLAY)
-                    2 -> navigateToTab(navHostController, Route.TAVERN)
-                    3 -> navigateToTab(navHostController, Route.YOU)
+                    0 -> navigateToTab(navHostController, TapTapScreens.Home.route)
+                    1 -> navigateToTab(navHostController, TapTapScreens.Play.route)
+                    2 -> navigateToTab(navHostController, TapTapScreens.Tavern.route)
+                    3 -> navigateToTab(navHostController, TapTapScreens.You.route)
                 }
             })
         }
     }) { innerPadding ->
         NavHost(
             navController = navHostController,
-            startDestination = Route.GAMES,
+            startDestination = TapTapScreens.Home.route,
             modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())
         ) {
             tapMainNavigation(composeNavigator)

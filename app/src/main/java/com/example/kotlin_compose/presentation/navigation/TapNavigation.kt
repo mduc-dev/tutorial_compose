@@ -1,36 +1,62 @@
 package com.example.kotlin_compose.presentation.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.example.kotlin_compose.presentation.screens.account.Account
+import androidx.navigation.navigation
 import com.example.kotlin_compose.presentation.screens.forgotpassword.ForgotPassword
-import com.example.kotlin_compose.presentation.screens.home.Home
-import com.example.kotlin_compose.presentation.screens.intro.Intro
 import com.example.kotlin_compose.presentation.screens.login.Login
-import com.example.kotlin_compose.presentation.screens.play.Play
+import com.example.kotlin_compose.presentation.screens.login_without_password.LoginWithoutPassword
 import com.example.kotlin_compose.presentation.screens.signup.Signup
-import com.example.kotlin_compose.presentation.screens.tavern.Tavern
+import com.example.kotlin_compose.presentation.screens.welcome.Welcome
 
 fun NavGraphBuilder.tapAuthNavigation(
     composeNavigator: AppComposeNavigator
 ) {
-    composable(route = Route.INTRO) {
-        Intro(composeNavigator)
-    }
-    composable(route = Route.LOGIN) {
-        Login(composeNavigator)
-    }
-    composable(route = Route.SIGNUP) {
-        Signup(composeNavigator)
-    }
-    composable(route = Route.FORGOT_PASSWORD) {
-        ForgotPassword(composeNavigator)
+    navigation(
+        route = TapTapScreens.AuthGraph.route, startDestination = TapTapScreens.Welcome.route
+    ) {
+        composable(route = TapTapScreens.Welcome.route) {
+            Welcome(composeNavigator)
+        }
+        composable(route = TapTapScreens.Login.route, enterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(300)
+            )
+        }, exitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(300)
+            )
+        }, popEnterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right, animationSpec = tween(300)
+            )
+        }, popExitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right, animationSpec = tween(300)
+            )
+        }) {
+            Login(composeNavigator)
+        }
+        composable(route = TapTapScreens.SignUp.route) {
+            Signup(composeNavigator)
+        }
+        composable(route = TapTapScreens.ForgotPassword.route) {
+            ForgotPassword(composeNavigator)
+        }
+        composable(route = TapTapScreens.LoginWithoutPassword.route) {
+            LoginWithoutPassword(composeNavigator)
+        }
     }
 }
 
 fun NavGraphBuilder.tapMainNavigation(composeNavigator: AppComposeNavigator) {
-    composable(Route.GAMES) { Home(composeNavigator) }
-    composable(Route.PLAY) { Play(composeNavigator) }
-    composable(Route.TAVERN) { Tavern(composeNavigator) }
-    composable(Route.YOU) { Account(composeNavigator) }
+    navigation(
+        route = TapTapScreens.MainGraph.route, startDestination = TapTapScreens.Home.route
+    ) {
+        composable("main_screen") {
+            MainNavGraph(composeNavigator)
+        }
+    }
 }

@@ -36,6 +36,15 @@ import com.example.kotlin_compose.R
 import com.example.kotlin_compose.presentation.components.Input
 import com.example.kotlin_compose.ui.theme.PPNeu
 
+//TODO: in this screen or in the last screen need to be defined when navigate is
+//    popUpTo("screen_to_go") { inclusive = true }
+//    launchSingleTop = true
+// why need that? =>
+// Any action that leads to a “final” screen—like Profile, SDK Web, or another destination that means the user has completed the auth flow—should clear the auth stack.
+// This is to ensure the user can’t press “Back” and return to Welcome/Login/Signup after finishing the process.
+// Within the flow: No popUpTo.
+// Exiting/completing the flow: Yes popUpTo.
+
 @Composable
 fun CreatePassword() {
     var password by remember { mutableStateOf("") }
