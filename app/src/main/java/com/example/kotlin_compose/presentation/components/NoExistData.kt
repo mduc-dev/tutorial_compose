@@ -12,7 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.kotlin_compose.R
@@ -30,8 +32,7 @@ fun NoExistData(
         contentAlignment = Alignment.Center,
     ) {
         Column(
-            modifier = Modifier,
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
                 painter = painterResource(id = painterResourceName!!),
@@ -41,13 +42,17 @@ fun NoExistData(
                 text = textNull,
                 modifier = modifier.padding(vertical = 5.dp),
                 style = MaterialTheme.typography.titleMedium.copy(
-                    color = Color.White, fontFamily = PPNeu, fontWeight = FontWeight.Bold
+                    color = Color.White,
+                    fontFamily = PPNeu,
+                    fontWeight = FontWeight.Bold,
+                    fontStyle = FontStyle.Normal,
+                    textAlign = TextAlign.Center
                 )
             )
             if (subTextNull != null) {
                 Text(
                     text = subTextNull, style = MaterialTheme.typography.bodyMedium.copy(
-                        color = Color.White, fontFamily = PPNeu
+                        color = Color.White, fontFamily = PPNeu, textAlign = TextAlign.Center
                     )
                 )
             }
@@ -56,7 +61,7 @@ fun NoExistData(
 }
 
 @Composable
-@Preview(apiLevel = 33, showBackground = true, backgroundColor = 0xFF1A1A1A, showSystemUi = true)
+@Preview(apiLevel = 36, showBackground = true, backgroundColor = 0xFF1A1A1A, showSystemUi = true)
 fun PreviewNoExistData() {
     NoExistData(
         subTextNull = "Write a post to start your profile’s never-ending journey",

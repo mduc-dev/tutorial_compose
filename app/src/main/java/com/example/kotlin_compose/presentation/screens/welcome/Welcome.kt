@@ -70,7 +70,13 @@ fun Welcome(
 //    onNavigateToLogin: () -> Unit = {}, onNavigateToSignup: () -> Unit = {}
     composeNavigator: AppComposeNavigator,
 ) {
-
+//    var isNavigating by remember { mutableStateOf(false) }
+//
+//    val navController = composeNavigator.navControllerFlow.collectAsState().value
+//
+//    LaunchedEffect(navController) {
+//        isNavigating = false
+//    }
 //    val introState = viewModel.introUiState.collectAsState()
 
     Box(
@@ -116,10 +122,14 @@ fun Welcome(
 
             // Login button
             TextButton(
+//                enabled = !isNavigating,
                 onClick = {
+//                    if (!isNavigating) {
+//                        isNavigating = true
                     composeNavigator.navigate(TapTapScreens.Login.route) {
                         launchSingleTop = true
                     }
+//                    }
                 }, modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp)
             ) {
                 Text(

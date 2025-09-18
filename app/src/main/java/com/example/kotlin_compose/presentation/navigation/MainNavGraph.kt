@@ -10,7 +10,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -43,11 +42,24 @@ fun MainNavGraph(composeNavigator: AppComposeNavigator) {
     Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
         if (isBottomBarVisible) {
             BottomTabNavigator(selectedItem = selectedItem, onItemClick = { index ->
-                when (index) {
-                    0 -> navigateToTab(navHostController, TapTapScreens.Home.route)
-                    1 -> navigateToTab(navHostController, TapTapScreens.Play.route)
-                    2 -> navigateToTab(navHostController, TapTapScreens.Tavern.route)
-                    3 -> navigateToTab(navHostController, TapTapScreens.You.route)
+                val destination = when (index) {
+                    0 -> TapTapScreens.Home.route
+                    1 -> TapTapScreens.Play.route
+                    2 -> TapTapScreens.Tavern.route
+                    3 -> TapTapScreens.You.route
+                    else -> null
+                }
+
+                if (destination != null) {
+                    composeNavigator.navigate(destination) {
+                        navHostController.graph.startDestinationRoute?.let { startRoute ->
+                            popUpTo(startRoute) {
+                                saveState = true
+                            }
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 }
             })
         }
@@ -62,14 +74,3 @@ fun MainNavGraph(composeNavigator: AppComposeNavigator) {
     }
 }
 
-private fun navigateToTab(navController: NavController, route: String) {
-    navController.navigate(route) {
-        navController.graph.startDestinationRoute?.let { screenRoute ->
-            popUpTo(screenRoute) {
-                saveState = true
-            }
-        }
-        launchSingleTop = true
-        restoreState = true
-    }
-}
