@@ -1,6 +1,7 @@
 package com.example.kotlin_compose.presentation.screens.welcome
 
 import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,10 +22,12 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -53,9 +56,13 @@ import androidx.compose.ui.unit.sp
 import com.example.kotlin_compose.R
 import com.example.kotlin_compose.presentation.navigation.AppComposeNavigator
 import com.example.kotlin_compose.presentation.navigation.TapTapScreens
+import com.example.kotlin_compose.presentation.utils.AuthState
+import com.example.kotlin_compose.presentation.utils.Provider
+import com.example.kotlin_compose.ui.theme.BlackF16
 import com.example.kotlin_compose.ui.theme.PPNeu
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.sin
@@ -66,19 +73,26 @@ val TextUnit.nonScaledSp
 
 @Composable
 fun Welcome(
-//    viewModel: IntroViewModel  = koinViewModel<IntroViewModel>(),
-//    onNavigateToLogin: () -> Unit = {}, onNavigateToSignup: () -> Unit = {}
     composeNavigator: AppComposeNavigator,
+    viewModel: WelcomeViewModel = koinViewModel<WelcomeViewModel>(),
 ) {
-//    var isNavigating by remember { mutableStateOf(false) }
-//
-//    val navController = composeNavigator.navControllerFlow.collectAsState().value
-//
-//    LaunchedEffect(navController) {
-//        isNavigating = false
-//    }
-//    val introState = viewModel.introUiState.collectAsState()
+    val welcomeState by viewModel.welcomeUiState.collectAsState()
 
+    LaunchedEffect(welcomeState) {
+        Log.i("UI", "Welcome saw authState = $welcomeState")
+        when (welcomeState) {
+            is AuthState.Authenticated -> {
+                composeNavigator.navigate(TapTapScreens.MainGraph.route) {
+                    popUpTo(TapTapScreens.AuthGraph.route) { inclusive = true }
+                }
+            }
+
+            is AuthState.Error -> { /* show error UI */
+            }
+
+            else -> Unit
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -116,7 +130,7 @@ fun Welcome(
             Spacer(modifier = Modifier.weight(1f))
 
             // Third-party login section
-            ThirdLoginSection(composeNavigator)
+            ThirdLoginSection(composeNavigator, viewModel)
 
             Spacer(modifier = Modifier.height(30.dp))
 
@@ -190,14 +204,27 @@ fun ProtocolText(
 
 
 @Composable
-fun ThirdLoginSection(composeNavigator: AppComposeNavigator) {
+fun ThirdLoginSection(composeNavigator: AppComposeNavigator, welcomeViewModel: WelcomeViewModel) {
+    val authState by welcomeViewModel.welcomeUiState.collectAsState()
+
+    LaunchedEffect(authState) {
+        if (authState is AuthState.Error) {
+            // e.g. scaffoldState.snackbarHostState.showSnackbar(...)
+        }
+    }
+
+    val loadingProvider = (authState as? AuthState.Loading)?.provider
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp),
         modifier = Modifier.padding(horizontal = 24.dp),
     ) {
         Button(
-            onClick = { /* Handle Facebook login */ },
+            onClick = {
+                welcomeViewModel.signInWithFaceBook()
+            },
+            enabled = (loadingProvider != Provider.Facebook),
             modifier = Modifier
                 .fillMaxWidth()
                 .widthIn(max = 320.dp)
@@ -226,17 +253,27 @@ fun ThirdLoginSection(composeNavigator: AppComposeNavigator) {
                         .padding(start = 0.dp),
                     textAlign = TextAlign.Center
                 )
+                if (loadingProvider == Provider.Facebook) CircularProgressIndicator(
+                    modifier = Modifier.size(ButtonDefaults.IconSize),
+                    color = BlackF16,
+                    strokeWidth = 1.8.dp
+                )
             }
         }
 
         Button(
-            onClick = {},
+            onClick = {
+                welcomeViewModel.signInWithGoogle()
+            },
+            enabled = (loadingProvider != Provider.Google),
             modifier = Modifier
                 .fillMaxWidth()
                 .widthIn(max = 320.dp)
                 .height(44.dp),
             elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.White, disabledContainerColor = Color.White
+            ),
             shape = RoundedCornerShape(24.dp),
             contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
@@ -258,6 +295,11 @@ fun ThirdLoginSection(composeNavigator: AppComposeNavigator) {
                         .weight(1f)
                         .padding(start = 0.dp),
                     textAlign = TextAlign.Center
+                )
+                if (loadingProvider == Provider.Google) CircularProgressIndicator(
+                    modifier = Modifier.size(ButtonDefaults.IconSize),
+                    color = BlackF16,
+                    strokeWidth = 1.8.dp
                 )
             }
         }

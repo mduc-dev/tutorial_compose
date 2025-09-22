@@ -63,7 +63,6 @@ fun BottomTabNavigator(
                         unselectedIconColor = colorResource(id = R.color.white),
                         unselectedTextColor = Color.Gray,
                         indicatorColor = Color.Transparent,
-
                     ),
                 )
             }

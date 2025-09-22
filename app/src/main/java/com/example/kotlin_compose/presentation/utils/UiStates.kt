@@ -6,9 +6,10 @@ import kotlinx.coroutines.flow.Flow
 
 
 sealed class AuthState {
-    data object Loading : AuthState()
-    data object Authenticated : AuthState()
-    data object Unauthenticated : AuthState()
+    object Idle : AuthState()
+    data class Loading(val provider: Provider? = null) : AuthState()
+    object Authenticated : AuthState()
+    object Unauthenticated : AuthState()
     data class Error(val message: String) : AuthState()
 }
 
@@ -20,3 +21,5 @@ data class HomeUiState(
     val popularGames: Flow<PagingData<Games>>? = null,
     val upcomingGames: Flow<PagingData<Games>>? = null
 )
+
+enum class Provider { Facebook, Google }

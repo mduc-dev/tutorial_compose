@@ -4,24 +4,27 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.kotlin_compose.presentation.screens.account.Account
+import com.example.kotlin_compose.presentation.screens.home.Home
+import com.example.kotlin_compose.presentation.screens.play.Play
+import com.example.kotlin_compose.presentation.screens.tavern.Tavern
 
 //TODO: maybe need rewrite this
 @Composable
 fun MainNavGraph(composeNavigator: AppComposeNavigator) {
-    val navHostController = rememberNavController()
-    LaunchedEffect(Unit) {
-        composeNavigator.handleNavigationCommands(navHostController)
-    }
-    val backStackState = navHostController.currentBackStackEntryAsState().value
+    val innerNavController = rememberNavController()
+
+    val backStackState = innerNavController.currentBackStackEntryAsState().value
+
     var selectedItem by rememberSaveable { mutableIntStateOf(0) }
 
     selectedItem = when (backStackState?.destination?.route) {
@@ -47,29 +50,30 @@ fun MainNavGraph(composeNavigator: AppComposeNavigator) {
                     1 -> TapTapScreens.Play.route
                     2 -> TapTapScreens.Tavern.route
                     3 -> TapTapScreens.You.route
-                    else -> null
+                    else -> return@BottomTabNavigator
                 }
 
-                if (destination != null) {
-                    composeNavigator.navigate(destination) {
-                        navHostController.graph.startDestinationRoute?.let { startRoute ->
-                            popUpTo(startRoute) {
-                                saveState = true
-                            }
+                innerNavController.navigate(destination) {
+                    innerNavController.graph.startDestinationRoute?.let { startRoute ->
+                        popUpTo(startRoute) {
+                            saveState = true
                         }
-                        launchSingleTop = true
-                        restoreState = true
                     }
+                    launchSingleTop = true
+                    restoreState = true
                 }
             })
         }
     }) { innerPadding ->
         NavHost(
-            navController = navHostController,
+            navController = innerNavController,
             startDestination = TapTapScreens.Home.route,
             modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())
         ) {
-            tapMainNavigation(composeNavigator)
+            composable(TapTapScreens.Home.route) { Home(composeNavigator) }
+            composable(TapTapScreens.Play.route) { Play(composeNavigator) }
+            composable(TapTapScreens.Tavern.route) { Tavern(composeNavigator) }
+            composable(TapTapScreens.You.route) { Account(composeNavigator) }
         }
     }
 }

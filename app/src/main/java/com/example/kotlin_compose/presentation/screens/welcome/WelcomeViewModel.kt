@@ -1,18 +1,31 @@
 package com.example.kotlin_compose.presentation.screens.welcome
 
+import android.content.SharedPreferences
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kotlin_compose.domain.repositories.WelcomeRepository
 import com.example.kotlin_compose.presentation.utils.AuthState
+import com.example.kotlin_compose.presentation.utils.Provider
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import androidx.core.content.edit
 
-class WelcomeViewModel(private val welcomeRepository: WelcomeRepository) : ViewModel() {
-    private val _welcomeUiState = MutableStateFlow<AuthState>(AuthState.Loading)
+class WelcomeViewModel(
+    private val welcomeRepository: WelcomeRepository, private val prefs: SharedPreferences
+) : ViewModel() {
+
+    companion object {
+        private const val KEY_IS_LOGGED_IN = "key_is_logged_in"
+    }
+
+    private val _welcomeUiState = MutableStateFlow<AuthState>(AuthState.Idle)
+
     val welcomeUiState = _welcomeUiState.asStateFlow()
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
+        _welcomeUiState.value = AuthState.Error(exception.message ?: "Unknown error")
     }
 
     init {
@@ -22,7 +35,8 @@ class WelcomeViewModel(private val welcomeRepository: WelcomeRepository) : ViewM
 
     private fun checkInitialAuthState() {
         // Check if user is logged in from SharedPreferences or other storage
-        val isLoggedIn = false // Replace with actual logic
+        val isLoggedIn = prefs.getBoolean(KEY_IS_LOGGED_IN, false)
+        Log.i("VM", "checkInitialAuthState → $isLoggedIn")
 
         if (isLoggedIn) {
             _welcomeUiState.value = AuthState.Authenticated
@@ -34,33 +48,32 @@ class WelcomeViewModel(private val welcomeRepository: WelcomeRepository) : ViewM
     fun signIn(email: String, password: String) = viewModelScope.launch {
         welcomeRepository.signIn(email, password).onSuccess { data ->
             _welcomeUiState.value = AuthState.Authenticated
-        }.onFailure { error ->
-            _welcomeUiState.value = AuthState.Error(error.message ?: "Unknown error")
         }
     }
 
     fun signUp(email: String, password: String) = viewModelScope.launch {
         welcomeRepository.signUp("", email, password).onSuccess { data ->
             _welcomeUiState.value = AuthState.Authenticated
-        }.onFailure { error ->
-            _welcomeUiState.value = AuthState.Error(error.message ?: "Unknown error")
         }
     }
 
     fun signInWithFaceBook() = viewModelScope.launch(coroutineExceptionHandler) {
+        _welcomeUiState.value = AuthState.Loading(Provider.Facebook)
         welcomeRepository.signInWithFacebook().onSuccess { data ->
+            prefs.edit { putBoolean(KEY_IS_LOGGED_IN, true) }
             _welcomeUiState.value = AuthState.Authenticated
-        }.onFailure { error ->
-            _welcomeUiState.value = AuthState.Error(error.message ?: "Unknown error")
         }
     }
 
     fun signInWithGoogle() = viewModelScope.launch(coroutineExceptionHandler) {
+        _welcomeUiState.value = AuthState.Loading(Provider.Google)
         welcomeRepository.signInWithGoogle().onSuccess { data ->
+            prefs.edit { putBoolean(KEY_IS_LOGGED_IN, true) }
             _welcomeUiState.value = AuthState.Authenticated
-        }.onFailure { error ->
-            _welcomeUiState.value = AuthState.Error(error.message ?: "Unknown error")
         }
     }
 
+    fun signOut() = viewModelScope.launch(coroutineExceptionHandler) {
+        welcomeRepository.signOut()
+    }
 }

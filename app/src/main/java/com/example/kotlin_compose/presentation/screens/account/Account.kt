@@ -1,9 +1,10 @@
 package com.example.kotlin_compose.presentation.screens.account
 
+//import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-//import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
@@ -63,6 +63,8 @@ import com.example.kotlin_compose.presentation.components.DDButton
 import com.example.kotlin_compose.presentation.components.NoExistData
 import com.example.kotlin_compose.presentation.components.Variant
 import com.example.kotlin_compose.presentation.navigation.AppComposeNavigator
+import com.example.kotlin_compose.presentation.navigation.TapTapScreens
+import com.example.kotlin_compose.presentation.screens.welcome.WelcomeViewModel
 import com.example.kotlin_compose.presentation.utils.DisabledInteractionSource
 import com.example.kotlin_compose.presentation.utils.isEmpty
 import com.example.kotlin_compose.ui.theme.Black1A
@@ -72,13 +74,17 @@ import com.example.kotlin_compose.ui.theme.Green1a
 import com.example.kotlin_compose.ui.theme.Green31
 import com.example.kotlin_compose.ui.theme.PPNeu
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 val tabs = listOf("Posts", "Saved", "Drafts")
 val enumValuesChip = listOf("All", "Gamelists", "Articles", "Videos")
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Account(composeNavigator: AppComposeNavigator) {
+fun Account(
+    composeNavigator: AppComposeNavigator,
+    viewModel: WelcomeViewModel = koinViewModel<WelcomeViewModel>()
+) {
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { tabs.size })
@@ -94,57 +100,56 @@ fun Account(composeNavigator: AppComposeNavigator) {
     Scaffold(containerColor = Color.Black, topBar = {
         TopAppBar(
             title = { }, colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Black
-        ), navigationIcon = {
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = 8.dp),
-                horizontalAlignment = CenterHorizontally
-            ) {
-                AsyncImage(
-                    model = "https://ui-avatars.com/api/?name=D&bold=true&background=ab47bc&color=ffff&size=128",
-                    contentDescription = null,
-                    modifier = Modifier
-                        .width(40.dp)
-                        .height(40.dp)
-                        .clip(CircleShape)
-                )
-            }
+                containerColor = Color.Black
+            ), navigationIcon = {
+                Column(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    horizontalAlignment = CenterHorizontally
+                ) {
+                    AsyncImage(
+                        model = "https://ui-avatars.com/api/?name=D&bold=true&background=ab47bc&color=ffff&size=128",
+                        contentDescription = null,
+                        modifier = Modifier
+                            .width(40.dp)
+                            .height(40.dp)
+                            .clip(CircleShape)
+                    )
+                }
 
-        }, actions = {
-            Row {
-                IconButton(onClick = {}) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.qr_code),
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier
-                            .width(22.dp)
-                            .height(22.dp)
-                    )
+            }, actions = {
+                Row {
+                    IconButton(onClick = {}) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.qr_code),
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier
+                                .width(22.dp)
+                                .height(22.dp)
+                        )
+                    }
+                    IconButton(onClick = {}) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.share),
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier
+                                .width(22.dp)
+                                .height(22.dp)
+                        )
+                    }
+                    IconButton(onClick = {}) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.settings),
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier
+                                .width(22.dp)
+                                .height(22.dp)
+                        )
+                    }
                 }
-                IconButton(onClick = {}) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.share),
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier
-                            .width(22.dp)
-                            .height(22.dp)
-                    )
-                }
-                IconButton(onClick = {}) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.settings),
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier
-                            .width(22.dp)
-                            .height(22.dp)
-                    )
-                }
-            }
-        })
+            })
     }) { padding ->
         LazyColumn(
             state = listState,
@@ -203,16 +208,19 @@ fun Account(composeNavigator: AppComposeNavigator) {
                     }
                 }
                 //Content Tab
-                PageContent(pagerState)
+                PageContent(pagerState, composeNavigator, viewModel)
             }
         }
     }
 }
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PageContent(pagerState: PagerState) {
+fun PageContent(
+    pagerState: PagerState,
+    composeNavigator: AppComposeNavigator,
+    viewModel: WelcomeViewModel
+) {
     val styleTextBtn: TextStyle = MaterialTheme.typography.titleMedium.copy(
         fontFamily = PPNeu, fontWeight = FontWeight.Bold
     )
@@ -226,8 +234,11 @@ fun PageContent(pagerState: PagerState) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 6.dp, vertical = 5.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        .padding(vertical = 5.dp),
+                    horizontalArrangement = Arrangement.spacedBy(
+                        space = 10.dp, alignment = CenterHorizontally
+                    ),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     enumValuesChip.forEach {
                         FilterChip(
@@ -255,7 +266,7 @@ fun PageContent(pagerState: PagerState) {
 
                     }
                 }
-                Content()
+                Content(composeNavigator, viewModel)
             }
 
             2 -> {
@@ -281,7 +292,7 @@ fun HeaderAccount() {
 
 
 @Composable
-fun Content() {
+fun Content(composeNavigator: AppComposeNavigator, viewModel: WelcomeViewModel) {
     if (isEmpty("null")) {
         NoExistData(
             subTextNull = "Write a post to start your profile’s never-ending journey.",
@@ -296,6 +307,13 @@ fun Content() {
             size = ButtonSize.LG,
             variant = Variant.BORDERED
         )
+        Text("logout", modifier = Modifier.clickable(onClick = {
+            viewModel.signOut()
+            composeNavigator.navigate(TapTapScreens.Welcome.route) {
+                // clear out the main graph so we don't come back on back-press
+                popUpTo(TapTapScreens.MainGraph.route) { inclusive = true }
+            }
+        }), Color.White)
     }
 
 }

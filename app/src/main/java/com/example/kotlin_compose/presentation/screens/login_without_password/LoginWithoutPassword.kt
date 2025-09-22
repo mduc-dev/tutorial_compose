@@ -36,8 +36,8 @@ import com.example.kotlin_compose.R
 import com.example.kotlin_compose.presentation.components.DDButton
 import com.example.kotlin_compose.presentation.components.Input
 import com.example.kotlin_compose.presentation.navigation.AppComposeNavigator
-import com.example.kotlin_compose.presentation.screens.welcome.nonScaledSp
 import com.example.kotlin_compose.presentation.screens.signup.extraSafeBottomPadding
+import com.example.kotlin_compose.presentation.screens.welcome.nonScaledSp
 import com.example.kotlin_compose.ui.theme.BlackF16
 import com.example.kotlin_compose.ui.theme.PPNeu
 

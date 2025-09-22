@@ -32,6 +32,13 @@ sealed class TapTapScreens(
     data object Play : TapTapScreens("play")
     data object Tavern : TapTapScreens("tavern")
     data object You : TapTapScreens("you")
+
+
+    //common screens
+    data object Search : TapTapScreens("search")
+    data object GameDetail : TapTapScreens("gameDetail/{gameId}")
+
+    data object Notifications: TapTapScreens("notifications")
 }
 
 

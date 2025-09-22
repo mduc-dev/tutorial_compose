@@ -8,6 +8,8 @@ import androidx.navigation.navigation
 import com.example.kotlin_compose.presentation.screens.forgotpassword.ForgotPassword
 import com.example.kotlin_compose.presentation.screens.login.Login
 import com.example.kotlin_compose.presentation.screens.login_without_password.LoginWithoutPassword
+import com.example.kotlin_compose.presentation.screens.notifications.Notifications
+import com.example.kotlin_compose.presentation.screens.search.Search
 import com.example.kotlin_compose.presentation.screens.signup.Signup
 import com.example.kotlin_compose.presentation.screens.welcome.Welcome
 
@@ -57,6 +59,12 @@ fun NavGraphBuilder.tapMainNavigation(composeNavigator: AppComposeNavigator) {
     ) {
         composable(TapTapScreens.MainScaffold.route) {
             MainNavGraph(composeNavigator)
+        }
+        composable(TapTapScreens.Search.route) {
+            Search()
+        }
+        composable(TapTapScreens.Notifications.route) {
+            Notifications()
         }
     }
 }
