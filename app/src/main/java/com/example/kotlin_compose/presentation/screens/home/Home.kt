@@ -4,11 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillParentMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -16,9 +16,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -52,8 +54,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.cash.paging.compose.collectAsLazyPagingItems
 import com.example.kotlin_compose.R
-import com.example.kotlin_compose.presentation.components.GameCardPortraitCompact
 import com.example.kotlin_compose.presentation.components.NoExistData
+import com.example.kotlin_compose.presentation.components.TrendingGameHeroCard
 import com.example.kotlin_compose.presentation.navigation.AppComposeNavigator
 import com.example.kotlin_compose.presentation.navigation.TapTapScreens
 import com.example.kotlin_compose.ui.theme.BlackF16
@@ -66,140 +68,170 @@ fun Home(
 ) {
     val topTabs: List<String> = listOf("Discover", "Top charts", "Calendar", "Gamelist")
     val subTabs: List<String> = listOf("For you", "Editors' choice", "Arcade", "Strategy", "Casual")
-    val scrollState = rememberScrollState()
     var selectedTopTab by remember { mutableIntStateOf(0) }
     var selectedSubTab by remember { mutableIntStateOf(0) }
     val homeUiState = viewModel.homeUiState.collectAsState().value
     val trendingItems = homeUiState.trendingGames?.collectAsLazyPagingItems()
 
-    Column(
+    val listState = rememberLazyListState()
+
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(colorResource(R.color.intl_v2_black))
             .statusBarsPadding(),
+        state = listState,
         horizontalAlignment = Alignment.CenterHorizontally,
+        contentPadding = PaddingValues(bottom = 32.dp)
     ) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, top = 6.dp, end = 6.dp, bottom = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
+        item {
             Row(
-                modifier = Modifier
-                    .height(32.dp)
-                    .weight(1f)
-                    .background(
-                        color = colorResource(R.color.intl_v2_grey_90),
-                        shape = RoundedCornerShape(18.dp)
-                    )
-                    .clickable(onClick = { composeNavigator.navigate(TapTapScreens.Search.route) }),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, top = 6.dp, end = 6.dp, bottom = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Icon(
-                    painterResource(R.drawable.cw_toolbar_search_ic),
-                    contentDescription = "Search",
-                    tint = colorResource(R.color.intl_v2_grey_80),
+                Row(
                     modifier = Modifier
-                        .padding(start = 6.dp)
-                        .width(24.dp)
-                        .height(24.dp)
-                )
-                Text(
-                    "Discover Superb Games",
-                    maxLines = 1,
-                    fontStyle = FontStyle.Normal,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = PPNeu,
-                    fontSize = 14.sp,
-                    color = colorResource(R.color.intl_v2_grey_60),
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-            NotificationBell(
-                unreadCount = 5,
-                onClick = { composeNavigator.navigate(TapTapScreens.Notifications.route) })
-
-        }
-        HorizontalDivider(
-            color = colorResource(R.color.intl_cc_divider), thickness = 1.dp
-        )
-        TabRow(
-            selectedTabIndex = selectedTopTab,
-            indicator = { tabPositions ->
-                SecondaryIndicator(
-                    Modifier
-                        .tabIndicatorOffset(tabPositions[selectedTopTab])
-                        .height(3.dp),
-                    color = colorResource(R.color.greenPrimary)
-                )
-            },
-            containerColor = Color.Transparent,
-            divider = {},
-            modifier = Modifier.padding(bottom = 8.dp, start = 16.dp, end = 16.dp),
-        ) {
-            topTabs.forEachIndexed { index, title ->
-                Tab(
-                    selected = selectedTopTab == index,
-                    onClick = { selectedTopTab = index },
-                    text = {
-                        Text(
-                            title,
-                            fontWeight = if (selectedTopTab == index) FontWeight.Bold else FontWeight.Normal,
-                            color = if (selectedTopTab == index) White else Gray,
-                            fontStyle = FontStyle.Normal,
-                            fontFamily = PPNeu,
-                            fontSize = 15.sp
-                        )
-                    })
-            }
-        }
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            itemsIndexed(subTabs) { i, title ->
-                val isSelected = i == selectedSubTab
-                Text(
-                    text = title,
-                    modifier = Modifier
+                        .height(32.dp)
+                        .weight(1f)
                         .background(
-                            color = if (isSelected) White else colorResource(R.color.intl_v2_grey_90),
-                            shape = RoundedCornerShape(10.dp)
+                            color = colorResource(R.color.intl_v2_grey_90),
+                            shape = RoundedCornerShape(18.dp)
                         )
-                        .clickable { selectedSubTab = i }
-                        .padding(horizontal = 9.dp, vertical = 3.dp),
-                    color = if (isSelected) BlackF16 else LightGray,
-                    fontSize = 12.sp,
-                    fontStyle = FontStyle.Normal,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = PPNeu
-                )
+                        .clickable(onClick = { composeNavigator.navigate(TapTapScreens.Search.route) }),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painterResource(R.drawable.cw_toolbar_search_ic),
+                        contentDescription = "Search",
+                        tint = colorResource(R.color.intl_v2_grey_80),
+                        modifier = Modifier
+                            .padding(start = 6.dp)
+                            .width(24.dp)
+                            .height(24.dp)
+                    )
+                    Text(
+                        "Discover Superb Games",
+                        maxLines = 1,
+                        fontStyle = FontStyle.Normal,
+                        fontWeight = FontWeight.Medium,
+                        fontFamily = PPNeu,
+                        fontSize = 14.sp,
+                        color = colorResource(R.color.intl_v2_grey_60),
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                NotificationBell(
+                    unreadCount = 5,
+                    onClick = { composeNavigator.navigate(TapTapScreens.Notifications.route) })
+
+            }
+        }
+        item {
+            HorizontalDivider(
+                color = colorResource(R.color.intl_cc_divider), thickness = 1.dp
+            )
+        }
+        item {
+            TabRow(
+                selectedTabIndex = selectedTopTab,
+                indicator = { tabPositions ->
+                    SecondaryIndicator(
+                        Modifier
+                            .tabIndicatorOffset(tabPositions[selectedTopTab])
+                            .height(3.dp),
+                        color = colorResource(R.color.greenPrimary)
+                    )
+                },
+                containerColor = Color.Transparent,
+                divider = {},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp, start = 16.dp, end = 16.dp),
+            ) {
+                topTabs.forEachIndexed { index, title ->
+                    Tab(
+                        selected = selectedTopTab == index,
+                        onClick = { selectedTopTab = index },
+                        text = {
+                            Text(
+                                title,
+                                fontWeight = if (selectedTopTab == index) FontWeight.Bold else FontWeight.Normal,
+                                color = if (selectedTopTab == index) White else Gray,
+                                fontStyle = FontStyle.Normal,
+                                fontFamily = PPNeu,
+                                fontSize = 15.sp
+                            )
+                        })
+                }
+            }
+        }
+        item {
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                itemsIndexed(subTabs) { i, title ->
+                    val isSelected = i == selectedSubTab
+                    Text(
+                        text = title,
+                        modifier = Modifier
+                            .background(
+                                color = if (isSelected) White else colorResource(R.color.intl_v2_grey_90),
+                                shape = RoundedCornerShape(10.dp)
+                            )
+                            .clickable { selectedSubTab = i }
+                            .padding(horizontal = 9.dp, vertical = 3.dp),
+                        color = if (isSelected) BlackF16 else LightGray,
+                        fontSize = 12.sp,
+                        fontStyle = FontStyle.Normal,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = PPNeu
+                    )
+                }
             }
         }
         when {
-            homeUiState.isLoading -> CircularProgressIndicator()
-            !homeUiState.error.isNullOrEmpty() -> NoExistData(
-                modifier = Modifier, subTextNull = homeUiState.error
-            )
+            homeUiState.isLoading -> {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 48.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+            }
+
+            !homeUiState.error.isNullOrEmpty() -> {
+                item {
+                    NoExistData(
+                        modifier = Modifier.fillParentMaxSize(),
+                        subTextNull = homeUiState.error
+                    )
+                }
+            }
 
             trendingItems != null -> {
-                LazyRow(
-                    modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    items(trendingItems.itemCount) { index ->
-                        trendingItems[index]?.let { game ->
-                            GameCardPortraitCompact(
-                                game = game, onItemClick = {
-                                    composeNavigator.navigate("gameDetail/${game.identification}")
-                                })
-                        }
+                items(trendingItems.itemCount) { index ->
+                    trendingItems[index]?.let { game ->
+                        TrendingGameHeroCard(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                            game = game,
+                            onClick = {
+                                composeNavigator.navigate("gameDetail/${game.identification}")
+                            }
+                        )
                     }
                 }
             }
@@ -250,7 +282,7 @@ fun NotificationBell(
             tint = White,
             modifier = Modifier
                 .size(24.dp)
-                .clickable(onClick = { onClick })
+                .clickable(onClick = onClick)
         )
     }
 }
