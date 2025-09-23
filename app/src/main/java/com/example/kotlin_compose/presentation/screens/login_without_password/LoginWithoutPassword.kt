@@ -56,7 +56,6 @@ fun LoginWithoutPassword(composeNavigator: AppComposeNavigator) {
             "Reset password", fontFamily = PPNeu,
             fontSize = 22.sp.nonScaledSp,
             fontWeight = FontWeight.Bold,
-            fontStyle = FontStyle.Normal,
         )
         Input(
             value = email,
@@ -101,7 +100,6 @@ fun LoginWithoutPassword(composeNavigator: AppComposeNavigator) {
             fontFamily = PPNeu,
             fontSize = 14.sp.nonScaledSp,
             fontWeight = FontWeight.Normal,
-            fontStyle = FontStyle.Normal
         )
 
         Spacer(Modifier.weight(1f))

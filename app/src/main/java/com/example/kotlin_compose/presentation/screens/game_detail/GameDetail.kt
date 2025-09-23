@@ -1,4 +1,4 @@
-package com.example.kotlin_compose.presentation.screens.search
+package com.example.kotlin_compose.presentation.screens.game_detail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -7,22 +7,17 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
-import com.example.kotlin_compose.R
 import com.example.kotlin_compose.presentation.navigation.AppComposeNavigator
-import org.koin.androidx.compose.koinViewModel
+import com.example.kotlin_compose.ui.theme.BlackF16
 
 @Composable
-fun Search(
-    composeNavigator: AppComposeNavigator,
-    searchViewModel: SearchViewModel = koinViewModel<SearchViewModel>()
-) {
+fun GameDetail(composeNavigator: AppComposeNavigator) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(R.color.intl_v2_black))
+            .background(color = BlackF16)
             .statusBarsPadding()
     ) {
-        Text("Search")
+        Text("Game detail")
     }
 }

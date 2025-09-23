@@ -279,7 +279,6 @@ fun PageContent(
                         fontFamily = PPNeu,
                         fontSize = 14.sp.nonScaledSp,
                         fontWeight = FontWeight.Bold,
-                        fontStyle = FontStyle.Normal,
                         modifier = Modifier
                             .align(Alignment.End)
                             .clickable { composeNavigator.navigate(TapTapScreens.ForgotPassword.route) })
@@ -292,7 +291,6 @@ fun PageContent(
                         fontFamily = PPNeu,
                         fontSize = 13.sp.nonScaledSp,
                         fontWeight = FontWeight.Normal,
-                        fontStyle = FontStyle.Normal,
                         modifier = Modifier.clickable { composeNavigator.navigate(TapTapScreens.LoginWithoutPassword.route) })
                     DDButton(
                         label = "Log in",

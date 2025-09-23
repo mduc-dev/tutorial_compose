@@ -14,7 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.kotlin_compose.presentation.screens.account.Account
-import com.example.kotlin_compose.presentation.screens.home.Home
+import com.example.kotlin_compose.presentation.screens.game.Game
 import com.example.kotlin_compose.presentation.screens.play.Play
 import com.example.kotlin_compose.presentation.screens.tavern.Tavern
 
@@ -28,7 +28,7 @@ fun MainNavGraph(composeNavigator: AppComposeNavigator) {
     var selectedItem by rememberSaveable { mutableIntStateOf(0) }
 
     selectedItem = when (backStackState?.destination?.route) {
-        TapTapScreens.Home.route -> 0
+        TapTapScreens.Game.route -> 0
         TapTapScreens.Play.route -> 1
         TapTapScreens.Tavern.route -> 2
         TapTapScreens.You.route -> 3
@@ -36,7 +36,7 @@ fun MainNavGraph(composeNavigator: AppComposeNavigator) {
     }
 
     val isBottomBarVisible = backStackState?.destination?.route in listOf(
-        TapTapScreens.Home.route,
+        TapTapScreens.Game.route,
         TapTapScreens.Play.route,
         TapTapScreens.Tavern.route,
         TapTapScreens.You.route
@@ -46,7 +46,7 @@ fun MainNavGraph(composeNavigator: AppComposeNavigator) {
         if (isBottomBarVisible) {
             BottomTabNavigator(selectedItem = selectedItem, onItemClick = { index ->
                 val destination = when (index) {
-                    0 -> TapTapScreens.Home.route
+                    0 -> TapTapScreens.Game.route
                     1 -> TapTapScreens.Play.route
                     2 -> TapTapScreens.Tavern.route
                     3 -> TapTapScreens.You.route
@@ -67,10 +67,10 @@ fun MainNavGraph(composeNavigator: AppComposeNavigator) {
     }) { innerPadding ->
         NavHost(
             navController = innerNavController,
-            startDestination = TapTapScreens.Home.route,
+            startDestination = TapTapScreens.Game.route,
             modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())
         ) {
-            composable(TapTapScreens.Home.route) { Home(composeNavigator) }
+            composable(TapTapScreens.Game.route) { Game(composeNavigator) }
             composable(TapTapScreens.Play.route) { Play(composeNavigator) }
             composable(TapTapScreens.Tavern.route) { Tavern(composeNavigator) }
             composable(TapTapScreens.You.route) { Account(composeNavigator) }

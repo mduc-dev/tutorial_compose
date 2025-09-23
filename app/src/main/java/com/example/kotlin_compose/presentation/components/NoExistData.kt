@@ -45,7 +45,6 @@ fun NoExistData(
                     color = Color.White,
                     fontFamily = PPNeu,
                     fontWeight = FontWeight.Bold,
-                    fontStyle = FontStyle.Normal,
                     textAlign = TextAlign.Center
                 )
             )

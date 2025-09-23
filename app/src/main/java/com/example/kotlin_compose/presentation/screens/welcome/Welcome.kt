@@ -230,7 +230,9 @@ fun ThirdLoginSection(composeNavigator: AppComposeNavigator, welcomeViewModel: W
                 .widthIn(max = 320.dp)
                 .height(44.dp),
             elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.White, disabledContainerColor = Color.White
+            ),
             shape = RoundedCornerShape(24.dp),
             contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
@@ -246,7 +248,6 @@ fun ThirdLoginSection(composeNavigator: AppComposeNavigator, welcomeViewModel: W
                     color = colorResource(id = R.color.v3_login_home_third_login_button_text_color),
                     fontSize = 14.sp.nonScaledSp,
                     fontWeight = FontWeight.Bold,
-                    fontStyle = FontStyle.Normal,
                     fontFamily = PPNeu,
                     modifier = Modifier
                         .weight(1f)
@@ -289,7 +290,6 @@ fun ThirdLoginSection(composeNavigator: AppComposeNavigator, welcomeViewModel: W
                     color = colorResource(id = R.color.v3_login_home_third_login_button_text_color),
                     fontSize = 14.sp.nonScaledSp,
                     fontWeight = FontWeight.Bold,
-                    fontStyle = FontStyle.Normal,
                     fontFamily = PPNeu,
                     modifier = Modifier
                         .weight(1f)
@@ -322,7 +322,6 @@ fun ThirdLoginSection(composeNavigator: AppComposeNavigator, welcomeViewModel: W
                 color = colorResource(id = R.color.v3_login_home_third_login_button_text_color),
                 fontSize = 14.sp.nonScaledSp,
                 fontWeight = FontWeight.Bold,
-                fontStyle = FontStyle.Normal,
                 fontFamily = PPNeu,
             )
         }

@@ -85,7 +85,6 @@ fun AppBar(
                     textAlign = TextAlign.Center,
                     fontFamily = PPNeu,
                     fontWeight = FontWeight.Bold,
-                    fontStyle = FontStyle.Normal,
                     fontSize = 20.sp,
                     maxLines = 1
                 )

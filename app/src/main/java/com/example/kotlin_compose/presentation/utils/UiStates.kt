@@ -14,12 +14,13 @@ sealed class AuthState {
 }
 
 
-data class HomeUiState(
+data class GameUiState(
     val isLoading: Boolean = true,
     val error: String? = null,
     val trendingGames: Flow<PagingData<Games>>? = null,
     val popularGames: Flow<PagingData<Games>>? = null,
     val upcomingGames: Flow<PagingData<Games>>? = null
 )
+
 
 enum class Provider { Facebook, Google }

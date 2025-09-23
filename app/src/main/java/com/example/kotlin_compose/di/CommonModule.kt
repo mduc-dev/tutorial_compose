@@ -5,12 +5,15 @@ import android.content.SharedPreferences
 import com.example.kotlin_compose.presentation.navigation.AppComposeNavigator
 import android.util.Log
 import com.example.kotlin_compose.data.datasources.GamesRepositoryImpl
+import com.example.kotlin_compose.data.datasources.SearchRepositoryImpl
 import com.example.kotlin_compose.data.datasources.WelcomeRepositoryImpl
 import com.example.kotlin_compose.domain.repositories.GamesRepository
+import com.example.kotlin_compose.domain.repositories.SearchRepository
 import com.example.kotlin_compose.domain.repositories.WelcomeRepository
 import com.example.kotlin_compose.domain.utils.Constants.BASE_URL
 import com.example.kotlin_compose.presentation.navigation.TapComposeNavigator
-import com.example.kotlin_compose.presentation.screens.home.HomeViewModel
+import com.example.kotlin_compose.presentation.screens.game.GameViewModel
+import com.example.kotlin_compose.presentation.screens.search.SearchViewModel
 import com.example.kotlin_compose.presentation.screens.welcome.WelcomeViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.addDefaultResponseValidation
@@ -70,13 +73,16 @@ fun commonModule() = module {
 
     single<WelcomeRepository> { WelcomeRepositoryImpl(get(), prefs = get()) }
     single<AppComposeNavigator> { TapComposeNavigator() }
+    single<SearchRepository> { SearchRepositoryImpl(get()) }
 
     viewModel {
         WelcomeViewModel(
             welcomeRepository = get(), prefs = get()
         )
     }
-    viewModelOf(::HomeViewModel)
 
+    viewModelOf(::SearchViewModel)
+
+    viewModelOf(::GameViewModel)
 }
 

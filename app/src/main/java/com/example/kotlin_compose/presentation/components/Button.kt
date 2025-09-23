@@ -184,7 +184,6 @@ fun DDButton(
                     style = size.textStyle(),
                     color = BlackF16,
                     fontWeight = FontWeight.W600,
-                    fontStyle = FontStyle.Normal,
                     fontSize = 15.sp.nonScaledSp,
                     fontFamily = PPNeu
                 )

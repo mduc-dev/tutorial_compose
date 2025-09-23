@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.kotlin_compose.presentation.screens.forgotpassword.ForgotPassword
+import com.example.kotlin_compose.presentation.screens.game_detail.GameDetail
 import com.example.kotlin_compose.presentation.screens.login.Login
 import com.example.kotlin_compose.presentation.screens.login_without_password.LoginWithoutPassword
 import com.example.kotlin_compose.presentation.screens.notifications.Notifications
@@ -61,10 +62,13 @@ fun NavGraphBuilder.tapMainNavigation(composeNavigator: AppComposeNavigator) {
             MainNavGraph(composeNavigator)
         }
         composable(TapTapScreens.Search.route) {
-            Search()
+            Search(composeNavigator)
         }
         composable(TapTapScreens.Notifications.route) {
             Notifications()
+        }
+        composable(TapTapScreens.GameDetail.route){
+            GameDetail(composeNavigator)
         }
     }
 }

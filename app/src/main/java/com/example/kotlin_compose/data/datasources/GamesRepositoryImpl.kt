@@ -8,7 +8,7 @@ import com.example.kotlin_compose.data.network.models.GamesDto
 import com.example.kotlin_compose.data.paging.BasePagingSource
 import com.example.kotlin_compose.domain.models.Games
 import com.example.kotlin_compose.domain.repositories.GamesRepository
-import com.example.kotlin_compose.domain.utils.Constants.HOME_URL
+import com.example.kotlin_compose.domain.utils.Constants.GAME_URL
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -23,19 +23,21 @@ class GamesRepositoryImpl(
 
     override suspend fun fetchTrendingGames(): Result<Flow<PagingData<Games>>> {
         val pagingSource = BasePagingSource { page ->
-            val response =
-                httpClient.get(urlString = HOME_URL) {
-                    parameter("page", page)
-                }.body<GamesDto>()
+            val response = httpClient.get(urlString = GAME_URL) {
+                parameter("page", page)
+            }.body<GamesDto>()
             response.toGames()
         }
         return runCatching {
             Pager(
-                config = pagingConfig,
-                pagingSourceFactory = { pagingSource }
-            ).flow
+                config = pagingConfig, pagingSourceFactory = { pagingSource }).flow
         }
     }
+
+    override suspend fun fetchActionGames(): Result<Flow<PagingData<Games>>> {
+        TODO("Not yet implemented")
+    }
+
 
     override suspend fun fetchPopularGames(): Result<Flow<PagingData<Games>>> {
         TODO("Not yet implemented")

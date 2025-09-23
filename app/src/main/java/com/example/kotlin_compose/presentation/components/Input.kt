@@ -92,7 +92,6 @@ fun Input(
         textStyle = TextStyle(
             fontSize = 16.sp,
             fontWeight = FontWeight.Normal,
-            fontStyle = FontStyle.Normal,
             fontFamily = PPNeu,
             color = Color.White,
             textDirection = TextDirection.Content

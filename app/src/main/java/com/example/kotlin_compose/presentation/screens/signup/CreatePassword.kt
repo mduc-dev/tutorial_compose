@@ -126,7 +126,6 @@ fun RequirementRow(
             text,
             fontSize = 12.sp,
             fontWeight = FontWeight.Normal,
-            fontStyle = FontStyle.Normal,
             fontFamily = PPNeu,
             color = colorResource(R.color.primary_text_disabled_material_dark)
         )

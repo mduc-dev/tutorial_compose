@@ -28,7 +28,7 @@ sealed class TapTapScreens(
 
     //main screens
     data object MainScaffold : TapTapScreens("main_scaffold")
-    data object Home : TapTapScreens("home")
+    data object Game : TapTapScreens("game")
     data object Play : TapTapScreens("play")
     data object Tavern : TapTapScreens("tavern")
     data object You : TapTapScreens("you")
@@ -47,7 +47,7 @@ val BOTTOM_TAB: List<BottomNavigation>
         BottomNavigation(
             title = "Games",
             icon = ImageVector.vectorResource(id = R.drawable.cw_home_bottom_games_icon_unselect),
-            route = TapTapScreens.Home.route
+            route = TapTapScreens.Game.route
         ),
         BottomNavigation(
             title = "Play",

@@ -8,6 +8,9 @@ interface GamesRepository {
     /** Fetch Trending games from data source*/
     suspend fun fetchTrendingGames(): Result<Flow<PagingData<Games>>>
 
+    /** Fetch Action games from data source*/
+    suspend fun fetchActionGames(): Result<Flow<PagingData<Games>>>
+
     /** Fetch Popular games from data source*/
     suspend fun fetchPopularGames(): Result<Flow<PagingData<Games>>>
 
