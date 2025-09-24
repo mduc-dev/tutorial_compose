@@ -79,8 +79,8 @@ dependencies {
     implementation(libs.ktor.android)
     implementation(libs.bundles.coil)
 
-    implementation(libs.paging.compose)
-    implementation(libs.paging.common)
+//    implementation(libs.paging.compose)
+//    implementation(libs.paging.common)
 
     implementation(libs.koin.core)
     implementation(libs.koin.compose)
@@ -89,6 +89,7 @@ dependencies {
     implementation(libs.koin.androidx.compose)
 
     implementation(libs.koin.compose)
+    implementation(libs.androidx.paging.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -29,14 +29,15 @@ class GameViewModel(
     }
 
 
-    private fun fetchTrendingGames() = viewModelScope.launch(coroutineExceptionHandler) {
-        gamesRepository.fetchTrendingGames().onSuccess { data ->
-            _gameUiState.update {
-                it.copy(
-                    isLoading = false, trendingGames = data.cachedIn(viewModelScope)
-                )
-            }
+    private fun fetchTrendingGames() = {
+        val pagingFlowGames = gamesRepository.fetchTrendingGames().cachedIn(viewModelScope)
+        _gameUiState.update {
+            it.copy(
+                isLoading = false, trendingGames = pagingFlowGames
+            )
+
         }
+
     }
 
 //    private fun fetchSearchPlaceHolder() = viewModelScope.launch(coroutineExceptionHandler) {

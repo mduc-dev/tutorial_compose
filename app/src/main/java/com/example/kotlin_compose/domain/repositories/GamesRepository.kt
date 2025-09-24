@@ -1,12 +1,12 @@
 package com.example.kotlin_compose.domain.repositories
 
-import app.cash.paging.PagingData
+import androidx.paging.PagingData
 import com.example.kotlin_compose.domain.models.Games
 import kotlinx.coroutines.flow.Flow
 
 interface GamesRepository {
     /** Fetch Trending games from data source*/
-    suspend fun fetchTrendingGames(): Result<Flow<PagingData<Games>>>
+    fun fetchTrendingGames(): Flow<PagingData<Games>>
 
     /** Fetch Action games from data source*/
     suspend fun fetchActionGames(): Result<Flow<PagingData<Games>>>

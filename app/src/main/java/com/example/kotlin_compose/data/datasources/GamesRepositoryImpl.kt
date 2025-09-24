@@ -1,8 +1,8 @@
 package com.example.kotlin_compose.data.datasources
 
-import app.cash.paging.Pager
-import app.cash.paging.PagingConfig
-import app.cash.paging.PagingData
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.example.kotlin_compose.data.mappers.toGames
 import com.example.kotlin_compose.data.network.models.GamesDto
 import com.example.kotlin_compose.data.paging.BasePagingSource
@@ -21,17 +21,16 @@ class GamesRepositoryImpl(
 
     private val pagingConfig = PagingConfig(pageSize = 20, enablePlaceholders = false)
 
-    override suspend fun fetchTrendingGames(): Result<Flow<PagingData<Games>>> {
-        val pagingSource = BasePagingSource { page ->
-            val response = httpClient.get(urlString = GAME_URL) {
-                parameter("page", page)
-            }.body<GamesDto>()
-            response.toGames()
-        }
-        return runCatching {
-            Pager(
-                config = pagingConfig, pagingSourceFactory = { pagingSource }).flow
-        }
+    override fun fetchTrendingGames(): Flow<PagingData<Games>> {
+        return Pager(
+            config = pagingConfig, pagingSourceFactory = {
+                BasePagingSource { page ->
+                    val response = httpClient.get(urlString = GAME_URL) {
+                        parameter("page", page)
+                    }.body<GamesDto>()
+                    response.toGames()
+                }
+            }).flow
     }
 
     override suspend fun fetchActionGames(): Result<Flow<PagingData<Games>>> {

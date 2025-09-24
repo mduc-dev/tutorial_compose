@@ -64,14 +64,16 @@ fun CardGame(
     val recReason = game.recReason?.text
 
     val tagLine =
-        app?.tags?.map { it.value }?.filter { it.isNotBlank() }?.take(3)?.joinToString(" • ")
+        app?.tags?.map { it.value }?.filter { it.isNotBlank() }?.take(3)?.joinToString(" · ")
             ?.let { "• $it" }
 
 
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick(game) }) {
         Row(
-            modifier = modifier.clickable { onClick(game) },
-            verticalAlignment = Alignment.CenterVertically
+            modifier = modifier, verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
                 modifier = Modifier
@@ -112,9 +114,11 @@ fun CardGame(
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.review_star_selected_gray),
-                            contentDescription = null,
+                            contentDescription = "review_star",
                             tint = colorResource(R.color.intl_v2_grey_40),
-                            modifier = Modifier.size(10.dp).offset(y = (-1).dp)
+                            modifier = Modifier
+                                .size(10.dp)
+                                .offset(y = (-1).dp)
                         )
                         Text(
                             text = rating ?: "--",

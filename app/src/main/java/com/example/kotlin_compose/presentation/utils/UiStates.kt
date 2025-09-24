@@ -1,8 +1,11 @@
 package com.example.kotlin_compose.presentation.utils
 
+import InstantGameItem
 import androidx.paging.PagingData
+import com.example.kotlin_compose.data.network.utils.ApiResult
 import com.example.kotlin_compose.domain.models.Games
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 
 sealed class AuthState {
@@ -20,6 +23,12 @@ data class GameUiState(
     val trendingGames: Flow<PagingData<Games>>? = null,
     val popularGames: Flow<PagingData<Games>>? = null,
     val upcomingGames: Flow<PagingData<Games>>? = null
+)
+
+
+data class PLayUiState(
+    val games: Flow<PagingData<InstantGameItem>> = emptyFlow(),
+    val recently: ApiResult<Any> = ApiResult.Loading
 )
 
 
