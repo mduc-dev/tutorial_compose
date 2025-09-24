@@ -48,6 +48,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.kotlin_compose.R
 import com.example.kotlin_compose.data.network.utils.ApiResult
@@ -72,8 +73,8 @@ fun Game(
     var selectedSubTab by remember { mutableIntStateOf(0) }
 
     val gameUiState = gameViewModel.gameUiState.collectAsState().value
-    val trendingItems = gameUiState.trendingGames?.collectAsLazyPagingItems()
 
+    val trendingItems = gameViewModel.trendingGames.collectAsLazyPagingItems()
 
     val placeholderState by searchViewModel.searchUiState.collectAsState()
 
@@ -204,8 +205,8 @@ fun Game(
                 }
             }
         }
-        when {
-            gameUiState.isLoading -> {
+        when (trendingItems.loadState.refresh) {
+            is LoadState.Loading -> {
                 item {
                     Box(
                         modifier = Modifier
@@ -218,7 +219,7 @@ fun Game(
                 }
             }
 
-            !gameUiState.error.isNullOrEmpty() -> {
+            is LoadState.Error -> {
                 item {
                     NoExistData(
                         modifier = Modifier.fillParentMaxSize(), subTextNull = gameUiState.error
@@ -226,7 +227,7 @@ fun Game(
                 }
             }
 
-            trendingItems != null -> {
+            else -> {
                 items(trendingItems.itemCount) { index ->
                     trendingItems[index]?.let { game ->
                         CardGame(

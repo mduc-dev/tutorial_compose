@@ -33,11 +33,11 @@ class PlayViewModel(private val playRepository: PlayRepository) : ViewModel() {
 //        _playUiState.update { it.copy(games = pagingFlow) }
 //    }
 
-    fun fetchRecentlyInstantsGames() {
+//    fun fetchRecentlyInstantsGames() {
 //        viewModelScope.launch(coroutineExceptionHandler) {
 //            playRepository.fetchRecentlyInstantsGames().collect {
 //                _playUiState.value = it
 //            }
 //        }
-    }
+//    }
 }

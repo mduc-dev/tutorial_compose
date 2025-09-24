@@ -1,10 +1,11 @@
 package com.example.kotlin_compose.presentation.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.painterResource
 import androidx.navigation.NamedNavArgument
 import com.example.kotlin_compose.R
 import com.example.kotlin_compose.data.local.BottomNavigation
@@ -38,7 +39,7 @@ sealed class TapTapScreens(
     data object Search : TapTapScreens("search")
     data object GameDetail : TapTapScreens("gameDetail/{gameId}")
 
-    data object Notifications: TapTapScreens("notifications")
+    data object Notifications : TapTapScreens("notifications")
 }
 
 
@@ -46,23 +47,29 @@ val BOTTOM_TAB: List<BottomNavigation>
     @Composable get() = listOf(
         BottomNavigation(
             title = "Games",
-            icon = ImageVector.vectorResource(id = R.drawable.cw_home_bottom_games_icon_unselect),
+            icon = painterResource(id = R.drawable.cw_home_bottom_games_icon_unselect),
+            selectedIcon = painterResource(id = R.drawable.cw_home_bottom_games_icon_selected),
             route = TapTapScreens.Game.route
         ),
         BottomNavigation(
             title = "Play",
-            icon = ImageVector.vectorResource(id = R.drawable.play_icon),
+            icon = painterResource(id = R.drawable.intl_cc_24_bottom_bar_games_unselect),
+            selectedIcon = painterResource(id = R.drawable.intl_cc_24_bottom_bar_games_select),
             route = TapTapScreens.Play.route
         ),
         BottomNavigation(
             title = "Tavern",
-            icon = ImageVector.vectorResource(id = R.drawable.home_bottom_icon_tavern_unselect),
+            icon = painterResource(id = R.drawable.home_bottom_icon_tavern_unselect),
+            selectedIcon = painterResource(id = R.drawable.home_bottom_icon_tavern_selected),
             route = TapTapScreens.Tavern.route,
             hasBadge = true,
             badgeCount = 10
         ),
         BottomNavigation(
-            title = "You", icon = Icons.Rounded.AccountCircle, route = TapTapScreens.You.route
+            title = "You",
+            icon = rememberVectorPainter(Icons.Outlined.AccountCircle),
+            selectedIcon = rememberVectorPainter(Icons.Rounded.AccountCircle),
+            route = TapTapScreens.You.route
         ),
     )
 

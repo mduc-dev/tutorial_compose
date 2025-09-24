@@ -14,6 +14,10 @@ import kotlinx.coroutines.launch
 class GameViewModel(
     private val gamesRepository: GamesRepository,
 ) : ViewModel() {
+
+    val trendingGames = gamesRepository.fetchTrendingGames()
+        .cachedIn(viewModelScope)
+
     private val _gameUiState = MutableStateFlow(GameUiState(isLoading = true))
     val gameUiState = _gameUiState.asStateFlow()
 
@@ -21,24 +25,20 @@ class GameViewModel(
         _gameUiState.update { it.copy(isLoading = false, error = exception.message) }
     }
 
-    init {
-        fetchTrendingGames()
-//        fetchSearchPlaceHolder()
-//        fetchUpcomingGames()
-//        fetchPopularGames()
-    }
-
-
-    private fun fetchTrendingGames() = {
-        val pagingFlowGames = gamesRepository.fetchTrendingGames().cachedIn(viewModelScope)
-        _gameUiState.update {
-            it.copy(
-                isLoading = false, trendingGames = pagingFlowGames
-            )
-
-        }
-
-    }
+//    init {
+//        fetchTrendingGames()
+//    }
+//
+//
+//    private fun fetchTrendingGames() = {
+//        val pagingFlowGames = gamesRepository.fetchTrendingGames().cachedIn(viewModelScope)
+//        _gameUiState.update {
+//            it.copy(
+//                isLoading = false, trendingGames = pagingFlowGames
+//            )
+//        }
+//
+//    }
 
 //    private fun fetchSearchPlaceHolder() = viewModelScope.launch(coroutineExceptionHandler) {
 //        gamesRepository.fetchPlaceholderSearch().onSuccess { data ->

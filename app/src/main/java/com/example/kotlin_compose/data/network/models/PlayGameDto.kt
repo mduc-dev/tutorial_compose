@@ -23,10 +23,10 @@ data class InstantGameItem(
     val cover: GameImage,
     val icon: GameImage,
     val uri: String,
-    @SerialName("app_id") val appId: Long,
-    val stats: Stats,
-    val subtitle: String,
-    @SerialName("miniapp_preload_resource") val miniappPreloadResource: MiniAppPreloadResource
+    @SerialName("app_id") val appId: Long? = null,
+    val stats: Stats? = null,
+    val subtitle: String = "",
+    @SerialName("miniapp_preload_resource") val miniappPreloadResource: MiniAppPreloadResource? = null
 )
 
 @Serializable

@@ -6,26 +6,27 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -36,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -46,6 +48,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil3.compose.AsyncImage
 import com.example.kotlin_compose.R
 import com.example.kotlin_compose.presentation.navigation.AppComposeNavigator
+import com.example.kotlin_compose.presentation.navigation.TapTapScreens
 import com.example.kotlin_compose.presentation.screens.login.customTabIndicatorOffset
 import com.example.kotlin_compose.presentation.screens.welcome.nonScaledSp
 import com.example.kotlin_compose.presentation.utils.DisabledInteractionSource
@@ -58,17 +61,6 @@ import org.koin.androidx.compose.koinViewModel
 
 val tabs = listOf("Games", "Recently")
 
-fun <T : Any> LazyGridScope.items(
-    items: LazyPagingItems<T>,
-    key: ((item: T) -> Any)? = null,
-    itemContent: @Composable (T?) -> Unit
-) {
-    this.items(count = items.itemCount, key = if (key != null) { index ->
-        items[index]?.let { key(it) } ?: index
-    } else null) { index ->
-        itemContent(items[index])
-    }
-}
 
 @Composable
 fun Play(
@@ -88,17 +80,15 @@ fun Play(
         tabWidthStateList
     }
 
-    val playUiState = playViewModel.playUiState.collectAsState().value
+//    val playUiState = playViewModel.playUiState.collectAsStateWithLifecycle().value
 
     val instantGames = playViewModel.instantGames.collectAsLazyPagingItems()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(BlackF16)
             .statusBarsPadding()
-            .background(BlackF16),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TabRow(
             selectedTabIndex = pagerState.currentPage,
@@ -165,7 +155,7 @@ fun PageContent(
 ) {
 
     HorizontalPager(
-        state = pagerState, modifier
+        state = pagerState, beyondViewportPageCount = tabs.size, modifier = modifier
     ) { page ->
         Box(
             Modifier
@@ -177,14 +167,15 @@ fun PageContent(
                 0 -> LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(18.dp),
-                    verticalArrangement = Arrangement.spacedBy(18.dp)
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    items(
-                        items = instantGames, key = { it.identification }) { game ->
-                        if (game != null)
-                            GameCard(game) { composeNavigator.navigate("game/${game.appId}") }
-
+                    items(instantGames.itemCount) { index ->
+                        instantGames[index]?.let { game ->
+                            GameCard(game) {
+                                composeNavigator.navigate(TapTapScreens.GameDetail.route)
+                            }
+                        }
                     }
                 }
 
@@ -202,23 +193,54 @@ fun PageContent(
 fun GameCard(item: InstantGameItem, onClick: () -> Unit) {
     Column(
         modifier = Modifier
-            .aspectRatio(1f)
             .fillMaxWidth()
             .clickable(onClick = onClick)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(2f)
-                .clip(RoundedCornerShape(10.dp)),
-            contentAlignment = Alignment.Center
+                .aspectRatio(16f / 9f)
+                .clip(RoundedCornerShape(10.dp)), contentAlignment = Alignment.Center
         ) {
             AsyncImage(
                 model = item.cover.mediumUrl.ifBlank { item.cover.url },
                 contentDescription = item.title,
                 modifier = Modifier.fillMaxSize(),
-                placeholder = ColorPainter(Color.DarkGray)
+                placeholder = ColorPainter(Color.DarkGray),
             )
+
+            val score = item.stats?.score.takeIf { it?.isNotBlank() == true }
+
+            if (score != null) {
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .clip(
+                            RoundedCornerShape(
+                                topStart = 8.dp, bottomEnd = 8.dp
+                            )
+                        )
+                        .background(colorResource(id = R.color.greenPrimary))
+                        .padding(horizontal = 3.dp, vertical = 2.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(3.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.thi_score_icon),
+                        contentDescription = "rating_score",
+                        modifier = Modifier.size(14.dp)
+                    )
+
+                    Text(
+                        text = score,
+                        color = Color.White,
+                        style = MaterialTheme.typography.labelMedium,
+                        fontFamily = PPNeu,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp.nonScaledSp
+                    )
+                }
+            }
         }
 
         Text(
@@ -227,7 +249,7 @@ fun GameCard(item: InstantGameItem, onClick: () -> Unit) {
             style = MaterialTheme.typography.titleMedium,
             fontFamily = PPNeu,
             fontWeight = FontWeight.Bold,
-            fontSize = 14.sp.nonScaledSp,
+            fontSize = 12.sp.nonScaledSp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.padding(top = 6.dp)
@@ -235,8 +257,8 @@ fun GameCard(item: InstantGameItem, onClick: () -> Unit) {
 
         Text(
             text = item.subtitle.ifBlank { "Unknown" },
-            color = colorResource(R.color.intl_v2_grey_40),
-            fontSize = 12.sp.nonScaledSp,
+            color = colorResource(R.color.intl_v2_grey_20),
+            fontSize = 10.sp.nonScaledSp,
             fontFamily = PPNeu,
             fontWeight = FontWeight.Medium,
             maxLines = 1,
@@ -245,3 +267,4 @@ fun GameCard(item: InstantGameItem, onClick: () -> Unit) {
         )
     }
 }
+

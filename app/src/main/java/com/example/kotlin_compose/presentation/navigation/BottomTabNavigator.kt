@@ -9,7 +9,9 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Gray
+import androidx.compose.ui.graphics.Color.Companion.Transparent
+import androidx.compose.ui.graphics.Color.Companion.Unspecified
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.kotlin_compose.presentation.utils.DisabledInteractionSource
@@ -32,23 +34,17 @@ fun BottomTabNavigator(
                         onItemClick(index)
                     },
                     icon = {
-//                        BadgedBox(
-//                            badge = {
-//                                if (item.badgeCount != null) {
-//                                    Badge {
-//                                        Text(text = item.badgeCount.toString())
-//                                    }
-//                                } else if (item.hasBadge == true) {
-//                                    Badge()
-//                                }
-//                            }
-//                        ) {
+                        val painter = if (selectedItem == index) item.selectedIcon else item.icon
+
                         Icon(
-                            imageVector = item.icon,
+                            painter = painter,
                             contentDescription = item.title,
-                            tint = White,
+                            tint = if (item.title == "You") {
+                                if (selectedItem == index) White else White
+                            } else
+                                Unspecified
+
                         )
-//                        }
                     },
                     label = {
                         Text(
@@ -58,8 +54,8 @@ fun BottomTabNavigator(
                     colors = NavigationBarItemDefaults.colors(
                         selectedTextColor = MaterialTheme.colorScheme.primary,
                         unselectedIconColor = White,
-                        unselectedTextColor = Color.Gray,
-                        indicatorColor = Color.Transparent,
+                        unselectedTextColor = Gray,
+                        indicatorColor = Transparent,
                     ),
                 )
             }
