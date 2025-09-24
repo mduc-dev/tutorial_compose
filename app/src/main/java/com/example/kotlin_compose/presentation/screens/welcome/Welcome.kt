@@ -1,7 +1,9 @@
 package com.example.kotlin_compose.presentation.screens.welcome
 
 import android.graphics.BitmapFactory
-import android.util.Log
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,10 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -47,7 +46,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
@@ -60,7 +58,6 @@ import com.example.kotlin_compose.presentation.utils.AuthState
 import com.example.kotlin_compose.presentation.utils.Provider
 import com.example.kotlin_compose.ui.theme.BlackF16
 import com.example.kotlin_compose.ui.theme.PPNeu
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.cos
@@ -79,7 +76,6 @@ fun Welcome(
     val welcomeState by viewModel.welcomeUiState.collectAsState()
 
     LaunchedEffect(welcomeState) {
-        Log.i("UI", "Welcome saw authState = $welcomeState")
         when (welcomeState) {
             is AuthState.Authenticated -> {
                 composeNavigator.navigate(TapTapScreens.MainGraph.route) {
@@ -353,37 +349,35 @@ fun WallPagerImage(
             val xFac = if (targetY != 0f) maxX / targetY else 1f
             targetY to xFac
         }
+        val scrollRangeX = remember(viewW, viewH, bitmap) { xFactor * targetScrollY }
+        val progress = remember { Animatable(0f) }
+        val animationDurationMillis = 28_000
 
-        var offsetY by remember(viewW, viewH, bitmap) { mutableFloatStateOf(targetScrollY) }
-        var offsetX by remember(
-            viewW, viewH, bitmap
-        ) { mutableFloatStateOf(xFactor * targetScrollY) }
-        var forward by remember { mutableStateOf(true) }
+//        var offsetY by remember(viewW, viewH, bitmap) { mutableFloatStateOf(targetScrollY) }
+//        var offsetX by remember(
+//            viewW, viewH, bitmap
+//        ) { mutableFloatStateOf(xFactor * targetScrollY) }
+//        var forward by remember { mutableStateOf(true) }
 
-        LaunchedEffect(autoScroll, bitmap, targetScrollY, xFactor) {
-            if (!autoScroll) return@LaunchedEffect
-            val scrollStep = 0.5f
+
+
+        LaunchedEffect(autoScroll, bitmap, targetScrollY, scrollRangeX) {
+            progress.snapTo(0f)
+            if (!autoScroll || targetScrollY == 0f) return@LaunchedEffect
             while (isActive) {
-                delay(10)
-                if (!forward) {
-                    offsetY += scrollStep
-                    offsetX += xFactor * scrollStep
-                    if (offsetY >= targetScrollY) {
-                        offsetY = targetScrollY
-                        offsetX = xFactor * targetScrollY
-                        forward = true
-                    }
-                } else {
-                    offsetY -= scrollStep
-                    offsetX -= xFactor * scrollStep
-                    if (offsetY <= 0f) {
-                        offsetY = 0f
-                        offsetX = 0f
-                        forward = false
-                    }
-                }
+                progress.animateTo(
+                    targetValue = 1f,
+                    animationSpec = tween(durationMillis = animationDurationMillis, easing = LinearEasing)
+                )
+                progress.animateTo(
+                    targetValue = 0f,
+                    animationSpec = tween(durationMillis = animationDurationMillis, easing = LinearEasing)
+                )
             }
         }
+
+        val offsetY = progress.value * targetScrollY
+        val offsetX = progress.value * scrollRangeX
 
         Canvas(Modifier.fillMaxSize()) {
             val rotatedW = (size.width * cos(angleRad) + size.height * sin(angleRad)).toFloat()

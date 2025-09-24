@@ -74,6 +74,7 @@ class WelcomeViewModel(
     }
 
     fun signOut() = viewModelScope.launch(coroutineExceptionHandler) {
+        _welcomeUiState.value = AuthState.Unauthenticated
         welcomeRepository.signOut()
     }
 }
