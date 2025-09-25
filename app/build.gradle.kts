@@ -82,6 +82,11 @@ dependencies {
 //    implementation(libs.paging.compose)
 //    implementation(libs.paging.common)
 
+    implementation(libs.media3.exoplayer)
+    implementation(libs.media3.exoplayer.dash)
+    implementation(libs.media3.ui)
+    implementation(libs.media3.ui.compose)
+
     implementation(libs.koin.core)
     implementation(libs.koin.compose)
     implementation(libs.koin.composeViewModel)

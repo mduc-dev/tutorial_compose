@@ -30,6 +30,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -132,14 +133,10 @@ fun Welcome(
 
             // Login button
             TextButton(
-//                enabled = !isNavigating,
                 onClick = {
-//                    if (!isNavigating) {
-//                        isNavigating = true
                     composeNavigator.navigate(TapTapScreens.Login.route) {
                         launchSingleTop = true
                     }
-//                    }
                 }, modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp)
             ) {
                 Text(
@@ -324,72 +321,94 @@ fun ThirdLoginSection(composeNavigator: AppComposeNavigator, welcomeViewModel: W
     }
 }
 
+private const val DEFAULT_ANIMATION_DURATION_MS = 30_000
 
 @Composable
 fun WallPagerImage(
-    resId: Int, angleDeg: Float = 25f, autoScroll: Boolean = true
+    resId: Int,
+    angleDeg: Float = 25f,
+    autoScroll: Boolean = true,
+    animationDurationMillis: Int = DEFAULT_ANIMATION_DURATION_MS
 ) {
     val resources = LocalResources.current
+
     val bitmap = remember(resId) {
         BitmapFactory.decodeResource(resources, resId)?.asImageBitmap()
     } ?: return
 
-    val angleRad = Math.toRadians(angleDeg.toDouble())
+    val angleRad = remember(angleDeg) { Math.toRadians(angleDeg.toDouble()) }
 
     BoxWithConstraints(Modifier.fillMaxSize()) {
-        val viewW = constraints.maxWidth.toFloat()
-        val viewH = constraints.maxHeight.toFloat()
+        val viewWidth = constraints.maxWidth.toFloat()
+        val viewHeight = constraints.maxHeight.toFloat()
 
-        val (targetScrollY, xFactor) = remember(viewW, viewH, bitmap) {
-            val dSin = sin(angleRad) * viewW
-            val dCos = cos(angleRad) * viewH
+        val (maxScrollY, _, maxScrollX) = remember(
+            viewWidth, viewHeight, bitmap, angleRad
+        ) {
+            val sinAngle = sin(angleRad)
+            val cosAngle = cos(angleRad)
+
+            val projectedBitmapHeightReduction = sinAngle * viewWidth
+            val projectedBitmapWidthReduction = cosAngle * viewHeight
+
             val targetY =
-                (cos(angleRad) * ((bitmap.height - dSin) - dCos)).toFloat().coerceAtLeast(0f)
-            val maxX = (sin(angleRad) * ((bitmap.width - dCos) - dSin)).toFloat().coerceAtLeast(0f)
-            val xFac = if (targetY != 0f) maxX / targetY else 1f
-            targetY to xFac
+                (cosAngle * (bitmap.height - projectedBitmapHeightReduction) - sinAngle * viewHeight).toFloat()
+                    .coerceAtLeast(0f)
+
+            val targetX =
+                (sinAngle * (bitmap.width - projectedBitmapWidthReduction) - cosAngle * viewWidth).toFloat()
+                    .coerceAtLeast(0f)
+
+            val factorX = if (targetY != 0f) targetX / targetY else 1f
+
+            Triple(targetY, factorX, factorX * targetY)
         }
-        val scrollRangeX = remember(viewW, viewH, bitmap) { xFactor * targetScrollY }
+
         val progress = remember { Animatable(0f) }
-        val animationDurationMillis = 28_000
 
-//        var offsetY by remember(viewW, viewH, bitmap) { mutableFloatStateOf(targetScrollY) }
-//        var offsetX by remember(
-//            viewW, viewH, bitmap
-//        ) { mutableFloatStateOf(xFactor * targetScrollY) }
-//        var forward by remember { mutableStateOf(true) }
-
-
-
-        LaunchedEffect(autoScroll, bitmap, targetScrollY, scrollRangeX) {
+        LaunchedEffect(autoScroll, maxScrollY, maxScrollX, animationDurationMillis) {
             progress.snapTo(0f)
-            if (!autoScroll || targetScrollY == 0f) return@LaunchedEffect
+            if (!autoScroll || maxScrollY == 0f) return@LaunchedEffect
+
+
             while (isActive) {
                 progress.animateTo(
-                    targetValue = 1f,
-                    animationSpec = tween(durationMillis = animationDurationMillis, easing = LinearEasing)
+                    targetValue = 1f, animationSpec = tween(
+                        durationMillis = animationDurationMillis, easing = LinearEasing
+                    )
                 )
                 progress.animateTo(
-                    targetValue = 0f,
-                    animationSpec = tween(durationMillis = animationDurationMillis, easing = LinearEasing)
+                    targetValue = 0f, animationSpec = tween(
+                        durationMillis = animationDurationMillis, easing = LinearEasing
+                    )
                 )
             }
         }
 
-        val offsetY = progress.value * targetScrollY
-        val offsetX = progress.value * scrollRangeX
+        val offsetX by remember { derivedStateOf { progress.value * maxScrollX } }
+        val offsetY by remember { derivedStateOf { progress.value * maxScrollY } }
 
         Canvas(Modifier.fillMaxSize()) {
-            val rotatedW = (size.width * cos(angleRad) + size.height * sin(angleRad)).toFloat()
-            val rotatedH = (size.width * sin(angleRad) + size.height * cos(angleRad)).toFloat()
-            val scale = max(rotatedW / bitmap.width, rotatedH / bitmap.height)
+            val currentViewWidth = size.width
+            val currentViewHeight = size.height
+
+            val cosAngle = cos(angleRad).toFloat()
+            val sinAngle = sin(angleRad).toFloat()
+
+            val rotatedContentWidth = currentViewWidth * cosAngle + currentViewHeight * sinAngle
+            val rotatedContentHeight = currentViewWidth * sinAngle + currentViewHeight * cosAngle
+
+            val scale =
+                max(rotatedContentWidth / bitmap.width, rotatedContentHeight / bitmap.height)
 
             withTransform({
-                scale(scale, scale)
-                rotate(-angleDeg)
-                translate(-offsetX, -offsetY)
+                rotate(degrees = -angleDeg)
+
+                scale(scaleX = scale, scaleY = scale)
+
+                translate(left = -offsetX, top = -offsetY)
             }) {
-                drawImage(bitmap)
+                drawImage(image = bitmap)
             }
         }
     }

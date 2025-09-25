@@ -60,11 +60,15 @@ fun commonModule() = module {
             }
 
             install(ContentNegotiation) {
-                json(Json {
-                    ignoreUnknownKeys = true
-                    isLenient = true
-                })
+                json(get()) // dùng Json từ Koin
             }
+        }
+    }
+
+    single {
+        Json {
+            ignoreUnknownKeys = true
+            isLenient = true
         }
     }
 
@@ -77,7 +81,7 @@ fun commonModule() = module {
     single<WelcomeRepository> { WelcomeRepositoryImpl(get(), prefs = get()) }
     single<AppComposeNavigator> { TapComposeNavigator() }
     single<SearchRepository> { SearchRepositoryImpl(get()) }
-    single<PlayRepository> { PlayRepositoryImpl(get()) }
+    single<PlayRepository> { PlayRepositoryImpl(get(), prefs = get(), json = get()) }
 
     viewModel {
         WelcomeViewModel(

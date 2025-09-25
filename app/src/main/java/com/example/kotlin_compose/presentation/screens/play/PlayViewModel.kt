@@ -1,15 +1,13 @@
 package com.example.kotlin_compose.presentation.screens.play
 
+import InstantGameItem
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.example.kotlin_compose.data.network.utils.ApiResult
 import com.example.kotlin_compose.domain.repositories.PlayRepository
 import com.example.kotlin_compose.presentation.utils.PLayUiState
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 
 
 class PlayViewModel(private val playRepository: PlayRepository) : ViewModel() {
@@ -19,25 +17,12 @@ class PlayViewModel(private val playRepository: PlayRepository) : ViewModel() {
     val instantGames = playRepository.fetchInstantGames()
         .cachedIn(viewModelScope)
 
-    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
-        _playUiState.update { it.copy(recently = ApiResult.Error(exception)) }
+
+    fun onPLayGame(game: InstantGameItem) {
+        playRepository.addToHistory(game)
+        playRepository.markPlayed(game.identification)
     }
 
-    init {
-//        fetchInstantGames()
-    }
+    fun getHistory() = playRepository.getHistory()
 
-
-//    private fun fetchInstantGames() {
-//        val pagingFlow = playRepository.fetchInstantGames().cachedIn(viewModelScope)
-//        _playUiState.update { it.copy(games = pagingFlow) }
-//    }
-
-//    fun fetchRecentlyInstantsGames() {
-//        viewModelScope.launch(coroutineExceptionHandler) {
-//            playRepository.fetchRecentlyInstantsGames().collect {
-//                _playUiState.value = it
-//            }
-//        }
-//    }
 }

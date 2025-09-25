@@ -1,9 +1,6 @@
 package com.example.kotlin_compose.presentation.screens.login
 
 
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,11 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -30,9 +24,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabPosition
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,16 +37,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -75,7 +64,6 @@ import com.example.kotlin_compose.presentation.screens.welcome.nonScaledSp
 import com.example.kotlin_compose.presentation.utils.DisabledInteractionSource
 import com.example.kotlin_compose.ui.theme.BlackDisable
 import com.example.kotlin_compose.ui.theme.BlackF16
-import com.example.kotlin_compose.ui.theme.Green31
 import com.example.kotlin_compose.ui.theme.PPNeu
 import kotlinx.coroutines.launch
 
@@ -95,6 +83,7 @@ fun Login(composeNavigator: AppComposeNavigator) {
         tabWidthStateList
     }
     val focusManager = LocalFocusManager.current
+
     Column(
         Modifier
             .fillMaxSize()
@@ -114,22 +103,18 @@ fun Login(composeNavigator: AppComposeNavigator) {
             }
         })
 
-        TabRow(
+        PrimaryTabRow(
             selectedTabIndex = pagerState.currentPage,
             containerColor = BlackF16,
             divider = {},
             modifier = Modifier.padding(vertical = 16.dp),
-            indicator = { tabPositions ->
-                TabRowDefaults.SecondaryIndicator(
-                    modifier = Modifier
-                        .customTabIndicatorOffset(
-                            currentTabPosition = tabPositions[pagerState.currentPage],
-                            tabWidth = tabWidths[pagerState.currentPage]
-                        )
-                        .clip(shape = MaterialTheme.shapes.large), color = Green31
+            indicator = {
+                TabRowDefaults.PrimaryIndicator(
+                    modifier = Modifier.tabIndicatorOffset(pagerState.currentPage),
+                    width = tabWidths[pagerState.currentPage],
+                    color = colorResource(R.color.intl_cc_green_primary)
                 )
-            },
-        ) {
+            }) {
             tabs.forEachIndexed { tabIndex, item ->
                 Tab(
                     selectedContentColor = Color.White,
@@ -313,30 +298,7 @@ fun PageContent(
                 }
             }
         }
-
     }
 }
 
-
-fun Modifier.customTabIndicatorOffset(
-    currentTabPosition: TabPosition, tabWidth: Dp
-): Modifier = composed(inspectorInfo = debugInspectorInfo {
-    name = "customTabIndicatorOffset"
-    value = currentTabPosition
-}) {
-    val currentTabWidth by animateDpAsState(
-        targetValue = tabWidth,
-        animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
-        label = ""
-    )
-    val indicatorOffset by animateDpAsState(
-        targetValue = ((currentTabPosition.left + currentTabPosition.right - tabWidth) / 2),
-        animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
-        label = ""
-    )
-    fillMaxWidth()
-        .wrapContentSize(Alignment.BottomStart)
-        .offset(x = indicatorOffset)
-        .width(currentTabWidth)
-}
 

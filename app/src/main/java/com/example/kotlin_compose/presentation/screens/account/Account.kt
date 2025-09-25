@@ -27,10 +27,10 @@ import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabPosition
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -50,6 +50,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.debugInspectorInfo
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -71,7 +72,6 @@ import com.example.kotlin_compose.ui.theme.Black1A
 import com.example.kotlin_compose.ui.theme.BlackDisable
 import com.example.kotlin_compose.ui.theme.BlackF3
 import com.example.kotlin_compose.ui.theme.Green1a
-import com.example.kotlin_compose.ui.theme.Green31
 import com.example.kotlin_compose.ui.theme.PPNeu
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -162,19 +162,16 @@ fun Account(
                 //TODO: Header Account
                 HeaderAccount()
                 //Tabs
-                TabRow(
+                PrimaryTabRow(
                     selectedTabIndex = pagerState.currentPage,
                     containerColor = Color.Transparent,
                     divider = {},
                     modifier = Modifier.padding(top = 16.dp),
-                    indicator = { tabPositions ->
-                        TabRowDefaults.SecondaryIndicator(
-                            modifier = Modifier
-                                .customTabIndicatorOffset(
-                                    currentTabPosition = tabPositions[pagerState.currentPage],
-                                    tabWidth = tabWidths[pagerState.currentPage]
-                                )
-                                .clip(shape = MaterialTheme.shapes.large), color = Green31
+                    indicator = {
+                        TabRowDefaults.PrimaryIndicator(
+                            modifier = Modifier.tabIndicatorOffset(pagerState.currentPage),
+                            width = tabWidths[pagerState.currentPage],
+                            color = colorResource(R.color.intl_cc_green_primary)
                         )
                     },
                 ) {
@@ -217,9 +214,7 @@ fun Account(
 
 @Composable
 fun PageContent(
-    pagerState: PagerState,
-    composeNavigator: AppComposeNavigator,
-    viewModel: WelcomeViewModel
+    pagerState: PagerState, composeNavigator: AppComposeNavigator, viewModel: WelcomeViewModel
 ) {
     val styleTextBtn: TextStyle = MaterialTheme.typography.titleMedium.copy(
         fontFamily = PPNeu, fontWeight = FontWeight.Bold
