@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -29,7 +28,7 @@ import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.PrimaryTabRow
+import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
@@ -37,7 +36,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -46,7 +44,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.LightGray
 import androidx.compose.ui.graphics.Color.Companion.White
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -66,6 +63,7 @@ import com.example.kotlin_compose.presentation.components.NoExistData
 import com.example.kotlin_compose.presentation.navigation.AppComposeNavigator
 import com.example.kotlin_compose.presentation.navigation.TapTapScreens
 import com.example.kotlin_compose.presentation.screens.search.SearchViewModel
+import com.example.kotlin_compose.presentation.utils.DisabledInteractionSource
 import com.example.kotlin_compose.ui.theme.BlackF16
 import com.example.kotlin_compose.ui.theme.PPNeu
 import kotlinx.coroutines.launch
@@ -83,30 +81,22 @@ fun Game(
 ) {
 
     val scope = rememberCoroutineScope()
+
     val pagerState = rememberPagerState(pageCount = { topTabs.size })
-    val density = LocalDensity.current
-    val tabWidths = remember {
-        val tabWidthStateList = mutableStateListOf<Dp>()
-        repeat(topTabs.size) {
-            tabWidthStateList.add(0.dp)
-        }
-        tabWidthStateList
-    }
 
     var selectedSubTab by remember { mutableIntStateOf(0) }
-
-//    val gameUiState = gameViewModel.gameUiState.collectAsState().value
 
     val trendingItems = gameViewModel.trendingGames.collectAsLazyPagingItems()
 
     val placeholderState by searchViewModel.searchUiState.collectAsState()
 
-    val searchPlaceHolderText = when (placeholderState) {
-        is ApiResult.Success -> (placeholderState as ApiResult.Success).data.firstTextOrDefault()
-        is ApiResult.Error -> "Discover Superb Games"
-        is ApiResult.Loading -> "Loading..."
+    val searchPlaceHolderText = remember(placeholderState) {
+        when (placeholderState) {
+            is ApiResult.Success -> (placeholderState as ApiResult.Success).data.firstTextOrDefault()
+            is ApiResult.Error -> "Discover Superb Games"
+            is ApiResult.Loading -> "Loading..."
+        }
     }
-
 
 
     Column(
@@ -116,95 +106,107 @@ fun Game(
             .statusBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, top = 6.dp, end = 6.dp, bottom = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Row(
-                modifier = Modifier
-                    .height(32.dp)
-                    .weight(1f)
-                    .background(
-                        color = colorResource(R.color.intl_v2_grey_90),
-                        shape = RoundedCornerShape(18.dp)
-                    )
-                    .clickable(onClick = { composeNavigator.navigate(TapTapScreens.Search.route) }),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    painterResource(R.drawable.cw_toolbar_search_ic),
-                    contentDescription = "Search",
-                    tint = colorResource(R.color.intl_v2_grey_80),
-                    modifier = Modifier
-                        .padding(start = 6.dp)
-                        .size(24.dp)
-                )
-                Text(
-                    text = searchPlaceHolderText,
-                    maxLines = 1,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = PPNeu,
-                    fontSize = 14.sp,
-                    color = colorResource(R.color.intl_v2_grey_60),
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-            NotificationBell(
-                unreadCount = 5,
-                onClick = { composeNavigator.navigate(TapTapScreens.Notifications.route) })
+        TopBar(searchPlaceHolderText, composeNavigator)
 
-        }
         HorizontalDivider(
             color = colorResource(R.color.intl_cc_divider), thickness = 1.dp
         )
-        PrimaryTabRow(
+
+        PrimaryScrollableTabRow(
             selectedTabIndex = pagerState.currentPage,
+            edgePadding = 0.dp,
             indicator = {
                 TabRowDefaults.PrimaryIndicator(
-                    modifier = Modifier.tabIndicatorOffset(pagerState.currentPage),
-                    width = tabWidths[pagerState.currentPage],
-                    color = colorResource(R.color.intl_cc_green_primary)
+                    modifier = Modifier.tabIndicatorOffset(
+                        pagerState.currentPage, matchContentSize = true
+                    ),
+                    color = colorResource(R.color.intl_cc_green_primary),
+                    height = 3.dp,
+                    width = Dp.Unspecified,
+                    shape = RoundedCornerShape(50)
                 )
             },
             containerColor = Color.Transparent,
             divider = {},
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp, start = 16.dp, end = 16.dp),
+                .padding(vertical = 14.dp),
         ) {
             topTabs.forEachIndexed { tabIndex, title ->
                 Tab(
+                    selected = tabIndex == pagerState.currentPage,
+                    onClick = { scope.launch { pagerState.animateScrollToPage(tabIndex) } },
                     selectedContentColor = White,
                     unselectedContentColor = colorResource(R.color.intl_v2_grey_60),
-                    selected = tabIndex == pagerState.currentPage,
-                    onClick = {
-                        scope.launch {
-                            pagerState.animateScrollToPage(tabIndex)
-                        }
-                    },
                     text = {
                         Text(
-                            title,
+                            text = title,
                             fontWeight = if (pagerState.currentPage == tabIndex) FontWeight.Bold else FontWeight.Medium,
-                            color = if (pagerState.currentPage == tabIndex) White else colorResource(
-                                R.color.intl_v2_grey_40
-                            ),
+                            color = if (pagerState.currentPage == tabIndex) White
+                            else colorResource(R.color.intl_v2_grey_40),
                             fontFamily = PPNeu,
-                            fontSize = 15.sp,
-                            onTextLayout = { textLayoutResult ->
-                                tabWidths[tabIndex] =
-                                    with(density) { textLayoutResult.size.width.toDp() }
-                            })
-                    })
+                            fontSize = 15.sp
+                        )
+                    },
+                    modifier = Modifier.height(34.dp),
+                    interactionSource = DisabledInteractionSource()
+                )
             }
         }
-        PageContent(pagerState, composeNavigator, selectedSubTab, trendingItems, subTabs)
+        PageContent(
+            pagerState,
+            composeNavigator,
+            selectedSubTab,
+            onSubTabSelected = { selectedSubTab = it },
+            trendingItems,
+            subTabs
+        )
     }
+}
 
+@Composable
+private fun TopBar(searchPlaceHolderText: String, composeNavigator: AppComposeNavigator) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, top = 6.dp, end = 6.dp, bottom = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .height(32.dp)
+                .weight(1f)
+                .background(
+                    color = colorResource(R.color.intl_v2_grey_90),
+                    shape = RoundedCornerShape(18.dp)
+                )
+                .clickable { composeNavigator.navigate(TapTapScreens.Search.route) },
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.cw_toolbar_search_ic),
+                contentDescription = "Search",
+                tint = colorResource(R.color.intl_v2_grey_80),
+                modifier = Modifier
+                    .padding(start = 6.dp)
+                    .size(24.dp)
+            )
+            Text(
+                text = searchPlaceHolderText,
+                maxLines = 1,
+                fontWeight = FontWeight.Medium,
+                fontFamily = PPNeu,
+                fontSize = 14.sp,
+                color = colorResource(R.color.intl_v2_grey_60),
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+        NotificationBell(
+            unreadCount = 5,
+            onClick = { composeNavigator.navigate(TapTapScreens.Notifications.route) })
+    }
 }
 
 
@@ -216,8 +218,7 @@ fun NotificationBell(
         badge = {
             Badge(
                 modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .offset(x = (-10).dp)
+                    .offset(x = -(7).dp)
                     .height(12.dp)
                     .width(16.dp),
                 containerColor = colorResource(R.color.v3_common_primary_red),
@@ -262,105 +263,134 @@ fun PageContent(
     pagerState: PagerState,
     composeNavigator: AppComposeNavigator,
     selectedSubTab: Int,
+    onSubTabSelected: (Int) -> Unit,
     trendingItems: LazyPagingItems<Games>,
     subTabs: List<String>
 ) {
-    val listState = rememberLazyListState()
-
     HorizontalPager(
         state = pagerState, modifier = Modifier.fillMaxSize()
     ) { page ->
         when (page) {
-            0 -> {
-                // Discover content
-                LazyColumn(
-                    state = listState, modifier = Modifier
-                        .fillMaxSize()
-                        .background(BlackF16)
-                ) {
-                    item {
-                        LazyRow(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp),
-                            contentPadding = PaddingValues(horizontal = 16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            itemsIndexed(subTabs) { i, title ->
-                                val isSelected = i == selectedSubTab
-                                Text(
-                                    text = title,
-                                    modifier = Modifier
-                                        .background(
-                                            color = if (isSelected) White
-                                            else colorResource(R.color.intl_v2_grey_90),
-                                            shape = RoundedCornerShape(8.dp)
-                                        )
-                                        .clickable {
+            0 -> DiscoverPage(
+                subTabs = subTabs,
+                selectedSubTab = selectedSubTab,
+                onSubTabSelected = onSubTabSelected,
+                trendingItems = trendingItems,
+                composeNavigator = composeNavigator
+            )
 
-                                        }
-                                        .padding(horizontal = 9.dp, vertical = 1.dp),
-                                    color = if (isSelected) BlackF16 else LightGray,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    fontFamily = PPNeu)
-                            }
-                        }
-                    }
+            1 -> Text("Top charts", color = White, modifier = Modifier.fillMaxSize())
+            2 -> Text("Calendar", color = White, modifier = Modifier.fillMaxSize())
+            3 -> Text("Game list", color = White, modifier = Modifier.fillMaxSize())
+        }
+    }
+}
 
-                    // Your paging items
-                    when (trendingItems.loadState.refresh) {
-                        is LoadState.Loading -> {
-                            item {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 48.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    CircularProgressIndicator()
-                                }
-                            }
-                        }
+@Composable
+fun DiscoverPage(
+    subTabs: List<String>,
+    selectedSubTab: Int,
+    onSubTabSelected: (Int) -> Unit,
+    trendingItems: LazyPagingItems<Games>,
+    composeNavigator: AppComposeNavigator
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BlackF16)
+    ) {
+        item {
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                itemsIndexed(subTabs, key = { i, _ -> i }) { i, title ->
+                    val isSelected = i == selectedSubTab
+                    Text(
+                        text = title,
+                        modifier = Modifier
+                            .background(
+                                color = if (isSelected) White
+                                else colorResource(R.color.intl_v2_grey_90),
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .clickable { onSubTabSelected(i) }
+                            .padding(horizontal = 9.dp, vertical = 1.dp),
+                        color = if (isSelected) BlackF16 else LightGray,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = PPNeu)
+                }
+            }
+        }
 
-                        is LoadState.Error -> {
-                            item {
-                                NoExistData(
-                                    modifier = Modifier.fillParentMaxSize(), subTextNull = "error"
-                                )
-                            }
-                        }
-
-                        else -> {
-                            items(trendingItems.itemCount) { index ->
-                                trendingItems[index]?.let { game ->
-                                    CardGame(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(vertical = 8.dp),
-                                        game = game,
-                                        onClick = {
-                                            composeNavigator.navigate(
-                                                TapTapScreens.GameDetail.route
-                                            )
-                                        })
-                                }
-                            }
-                        }
+        when (trendingItems.loadState.refresh) {
+            is LoadState.Loading -> {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 48.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
                     }
                 }
             }
 
-            1 -> {
-                Text("top charts", color = White)
+            is LoadState.Error -> {
+                item {
+                    NoExistData(
+                        modifier = Modifier.fillParentMaxSize(), subTextNull = "error"
+                    )
+                }
             }
 
-            2 -> {
-                Text("calendars", color = White)
-            }
+            else -> {
+                items(
+                    count = trendingItems.itemCount,
+                    key = { index -> trendingItems[index]?.identification ?: index } // ✅ stable key
+                ) { index ->
+                    trendingItems[index]?.let { game ->
+                        CardGame(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            game = game,
+                            onClick = {
+                                composeNavigator.navigate(TapTapScreens.GameDetail.route)
+                            })
+                    }
+                }
 
-            3 -> {
-                Text("game list", color = White)
+                when (trendingItems.loadState.append) {
+                    is LoadState.Loading -> {
+                        item {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp)
+                                    .wrapContentSize(Alignment.Center)
+                            )
+                        }
+                    }
+
+                    is LoadState.Error -> {
+                        item {
+                            Text(
+                                "Load more failed",
+                                color = Color.Red,
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+
+                    else -> {}
+                }
             }
         }
     }

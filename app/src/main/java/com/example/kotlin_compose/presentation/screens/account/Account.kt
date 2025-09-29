@@ -1,9 +1,6 @@
 package com.example.kotlin_compose.presentation.screens.account
 
 //import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,10 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
@@ -30,7 +25,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabPosition
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -45,11 +39,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -100,56 +92,56 @@ fun Account(
     Scaffold(containerColor = Color.Black, topBar = {
         TopAppBar(
             title = { }, colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.Black
-            ), navigationIcon = {
-                Column(
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    horizontalAlignment = CenterHorizontally
-                ) {
-                    AsyncImage(
-                        model = "https://ui-avatars.com/api/?name=D&bold=true&background=ab47bc&color=ffff&size=128",
+            containerColor = Color.Black
+        ), navigationIcon = {
+            Column(
+                modifier = Modifier.padding(horizontal = 8.dp),
+                horizontalAlignment = CenterHorizontally
+            ) {
+                AsyncImage(
+                    model = "https://ui-avatars.com/api/?name=D&bold=true&background=ab47bc&color=ffff&size=128",
+                    contentDescription = null,
+                    modifier = Modifier
+                        .width(40.dp)
+                        .height(40.dp)
+                        .clip(CircleShape)
+                )
+            }
+
+        }, actions = {
+            Row {
+                IconButton(onClick = {}) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.qr_code),
                         contentDescription = null,
+                        tint = Color.White,
                         modifier = Modifier
-                            .width(40.dp)
-                            .height(40.dp)
-                            .clip(CircleShape)
+                            .width(22.dp)
+                            .height(22.dp)
                     )
                 }
-
-            }, actions = {
-                Row {
-                    IconButton(onClick = {}) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.qr_code),
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier
-                                .width(22.dp)
-                                .height(22.dp)
-                        )
-                    }
-                    IconButton(onClick = {}) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.share),
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier
-                                .width(22.dp)
-                                .height(22.dp)
-                        )
-                    }
-                    IconButton(onClick = {}) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.settings),
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier
-                                .width(22.dp)
-                                .height(22.dp)
-                        )
-                    }
+                IconButton(onClick = {}) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.share),
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier
+                            .width(22.dp)
+                            .height(22.dp)
+                    )
                 }
-            })
+                IconButton(onClick = {}) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.settings),
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier
+                            .width(22.dp)
+                            .height(22.dp)
+                    )
+                }
+            }
+        })
     }) { padding ->
         LazyColumn(
             state = listState,
@@ -319,25 +311,4 @@ fun Content(composeNavigator: AppComposeNavigator, viewModel: WelcomeViewModel) 
 //    }
 //}
 
-fun Modifier.customTabIndicatorOffset(
-    currentTabPosition: TabPosition, tabWidth: Dp
-): Modifier = composed(inspectorInfo = debugInspectorInfo {
-    name = "customTabIndicatorOffset"
-    value = currentTabPosition
-}) {
-    val currentTabWidth by animateDpAsState(
-        targetValue = tabWidth,
-        animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
-        label = ""
-    )
-    val indicatorOffset by animateDpAsState(
-        targetValue = ((currentTabPosition.left + currentTabPosition.right - tabWidth) / 2),
-        animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
-        label = ""
-    )
-    fillMaxWidth()
-        .wrapContentSize(Alignment.BottomStart)
-        .offset(x = indicatorOffset)
-        .width(currentTabWidth)
-}
 

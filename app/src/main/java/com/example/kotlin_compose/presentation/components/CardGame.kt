@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,6 +47,96 @@ import com.example.kotlin_compose.domain.models.Games
 import com.example.kotlin_compose.presentation.screens.welcome.nonScaledSp
 import com.example.kotlin_compose.ui.theme.PPNeu
 
+
+@Composable
+fun TagLine(items: List<String>?) {
+    if (items.isNullOrEmpty()) return
+
+    items.forEachIndexed { index, item ->
+        val isPlatform = isPlatform(item)
+        val isLast = index == items.lastIndex
+
+        if (isPlatform) {
+            // icon
+            PlatformIcon(item)
+
+            val next = items.getOrNull(index + 1)
+            if (next != null && !isPlatform(next)) {
+                Text(
+                    text = " •",
+                    color = colorResource(R.color.intl_v2_grey_40),
+                    fontSize = 12.sp.nonScaledSp,
+                    fontFamily = PPNeu,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        } else {
+            Text(
+                text = if (!isLast) "$item •" else item,
+                color = colorResource(R.color.intl_v2_grey_40),
+                fontSize = 12.sp.nonScaledSp,
+                fontFamily = PPNeu,
+                fontWeight = FontWeight.Medium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                lineHeight = 12.sp
+            )
+        }
+    }
+}
+
+
+@Composable
+fun PlatformIcon(platform: String) {
+    when (platform.lowercase()) {
+        "android" -> Icon(
+            painterResource(R.drawable.ico_12_platform_android),
+            "Android",
+            Modifier.size(12.dp),
+            tint = Color.Unspecified
+        )
+
+        "ios" -> Icon(
+            painterResource(R.drawable.ico_12_platform_ios),
+            "iOS",
+            Modifier.size(12.dp),
+            tint = Color.Unspecified
+        )
+
+        "pc" -> Icon(
+            painterResource(R.drawable.ico_12_platform_pc),
+            "Pc",
+            Modifier.size(12.dp),
+            tint = Color.Unspecified
+        )
+
+        "playstation" -> Icon(
+            painterResource(R.drawable.ico_12_platform_ps),
+            "Ps",
+            Modifier.size(12.dp),
+            tint = Color.Unspecified
+        )
+
+        "ns" -> Icon(
+            painterResource(R.drawable.ico_12_platform_switch),
+            "Ns",
+            Modifier.size(12.dp),
+            tint = Color.Unspecified
+        )
+
+        "xbox" -> Icon(
+            painterResource(R.drawable.ico_12_platform_xbox),
+            "Xbox",
+            Modifier.size(12.dp),
+            tint = Color.Unspecified
+        )
+    }
+}
+
+fun isPlatform(item: String): Boolean {
+    return item.lowercase() in listOf("android", "ios", "pc", "playstation", "ns", "xbox")
+}
+
 @Composable
 fun CardGame(
     game: Games,
@@ -55,7 +146,7 @@ fun CardGame(
     val app = game.app
 
     val bannerUrl =
-        app?.banner?.mediumUrl ?: app?.banner?.url ?: app?.icon?.mediumUrl ?: app?.icon?.url
+        app?.banner?.mediumUrl
 
     val iconUrl = app?.icon?.smallUrl
 
@@ -63,10 +154,27 @@ fun CardGame(
 
     val recReason = game.recReason?.text
 
-    val tagLine =
-        app?.tags?.map { it.value }?.filter { it.isNotBlank() }?.take(3)?.joinToString(" · ")
-            ?.let { "• $it" }
 
+    val platforms = app?.supportedPlatforms?.map { it.key }?.takeIf { it.isNotEmpty() }
+
+    val tags =
+        app?.tags?.map { it.value }?.filter { it.isNotBlank() }?.take(3)?.takeIf { it.isNotEmpty() }
+
+    val tagLineItems: List<String>? = remember {
+        when {
+            // Nếu tags có > 3 → chỉ hiển thị tags
+            tags != null && tags.size >= 3 -> tags
+
+            // Nếu tags có (≤3) → hiển thị tags + supportedPlatforms
+            tags != null -> tags + (platforms ?: emptyList())
+
+            // Nếu chỉ có supportedPlatforms
+            platforms != null -> platforms
+
+            // Nếu cả 2 null → bỏ ra
+            else -> null
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -128,19 +236,7 @@ fun CardGame(
                             fontWeight = FontWeight.Normal,
                             lineHeight = 12.sp
                         )
-                        tagLine?.let {
-                            Text(
-                                text = it,
-                                color = colorResource(R.color.intl_v2_grey_40),
-                                fontSize = 12.sp.nonScaledSp,
-                                fontFamily = PPNeu,
-                                fontWeight = FontWeight.Medium,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.weight(1f, fill = true),
-                                lineHeight = 12.sp
-                            )
-                        }
+                        TagLine(tagLineItems)
                     }
                 }
             }
@@ -162,6 +258,14 @@ fun CardGame(
                 )
             }
         }
+        AsyncImage(
+            model = bannerUrl,
+            contentDescription = app?.banner?.mediumUrl,
+            modifier = Modifier
+                .fillMaxSize()
+                .height(180.dp),
+            placeholder = ColorPainter(Color.DarkGray)
+        )
 
         Text(
             text = recReason.toString(),
@@ -169,7 +273,8 @@ fun CardGame(
             fontFamily = PPNeu,
             fontWeight = FontWeight.Medium,
             fontSize = 14.sp.nonScaledSp,
-            modifier = Modifier.padding(horizontal = 14.dp)
+            lineHeight = 14.sp,
+            modifier = Modifier.padding(top = 12.dp, start = 14.dp)
         )
 
         HorizontalDivider(
