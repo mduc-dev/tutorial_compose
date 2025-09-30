@@ -126,7 +126,8 @@ class GamePreviewParameterProvider : PreviewParameterProvider<Games> {
                 ),
                 identification = "some_id",
                 recReason = RecReason(type = 1, id = "rec_id", text = "Recommended"),
-                type = "some_type"
+                type = "some_type",
+                category = null
             )
         )
 }

@@ -275,11 +275,12 @@ data class Category(
     val uri: String,
     val type: String,
     val total: Long,
-    val list: List<ListItem>,
+    val list: List<App>,
     @SerialName("event_log") val eventLog: EventLog,
     val user: User,
     val cover: Cover,
 )
+
 
 @Serializable
 data class User(

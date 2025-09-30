@@ -1,66 +1,59 @@
 package com.example.kotlin_compose.presentation.screens.game
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.cachedIn
-import com.example.kotlin_compose.domain.repositories.GamesRepository
-import com.example.kotlin_compose.presentation.utils.GameUiState
-import kotlinx.coroutines.CoroutineExceptionHandler
+import com.example.kotlin_compose.data.loader.GamesDataLoader
+import com.example.kotlin_compose.data.loader.RefreshTrigger
+import com.example.kotlin_compose.data.mappers.GamesDataMapper
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+
+@Immutable
+sealed interface GameEvent {
+
+    data object ShowRefreshFailure : GameEvent
+}
+
+@Stable
 class GameViewModel(
-    private val gamesRepository: GamesRepository,
+    private val gamesDataLoader: GamesDataLoader,
+    private val gamesDataMapper: GamesDataMapper,
+    private val refreshTrigger: RefreshTrigger,
 ) : ViewModel() {
 
-    val trendingGames = gamesRepository.fetchTrendingGames()
-        .cachedIn(viewModelScope)
+    private val _event = MutableStateFlow<GameEvent?>(null)
+    val event = _event.asStateFlow()
 
-    private val _gameUiState = MutableStateFlow(GameUiState(isLoading = true))
-    val gameUiState = _gameUiState.asStateFlow()
+    private val data = gamesDataLoader.loadAndObserveGames(
+        coroutineScope = viewModelScope,
+        refreshTrigger = refreshTrigger,
+        onRefreshFailure = { throwable ->
+            println(throwable)
+            _event.update { GameEvent.ShowRefreshFailure }
+        },
+    )
 
-    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
-        _gameUiState.update { it.copy(isLoading = false, error = exception.message) }
-    }
+    val screenState = data.map { gamesDataMapper.map(it) }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = gamesDataMapper.map(data.value),
+    )
 
-//    init {
-//        fetchTrendingGames()
-//    }
-//
-//
-//    private fun fetchTrendingGames() = {
-//        val pagingFlowGames = gamesRepository.fetchTrendingGames().cachedIn(viewModelScope)
-//        _gameUiState.update {
-//            it.copy(
-//                isLoading = false, trendingGames = pagingFlowGames
-//            )
-//        }
-//
-//    }
-
-//    private fun fetchSearchPlaceHolder() = viewModelScope.launch(coroutineExceptionHandler) {
-//        gamesRepository.fetchPlaceholderSearch().onSuccess { data ->
-//            _gameUiState.update { it.copy(isLoading = false) }
-//        }
-//    }
-
-    private fun fetchActionGames() = viewModelScope.launch(coroutineExceptionHandler) {
-        gamesRepository.fetchActionGames().onSuccess { data ->
-            _gameUiState.update { it.copy(isLoading = false) }
+    fun refresh() {
+        viewModelScope.launch {
+            refreshTrigger.refresh()
         }
     }
 
-    private fun fetchUpcomingGames() = viewModelScope.launch(coroutineExceptionHandler) {
-        gamesRepository.fetchUpcomingGames().onSuccess { data ->
-            _gameUiState.update { it.copy(isLoading = false, upcomingGames = data) }
-        }
-    }
-
-    private fun fetchPopularGames() = viewModelScope.launch(coroutineExceptionHandler) {
-        gamesRepository.fetchPopularGames().onSuccess { data ->
-            _gameUiState.update { it.copy(isLoading = false, popularGames = data) }
-        }
+    fun consumeEvent() {
+        _event.update { null }
     }
 }

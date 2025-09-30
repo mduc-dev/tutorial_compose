@@ -20,9 +20,9 @@ sealed class AuthState {
 data class GameUiState(
     val isLoading: Boolean = true,
     val error: String? = null,
-    val trendingGames: Flow<PagingData<Games>>? = null,
-    val popularGames: Flow<PagingData<Games>>? = null,
-    val upcomingGames: Flow<PagingData<Games>>? = null
+    val trendingGames: Flow<PagingData<Games>> = emptyFlow(),
+    val popularGames: Flow<PagingData<Games>> = emptyFlow(),
+    val upcomingGames: Flow<PagingData<Games>> = emptyFlow()
 )
 
 

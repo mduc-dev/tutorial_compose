@@ -2,22 +2,33 @@ package com.example.kotlin_compose.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.example.kotlin_compose.presentation.navigation.AppComposeNavigator
 import android.util.Log
-import com.example.kotlin_compose.data.datasources.GamesRepositoryImpl
 import com.example.kotlin_compose.data.datasources.PlayRepositoryImpl
 import com.example.kotlin_compose.data.datasources.SearchRepositoryImpl
 import com.example.kotlin_compose.data.datasources.WelcomeRepositoryImpl
+import com.example.kotlin_compose.data.loader.DataLoader
+import com.example.kotlin_compose.data.loader.DefaultGamesDataLoader
+import com.example.kotlin_compose.data.loader.GamesDataLoader
+import com.example.kotlin_compose.data.loader.RefreshTrigger
+import com.example.kotlin_compose.data.mappers.DefaultGameDataMapper
+import com.example.kotlin_compose.data.mappers.GamesDataMapper
+import com.example.kotlin_compose.data.source.remote.GamesRemoteDataSource
+import com.example.kotlin_compose.data.source.remote.KtorGamesRemoteDataSource
+import com.example.kotlin_compose.domain.models.Games
+import com.example.kotlin_compose.domain.repositories.DefaultGamesRepository
 import com.example.kotlin_compose.domain.repositories.GamesRepository
 import com.example.kotlin_compose.domain.repositories.PlayRepository
 import com.example.kotlin_compose.domain.repositories.SearchRepository
 import com.example.kotlin_compose.domain.repositories.WelcomeRepository
 import com.example.kotlin_compose.domain.utils.Constants.BASE_URL
+import com.example.kotlin_compose.presentation.navigation.AppComposeNavigator
 import com.example.kotlin_compose.presentation.navigation.TapComposeNavigator
 import com.example.kotlin_compose.presentation.screens.game.GameViewModel
+import com.example.kotlin_compose.presentation.screens.play.PlayViewModel
 import com.example.kotlin_compose.presentation.screens.search.SearchViewModel
 import com.example.kotlin_compose.presentation.screens.welcome.WelcomeViewModel
-import com.example.kotlin_compose.presentation.screens.play.PlayViewModel
+import com.klitsie.dataloading.data.source.local.GamesLocalDataSource
+import com.klitsie.dataloading.data.source.local.InMemoryGamesLocalDataSource
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.addDefaultResponseValidation
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -76,7 +87,17 @@ fun commonModule() = module {
         androidContext().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
     }
 
-    single<GamesRepository> { GamesRepositoryImpl(get()) }
+    //data
+    single<GamesLocalDataSource> { InMemoryGamesLocalDataSource() }
+    single<GamesRemoteDataSource> { KtorGamesRemoteDataSource(get()) }
+    single<GamesRepository> { DefaultGamesRepository(get(), get()) }
+
+    //presentation
+    factory { RefreshTrigger() }
+    factory<DataLoader<List<Games>>> { DataLoader() }
+    factory<GamesDataLoader> { DefaultGamesDataLoader(get(), get()) }
+    single<GamesDataMapper> { DefaultGameDataMapper() }
+
 
     single<WelcomeRepository> { WelcomeRepositoryImpl(get(), prefs = get()) }
     single<AppComposeNavigator> { TapComposeNavigator() }
@@ -95,4 +116,3 @@ fun commonModule() = module {
 
     viewModelOf(::PlayViewModel)
 }
-

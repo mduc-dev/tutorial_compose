@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NamedNavArgument
 import com.example.kotlin_compose.R
-import com.example.kotlin_compose.data.local.BottomNavigation
+import com.example.kotlin_compose.data.source.local.BottomNavigation
 
 
 sealed class TapTapScreens(

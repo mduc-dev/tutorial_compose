@@ -5,9 +5,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,53 +15,30 @@ import com.example.kotlin_compose.presentation.screens.game.Game
 import com.example.kotlin_compose.presentation.screens.play.Play
 import com.example.kotlin_compose.presentation.screens.tavern.Tavern
 
-//TODO: maybe need rewrite this
 @Composable
 fun MainNavGraph(composeNavigator: AppComposeNavigator) {
     val innerNavController = rememberNavController()
 
-    val backStackState = innerNavController.currentBackStackEntryAsState().value
+    val backStackState by innerNavController.currentBackStackEntryAsState()
+    val currentRoute = backStackState?.destination?.route
 
-    var selectedItem by rememberSaveable { mutableIntStateOf(0) }
+    val isBottomBarVisible = currentRoute in BOTTOM_TAB.map { it.route }
 
-    selectedItem = when (backStackState?.destination?.route) {
-        TapTapScreens.Game.route -> 0
-        TapTapScreens.Play.route -> 1
-        TapTapScreens.Tavern.route -> 2
-        TapTapScreens.You.route -> 3
-        else -> 0
-    }
-
-    val isBottomBarVisible = backStackState?.destination?.route in listOf(
-        TapTapScreens.Game.route,
-        TapTapScreens.Play.route,
-        TapTapScreens.Tavern.route,
-        TapTapScreens.You.route
-    )
-
-    Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
-        if (isBottomBarVisible) {
-            BottomTabNavigator(selectedItem = selectedItem, onItemClick = { index ->
-                val destination = when (index) {
-                    0 -> TapTapScreens.Game.route
-                    1 -> TapTapScreens.Play.route
-                    2 -> TapTapScreens.Tavern.route
-                    3 -> TapTapScreens.You.route
-                    else -> return@BottomTabNavigator
-                }
-
-                innerNavController.navigate(destination) {
-                    innerNavController.graph.startDestinationRoute?.let { startRoute ->
-                        popUpTo(startRoute) {
-                            saveState = true
+    Scaffold(
+        modifier = Modifier.fillMaxSize(), bottomBar = {
+            if (isBottomBarVisible) {
+                BottomTabNavigator(
+                    currentRoute = currentRoute, onItemClick = { route ->
+                        innerNavController.navigate(route) {
+                            innerNavController.graph.startDestinationRoute?.let { startRoute ->
+                                popUpTo(startRoute) { saveState = true }
+                            }
+                            launchSingleTop = true
+                            restoreState = true
                         }
-                    }
-                    launchSingleTop = true
-                    restoreState = true
-                }
-            })
-        }
-    }) { innerPadding ->
+                    })
+            }
+        }) { innerPadding ->
         NavHost(
             navController = innerNavController,
             startDestination = TapTapScreens.Game.route,

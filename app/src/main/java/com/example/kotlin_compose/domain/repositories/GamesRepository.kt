@@ -1,19 +1,41 @@
 package com.example.kotlin_compose.domain.repositories
 
-import androidx.paging.PagingData
+import com.example.kotlin_compose.data.network.models.ListItem
+import com.example.kotlin_compose.data.source.remote.GamesRemoteDataSource
 import com.example.kotlin_compose.domain.models.Games
+import com.klitsie.dataloading.data.source.local.GamesLocalDataSource
 import kotlinx.coroutines.flow.Flow
 
 interface GamesRepository {
-    /** Fetch Trending games from data source*/
-    fun fetchTrendingGames(): Flow<PagingData<Games>>
+    fun getCachedGames(): Result<List<Games>>
 
-    /** Fetch Action games from data source*/
-    suspend fun fetchActionGames(): Result<Flow<PagingData<Games>>>
+    suspend fun refreshGames(): Result<List<Games>>
 
-    /** Fetch Popular games from data source*/
-    suspend fun fetchPopularGames(): Result<Flow<PagingData<Games>>>
-
-    /** Fetch Upcoming games from data source*/
-    suspend fun fetchUpcomingGames(): Result<Flow<PagingData<Games>>>
+    fun observeGames(): Flow<List<Games>>
 }
+
+class DefaultGamesRepository(
+    private val localDataSource: GamesLocalDataSource,
+    private val remoteDataSource: GamesRemoteDataSource,
+) : GamesRepository {
+
+    override fun getCachedGames(): Result<List<Games>> = localDataSource.getCachedGames()
+
+    override suspend fun refreshGames(): Result<List<Games>> =
+        remoteDataSource.fetchGames().map { dto ->
+            val games = dto.data.list.map(ListItem::toDomain)
+            localDataSource.saveGames(games)
+            games
+        }
+
+
+    override fun observeGames(): Flow<List<Games>> = localDataSource.observeGames()
+}
+
+private fun ListItem.toDomain(): Games = Games(
+    type = type,
+    identification = identification,
+    app = app,
+    recReason = recReason,
+    category = category
+)

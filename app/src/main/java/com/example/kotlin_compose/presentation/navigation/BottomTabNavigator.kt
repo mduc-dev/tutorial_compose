@@ -1,7 +1,6 @@
 package com.example.kotlin_compose.presentation.navigation
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -21,44 +20,32 @@ import com.example.kotlin_compose.ui.theme.Kotlin_composeTheme
 
 @Composable
 fun BottomTabNavigator(
-    selectedItem: Int,
-    onItemClick: (Int) -> Unit,
+    currentRoute: String?,
+    onItemClick: (String) -> Unit,
 ) {
+    val navBarColors = NavigationBarItemDefaults.colors(
+        selectedTextColor = MaterialTheme.colorScheme.primary,
+        unselectedIconColor = White,
+        unselectedTextColor = Gray,
+        indicatorColor = Transparent,
+    )
+
     NavigationBar(containerColor = BlackF16) {
-        Row {
-            BOTTOM_TAB.forEachIndexed { index, item ->
-                NavigationBarItem(
-                    selected = selectedItem == index,
-                    interactionSource = DisabledInteractionSource(),
-                    onClick = {
-                        onItemClick(index)
-                    },
-                    icon = {
-                        val painter = if (selectedItem == index) item.selectedIcon else item.icon
-
-                        Icon(
-                            painter = painter,
-                            contentDescription = item.title,
-                            tint = if (item.title == "You") {
-                                if (selectedItem == index) White else White
-                            } else
-                                Unspecified
-
-                        )
-                    },
-                    label = {
-                        Text(
-                            text = item.title, color = White
-                        )
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedTextColor = MaterialTheme.colorScheme.primary,
-                        unselectedIconColor = White,
-                        unselectedTextColor = Gray,
-                        indicatorColor = Transparent,
-                    ),
-                )
-            }
+        BOTTOM_TAB.map { item ->
+            NavigationBarItem(
+                selected = currentRoute == item.route,
+                interactionSource = DisabledInteractionSource(),
+                onClick = { onItemClick(item.route) },
+                icon = {
+                    Icon(
+                        painter = if (currentRoute == item.route) item.selectedIcon else item.icon,
+                        contentDescription = item.title,
+                        tint = if (item.title == "You") White else Unspecified
+                    )
+                },
+                label = { Text(item.title, color = White) },
+                colors = navBarColors,
+            )
         }
     }
 }
@@ -67,7 +54,7 @@ fun BottomTabNavigator(
 @Composable
 fun BottomTabNavigationPreview() {
     Kotlin_composeTheme(dynamicColor = false) {
-        BottomTabNavigator(selectedItem = 0, onItemClick = {
+        BottomTabNavigator(currentRoute = "Games", onItemClick = {
             println("vao day")
         })
     }

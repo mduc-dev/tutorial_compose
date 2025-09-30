@@ -1,4 +1,4 @@
-package com.example.kotlin_compose.data.local
+package com.example.kotlin_compose.data.source.local
 
 import androidx.compose.ui.graphics.painter.Painter
 

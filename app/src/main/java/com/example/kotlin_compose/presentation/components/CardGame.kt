@@ -21,6 +21,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -85,7 +86,6 @@ fun TagLine(items: List<String>?) {
     }
 }
 
-
 @Composable
 fun PlatformIcon(platform: String) {
     when (platform.lowercase()) {
@@ -143,43 +143,31 @@ fun CardGame(
     modifier: Modifier = Modifier,
     onClick: (Games) -> Unit,
 ) {
+    val currentGame = rememberUpdatedState(game)
+    val clickAction = remember(onClick) { { onClick(currentGame.value) } }
+    val placeholder = remember { ColorPainter(Color.DarkGray) }
+
     val app = game.app
-
-    val bannerUrl =
-        app?.banner?.mediumUrl
-
+    val bannerUrl = app?.banner?.mediumUrl
     val iconUrl = app?.icon?.smallUrl
-
     val rating = app?.stat?.rating?.score?.takeIf { it.isNotBlank() }
-
     val recReason = game.recReason?.text
-
-
-    val platforms = app?.supportedPlatforms?.map { it.key }?.takeIf { it.isNotEmpty() }
-
-    val tags =
-        app?.tags?.map { it.value }?.filter { it.isNotBlank() }?.take(3)?.takeIf { it.isNotEmpty() }
-
-    val tagLineItems: List<String>? = remember {
+    val platforms = app?.supportedPlatforms?.map { it.key }.orEmpty()
+    val tags = app?.tags?.map { it.value }.orEmpty().filter { it.isNotBlank() }.take(3)
+    val tagLineItems = remember(tags, platforms) {
         when {
-            // Nếu tags có > 3 → chỉ hiển thị tags
-            tags != null && tags.size >= 3 -> tags
-
-            // Nếu tags có (≤3) → hiển thị tags + supportedPlatforms
-            tags != null -> tags + (platforms ?: emptyList())
-
-            // Nếu chỉ có supportedPlatforms
-            platforms != null -> platforms
-
-            // Nếu cả 2 null → bỏ ra
-            else -> null
+            tags.size >= 3 -> tags
+            tags.isNotEmpty() -> tags + platforms
+            platforms.isNotEmpty() -> platforms
+            else -> emptyList()
         }
     }
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick(game) }) {
+            .clickable(onClick = clickAction)
+    ) {
         Row(
             modifier = modifier, verticalAlignment = Alignment.CenterVertically
         ) {
@@ -242,7 +230,7 @@ fun CardGame(
             }
 
             OutlinedButton(
-                onClick = { onClick(game) },
+                onClick = clickAction,
                 border = BorderStroke(1.5.dp, colorResource(R.color.greenPrimary)),
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
                 modifier = Modifier
@@ -264,18 +252,20 @@ fun CardGame(
             modifier = Modifier
                 .fillMaxSize()
                 .height(180.dp),
-            placeholder = ColorPainter(Color.DarkGray)
+            placeholder = placeholder
         )
 
-        Text(
-            text = recReason.toString(),
-            color = colorResource(R.color.intl_v2_grey_40),
-            fontFamily = PPNeu,
-            fontWeight = FontWeight.Medium,
-            fontSize = 14.sp.nonScaledSp,
-            lineHeight = 14.sp,
-            modifier = Modifier.padding(top = 12.dp, start = 14.dp)
-        )
+        if (!recReason.isNullOrBlank()) {
+            Text(
+                text = recReason,
+                color = colorResource(R.color.intl_v2_grey_40),
+                fontFamily = PPNeu,
+                fontWeight = FontWeight.Medium,
+                fontSize = 14.sp.nonScaledSp,
+                lineHeight = 14.sp,
+                modifier = Modifier.padding(top = 12.dp, start = 14.dp)
+            )
+        }
 
         HorizontalDivider(
             modifier = Modifier.padding(vertical = 10.dp),
@@ -339,7 +329,7 @@ class CardGamePreviewProvider : PreviewParameterProvider<Games> {
                 itunesId = null,
                 recText = null,
                 videoResource = null
-            ), recReason = null
+            ), recReason = null, category = null
         )
     )
 }
