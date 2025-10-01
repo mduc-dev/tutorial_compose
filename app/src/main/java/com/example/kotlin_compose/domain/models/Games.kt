@@ -2,6 +2,7 @@ package com.example.kotlin_compose.domain.models
 
 import com.example.kotlin_compose.data.network.models.App
 import com.example.kotlin_compose.data.network.models.Category
+import com.example.kotlin_compose.data.network.models.Dailies
 import com.example.kotlin_compose.data.network.models.RecReason
 
 
@@ -11,4 +12,5 @@ data class Games(
     val app: App?,
     val recReason: RecReason?,
     val category: Category?,
+    val dailies: Dailies?
 )

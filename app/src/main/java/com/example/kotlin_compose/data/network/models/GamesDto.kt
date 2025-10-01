@@ -28,6 +28,28 @@ data class ListItem(
     val app: App? = null,
     @SerialName("rec_reason") val recReason: RecReason? = null,
     val category: Category? = null,
+    val dailies: Dailies? = null
+)
+
+@Serializable
+data class Dailies(
+    @SerialName("date_key") val dateKey: String,
+    val list: List<DailiesItem>,
+    @SerialName("event_log") val eventLog: EventLog? = null
+)
+
+@Serializable
+data class DailiesItem(
+    val identification: String,
+    val type: String,
+    val app: App? = null,
+    val sort: Int? = null,
+    val description: String? = null,
+    val cover: Cover? = null,
+    val title: String? = null,
+    @SerialName("event_end_time") val eventEndTime: Long? = null,
+    val video: String? = null,
+    @SerialName("video_id") val videoId: Long? = null
 )
 
 @Serializable
@@ -179,9 +201,9 @@ data class Unreserved(
 
 @Serializable
 data class EventLog(
-    val paramId: String?,
-    val paramType: String,
-    val via: String,
+    val paramId: String? = null,
+    val paramType: String? = null,
+    val via: String? = null,
 )
 
 @Serializable

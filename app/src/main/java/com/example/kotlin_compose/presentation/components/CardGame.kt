@@ -41,6 +41,8 @@ import coil3.compose.AsyncImage
 import com.example.kotlin_compose.R
 import com.example.kotlin_compose.data.network.models.App
 import com.example.kotlin_compose.data.network.models.Banner
+import com.example.kotlin_compose.data.network.models.Dailies
+import com.example.kotlin_compose.data.network.models.DailiesItem
 import com.example.kotlin_compose.data.network.models.Rating
 import com.example.kotlin_compose.data.network.models.Stat
 import com.example.kotlin_compose.data.network.models.Tag
@@ -275,6 +277,145 @@ fun CardGame(
     }
 }
 
+//TODO: rewrite mapper to cast all data from type to 1 dto using
+@Composable
+fun CardGame(
+    game: DailiesItem,
+    modifier: Modifier = Modifier,
+    onClick: (DailiesItem) -> Unit,
+) {
+    val currentGame = rememberUpdatedState(game)
+    val clickAction = remember(onClick) { { onClick(currentGame.value) } }
+    val placeholder = remember { ColorPainter(Color.DarkGray) }
+
+    val app = game.app
+    val bannerUrl = app?.banner?.mediumUrl
+    val iconUrl = app?.icon?.smallUrl
+    val rating = app?.stat?.rating?.score?.takeIf { it.isNotBlank() }
+//    val recReason = game.recReason?.text
+    val platforms = app?.supportedPlatforms?.map { it.key }.orEmpty()
+    val tags = app?.tags?.map { it.value }.orEmpty().filter { it.isNotBlank() }.take(3)
+    val tagLineItems = remember(tags, platforms) {
+        when {
+            tags.size >= 3 -> tags
+            tags.isNotEmpty() -> tags + platforms
+            platforms.isNotEmpty() -> platforms
+            else -> emptyList()
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = clickAction)
+    ) {
+        Row(
+            modifier = modifier, verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 14.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(10.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    AsyncImage(
+                        model = iconUrl,
+                        contentDescription = app?.title,
+                        modifier = Modifier.fillMaxSize(),
+                        placeholder = ColorPainter(Color.DarkGray)
+                    )
+                }
+
+                Column {
+                    Text(
+                        text = app?.title ?: stringResource(id = R.string.unknown_game),
+                        color = Color.White,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontFamily = PPNeu,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp.nonScaledSp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.review_star_selected_gray),
+                            contentDescription = "review_star",
+                            tint = colorResource(R.color.intl_v2_grey_40),
+                            modifier = Modifier
+                                .size(10.dp)
+                                .offset(y = (-1).dp)
+                        )
+                        Text(
+                            text = rating ?: "--",
+                            color = colorResource(R.color.intl_v2_grey_40),
+                            fontSize = 12.sp.nonScaledSp,
+                            fontFamily = PPNeu,
+                            fontWeight = FontWeight.Normal,
+                            lineHeight = 12.sp
+                        )
+                        TagLine(tagLineItems)
+                    }
+                }
+            }
+
+            OutlinedButton(
+                onClick = clickAction,
+                border = BorderStroke(1.5.dp, colorResource(R.color.greenPrimary)),
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                modifier = Modifier
+                    .height(32.dp)
+                    .padding(end = 14.dp)
+            ) {
+                Text(
+                    "Get",
+                    color = colorResource(R.color.greenPrimary),
+                    fontSize = 14.sp.nonScaledSp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = PPNeu
+                )
+            }
+        }
+        AsyncImage(
+            model = bannerUrl,
+            contentDescription = app?.banner?.mediumUrl,
+            modifier = Modifier
+                .fillMaxSize()
+                .height(180.dp),
+            placeholder = placeholder
+        )
+
+//        if (!recReason.isNullOrBlank()) {
+//            Text(
+//                text = recReason,
+//                color = colorResource(R.color.intl_v2_grey_40),
+//                fontFamily = PPNeu,
+//                fontWeight = FontWeight.Medium,
+//                fontSize = 14.sp.nonScaledSp,
+//                lineHeight = 14.sp,
+//                modifier = Modifier.padding(top = 12.dp, start = 14.dp)
+//            )
+//        }
+
+        HorizontalDivider(
+            modifier = Modifier.padding(vertical = 10.dp),
+            thickness = 0.2.dp,
+            color = colorResource(R.color.intl_v2_grey_20)
+        )
+    }
+}
+
 @Preview
 @Composable
 fun CardGamePreview(
@@ -329,7 +470,7 @@ class CardGamePreviewProvider : PreviewParameterProvider<Games> {
                 itunesId = null,
                 recText = null,
                 videoResource = null
-            ), recReason = null, category = null
+            ), recReason = null, category = null, dailies = null
         )
     )
 }

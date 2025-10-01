@@ -32,7 +32,7 @@ fun FailureScreen(
                     color = LocalContentColor.current,
                     modifier = Modifier
                         .padding(end = 8.dp)
-                        .size(24.dp)
+                        .size(14.dp)
                 )
             }
             Text("Try again")

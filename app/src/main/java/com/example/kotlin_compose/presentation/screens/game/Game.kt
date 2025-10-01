@@ -2,6 +2,7 @@ package com.example.kotlin_compose.presentation.screens.game
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.forEach
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -162,10 +163,6 @@ fun Game(
             modifier = Modifier.fillMaxSize(),
             loadingResult = screenState,
             onRefresh = gameViewModel::refresh,
-//            loadingScreen = { LoadingScreen() },
-//            failureScreen = { _, isLoading ->
-//                FailureScreen(isLoading = isLoading, onRetry = gameViewModel::refresh)
-//            },
             content = { games, isLoading ->
                 PageContent(
                     pagerState = pagerState,
@@ -301,7 +298,7 @@ fun PageContent(
     }
 }
 
-//TODO: type game co dailies
+
 @Composable
 fun DiscoverPage(
     subTabs: List<String>,
@@ -352,15 +349,24 @@ fun DiscoverPage(
             }
         } else {
             itemsIndexed(
-                games,
-                key = { index, game ->
+                games, key = { index, game ->
                     game.identification ?: game.category?.id?.let { "category-$it-$index" }
-                        ?: "game-$index"
+                    ?: "game-$index"
+                }) { _, game ->
+                if (game.dailies != null && game.type.isDailiesType()) {
+                    val firstDailyGame = game.dailies.list.firstOrNull()
+                    if (firstDailyGame != null) {
+                        CardGame(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            game = firstDailyGame,
+                            onClick = {
+                                composeNavigator.navigate(TapTapScreens.GameDetail.route)
+                            })
+                    }
                 }
-            ) { _, game ->
-//                val isHeroItem = game.type.isHeroType() || (game.type.isNullOrBlank() && game.app?.banner != null)
-
-               if (game.app != null) {
+                if (game.app != null) {
                     CardGame(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -368,14 +374,12 @@ fun DiscoverPage(
                         game = game,
                         onClick = {
                             composeNavigator.navigate(TapTapScreens.GameDetail.route)
-                        }
-                    )
+                        })
                 }
 
                 if (game.category != null && game.type.isCategoryType()) {
                     CategorySection(
-                        category = game.category,
-                        composeNavigator = composeNavigator
+                        category = game.category, composeNavigator = composeNavigator
                     )
                 }
             }
@@ -497,7 +501,10 @@ private fun CategoryGameItem(
     }
 }
 
-private fun String?.isCategoryType(): Boolean = this?.contains("category", ignoreCase = true) == true
+private fun String?.isCategoryType(): Boolean =
+    this?.contains("category", ignoreCase = true) == true
+
+private fun String?.isDailiesType(): Boolean = this?.contains("dailies", ignoreCase = true) == true
 
 private fun String?.isHeroType(): Boolean {
     val value = this?.lowercase() ?: return false

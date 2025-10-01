@@ -37,5 +37,6 @@ private fun ListItem.toDomain(): Games = Games(
     identification = identification,
     app = app,
     recReason = recReason,
-    category = category
+    category = category,
+    dailies = dailies
 )

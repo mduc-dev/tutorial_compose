@@ -24,7 +24,7 @@ sealed interface GameEvent {
 
 @Stable
 class GameViewModel(
-    private val gamesDataLoader: GamesDataLoader,
+    gamesDataLoader: GamesDataLoader,
     private val gamesDataMapper: GamesDataMapper,
     private val refreshTrigger: RefreshTrigger,
 ) : ViewModel() {
