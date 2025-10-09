@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -30,6 +29,7 @@ import com.example.kotlin_compose.presentation.components.AppBar
 import com.example.kotlin_compose.presentation.components.DDButton
 import com.example.kotlin_compose.presentation.navigation.AppComposeNavigator
 import com.example.kotlin_compose.ui.theme.BlackF16
+import com.example.kotlin_compose.ui.theme.*
 
 fun extraSafeBottomPadding(): Dp {
     return if (Build.VERSION.SDK_INT == 29) 16.dp else 0.dp
@@ -51,7 +51,7 @@ fun Signup(
                     focusManager.clearFocus()
                 })
             }) {
-        AppBar("Sign up", contentColor = colorResource(R.color.intl_v2_grey_40), navigationIcon = {
+        AppBar("Sign up", contentColor = IntlV2Grey40, navigationIcon = {
             IconButton(
                 onClick = {
                     composeNavigator.navigateUp()

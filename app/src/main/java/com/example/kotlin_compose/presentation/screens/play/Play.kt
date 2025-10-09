@@ -36,7 +36,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -54,9 +53,9 @@ import com.example.kotlin_compose.ui.theme.BlackF16
 import com.example.kotlin_compose.ui.theme.PPNeu
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import com.example.kotlin_compose.ui.theme.*
 
 val tabs = listOf("Games", "Recently")
-
 
 @Composable
 fun Play(
@@ -67,7 +66,6 @@ fun Play(
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val density = LocalDensity.current
 
-
     val tabWidths = remember {
         val tabWidthStateList = mutableStateListOf<Dp>()
         repeat(tabs.size) {
@@ -75,7 +73,6 @@ fun Play(
         }
         tabWidthStateList
     }
-
 
     val instantGames = playViewModel.instantGames.collectAsLazyPagingItems()
 
@@ -92,7 +89,7 @@ fun Play(
             containerColor = BlackF16,
             divider = {
                 HorizontalDivider(
-                    thickness = 1.dp, color = colorResource(R.color.intl_cc_divider)
+                    thickness = 1.dp, color = IntlCcDivider
                 )
             },
             modifier = Modifier.padding(vertical = 16.dp),
@@ -100,14 +97,14 @@ fun Play(
                 TabRowDefaults.PrimaryIndicator(
                     modifier = Modifier.tabIndicatorOffset(pagerState.currentPage),
                     width = tabWidths[pagerState.currentPage],
-                    color = colorResource(R.color.intl_cc_green_primary)
+                    color = IntlCcGreenPrimary
                 )
             },
         ) {
             tabs.forEachIndexed { tabIndex, item ->
                 Tab(
                     selectedContentColor = Color.White,
-                    unselectedContentColor = colorResource(R.color.intl_v2_grey_60),
+                    unselectedContentColor = IntlV2Grey60,
                     selected = tabIndex == pagerState.currentPage,
                     interactionSource = DisabledInteractionSource(),
                     onClick = {
@@ -199,7 +196,6 @@ fun PageContent(
     }
 }
 
-
 @Composable
 fun CardGame(item: InstantGameItem, onClick: () -> Unit) {
     Column(
@@ -231,7 +227,7 @@ fun CardGame(item: InstantGameItem, onClick: () -> Unit) {
                                 topStart = 8.dp, bottomEnd = 8.dp
                             )
                         )
-                        .background(colorResource(id = R.color.greenPrimary))
+                        .background(GreenPrimary)
                         .padding(horizontal = 3.dp, vertical = 2.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(3.dp)
@@ -268,7 +264,7 @@ fun CardGame(item: InstantGameItem, onClick: () -> Unit) {
 
         Text(
             text = item.subtitle.ifBlank { "Unknown" },
-            color = colorResource(R.color.intl_v2_grey_20),
+            color = IntlV2Grey20,
             fontSize = 10.sp.nonScaledSp,
             fontFamily = PPNeu,
             fontWeight = FontWeight.Medium,

@@ -7,10 +7,10 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import com.example.kotlin_compose.R
 import com.example.kotlin_compose.presentation.navigation.AppComposeNavigator
 import org.koin.androidx.compose.koinViewModel
+import com.example.kotlin_compose.ui.theme.*
 
 @Composable
 fun Search(
@@ -20,7 +20,7 @@ fun Search(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(R.color.intl_v2_black))
+            .background(IntlV2Black)
             .statusBarsPadding()
     ) {
         Text("Search")

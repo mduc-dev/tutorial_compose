@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextRange
@@ -30,8 +29,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.kotlin_compose.R
 import com.example.kotlin_compose.ui.theme.PPNeu
+import com.example.kotlin_compose.ui.theme.*
 
 @Composable
 fun Input(
@@ -40,7 +39,7 @@ fun Input(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     maxLines: Int = Int.MAX_VALUE,
-    border: BorderStroke = BorderStroke(1.dp, color = colorResource(R.color.border)),
+    border: BorderStroke = BorderStroke(1.dp, color = BorderColor),
     shape: RoundedCornerShape = RoundedCornerShape(24.dp),
     innerPadding: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
     keyboardOptions: KeyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
@@ -64,7 +63,7 @@ fun Input(
         modifier = modifier
             .border(border = border, shape = shape)
             .clip(shape = shape)
-            .background(color = colorResource(R.color.primary_material_dark))
+            .background(color = PrimaryMaterialDark)
             .padding(innerPadding)
             .semantics { contentDescription = description },
         value = textState,
@@ -95,7 +94,7 @@ fun Input(
             color = Color.White,
             textDirection = TextDirection.Content
         ),
-        cursorBrush = SolidColor(colorResource(R.color.primary_color)),
+        cursorBrush = SolidColor(PrimaryColor),
         decorationBox = { innerTextField -> decorationBox(innerTextField) },
         maxLines = maxLines,
         singleLine = maxLines == 1,

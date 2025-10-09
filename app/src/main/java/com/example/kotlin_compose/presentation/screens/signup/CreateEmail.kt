@@ -16,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -24,6 +23,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.kotlin_compose.R
 import com.example.kotlin_compose.presentation.components.Input
+import com.example.kotlin_compose.ui.theme.*
 
 @Composable
 fun CreateEmail() {
@@ -50,7 +50,7 @@ fun CreateEmail() {
                 if (email.isEmpty()) {
                     Text(
                         text = "Enter your email",
-                        color = colorResource(R.color.intl_v2_grey_60),
+                        color = IntlV2Grey60,
                     )
                 }
                 innerTextField()

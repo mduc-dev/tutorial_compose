@@ -21,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -35,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.example.kotlin_compose.R
 import com.example.kotlin_compose.presentation.components.Input
 import com.example.kotlin_compose.ui.theme.PPNeu
+import com.example.kotlin_compose.ui.theme.*
 
 //TODO: in this screen or in the last screen need to be defined when navigate is
 //    popUpTo("screen_to_go") { inclusive = true }
@@ -75,7 +75,7 @@ fun CreatePassword() {
                 if (password.isEmpty()) {
                     Text(
                         text = "Enter your password",
-                        color = colorResource(R.color.intl_v2_grey_60),
+                        color = IntlV2Grey60,
                     )
                 }
                 innerTextField()
@@ -107,7 +107,6 @@ fun CreatePassword() {
     }
 }
 
-
 @Composable
 fun RequirementRow(
     iconRes: Int, text: String
@@ -127,7 +126,7 @@ fun RequirementRow(
             fontSize = 12.sp,
             fontWeight = FontWeight.Normal,
             fontFamily = PPNeu,
-            color = colorResource(R.color.primary_text_disabled_material_dark)
+            color = PrimaryTextDisabledMaterialDark
         )
     }
 }

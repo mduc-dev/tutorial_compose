@@ -27,7 +27,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -35,7 +34,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.kotlin_compose.R
 import com.example.kotlin_compose.presentation.screens.welcome.nonScaledSp
 import com.example.kotlin_compose.ui.theme.Black1A
 import com.example.kotlin_compose.ui.theme.Black20
@@ -43,6 +41,7 @@ import com.example.kotlin_compose.ui.theme.BlackDisable
 import com.example.kotlin_compose.ui.theme.BlackF16
 import com.example.kotlin_compose.ui.theme.BlackF3
 import com.example.kotlin_compose.ui.theme.PPNeu
+import com.example.kotlin_compose.ui.theme.PrimaryColor
 import kotlinx.coroutines.delay
 
 //TODO: border {color,width}, disable {color},
@@ -122,8 +121,8 @@ fun DDButton(
 
     val buttonColors = when (variant) {
         Variant.SOLID -> ButtonDefaults.buttonColors(
-            containerColor = colorResource(R.color.primary_color),
-            disabledContainerColor = colorResource(R.color.primary_color).copy(alpha = 0.3f)
+            containerColor = PrimaryColor,
+            disabledContainerColor = PrimaryColor.copy(alpha = 0.3f)
         )
 
         Variant.BORDERED -> ButtonDefaults.buttonColors(

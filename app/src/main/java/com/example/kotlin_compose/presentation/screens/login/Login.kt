@@ -1,6 +1,5 @@
 package com.example.kotlin_compose.presentation.screens.login
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -41,7 +40,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -66,9 +64,9 @@ import com.example.kotlin_compose.ui.theme.BlackDisable
 import com.example.kotlin_compose.ui.theme.BlackF16
 import com.example.kotlin_compose.ui.theme.PPNeu
 import kotlinx.coroutines.launch
+import com.example.kotlin_compose.ui.theme.*
 
 val tabs = listOf("Email", "Phone")
-
 
 @Composable
 fun Login(composeNavigator: AppComposeNavigator) {
@@ -112,7 +110,7 @@ fun Login(composeNavigator: AppComposeNavigator) {
                 TabRowDefaults.PrimaryIndicator(
                     modifier = Modifier.tabIndicatorOffset(pagerState.currentPage),
                     width = tabWidths[pagerState.currentPage],
-                    color = colorResource(R.color.intl_cc_green_primary)
+                    color = IntlCcGreenPrimary
                 )
             }) {
             tabs.forEachIndexed { tabIndex, item ->
@@ -153,7 +151,6 @@ fun Login(composeNavigator: AppComposeNavigator) {
         )
     }
 }
-
 
 @Composable
 fun PageContent(
@@ -199,7 +196,7 @@ fun PageContent(
                                 if (email.isEmpty()) {
                                     Text(
                                         text = "Enter your email",
-                                        color = colorResource(R.color.intl_v2_grey_60),
+                                        color = IntlV2Grey60,
                                     )
                                 }
                                 innerTextField()
@@ -214,7 +211,6 @@ fun PageContent(
                                 }
                             }
                         })
-
 
                     Input(
                         value = password,
@@ -238,7 +234,7 @@ fun PageContent(
                                 if (password.isEmpty()) {
                                     Text(
                                         text = "Enter your password",
-                                        color = colorResource(R.color.intl_v2_grey_60),
+                                        color = IntlV2Grey60,
                                     )
                                 }
                                 innerTextField()
@@ -260,7 +256,7 @@ fun PageContent(
                         })
                     Text(
                         "Forgot password?",
-                        color = colorResource(R.color.greenPrimary),
+                        color = GreenPrimary,
                         fontFamily = PPNeu,
                         fontSize = 14.sp.nonScaledSp,
                         fontWeight = FontWeight.Bold,
@@ -272,7 +268,7 @@ fun PageContent(
 
                     Text(
                         "Log in without password",
-                        color = colorResource(R.color.primary_text_disabled_material_dark),
+                        color = PrimaryTextDisabledMaterialDark,
                         fontFamily = PPNeu,
                         fontSize = 13.sp.nonScaledSp,
                         fontWeight = FontWeight.Normal,
@@ -300,5 +296,3 @@ fun PageContent(
         }
     }
 }
-
-

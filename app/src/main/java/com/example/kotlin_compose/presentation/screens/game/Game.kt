@@ -2,7 +2,6 @@ package com.example.kotlin_compose.presentation.screens.game
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.forEach
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,7 +51,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.LightGray
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -64,7 +62,6 @@ import coil3.compose.AsyncImage
 import com.example.kotlin_compose.R
 import com.example.kotlin_compose.data.network.models.App
 import com.example.kotlin_compose.data.network.models.Category
-import com.example.kotlin_compose.data.network.models.ListItem
 import com.example.kotlin_compose.data.network.utils.ApiResult
 import com.example.kotlin_compose.domain.models.Games
 import com.example.kotlin_compose.presentation.components.CardGame
@@ -78,6 +75,7 @@ import com.example.kotlin_compose.ui.theme.BlackF16
 import com.example.kotlin_compose.ui.theme.PPNeu
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
+import com.example.kotlin_compose.ui.theme.*
 
 val topTabs: List<String> = listOf("Discover", "Top charts", "Calendar", "Gamelist")
 
@@ -115,7 +113,7 @@ fun Game(
         TopBar(searchPlaceHolderText, composeNavigator)
 
         HorizontalDivider(
-            color = colorResource(R.color.intl_cc_divider), thickness = 1.dp
+            color = IntlCcDivider, thickness = 1.dp
         )
 
         PrimaryScrollableTabRow(
@@ -126,7 +124,7 @@ fun Game(
                     modifier = Modifier.tabIndicatorOffset(
                         pagerState.currentPage, matchContentSize = true
                     ),
-                    color = colorResource(R.color.intl_cc_green_primary),
+                    color = IntlCcGreenPrimary,
                     height = 3.dp,
                     width = Dp.Unspecified,
                     shape = RoundedCornerShape(50)
@@ -143,13 +141,13 @@ fun Game(
                     selected = tabIndex == pagerState.currentPage,
                     onClick = { scope.launch { pagerState.animateScrollToPage(tabIndex) } },
                     selectedContentColor = White,
-                    unselectedContentColor = colorResource(R.color.intl_v2_grey_60),
+                    unselectedContentColor = IntlV2Grey60,
                     text = {
                         Text(
                             text = title,
                             fontWeight = if (pagerState.currentPage == tabIndex) FontWeight.Bold else FontWeight.Medium,
                             color = if (pagerState.currentPage == tabIndex) White
-                            else colorResource(R.color.intl_v2_grey_40),
+                            else IntlV2Grey40,
                             fontFamily = PPNeu,
                             fontSize = 15.sp
                         )
@@ -190,7 +188,7 @@ private fun TopBar(searchPlaceHolderText: String, composeNavigator: AppComposeNa
                 .height(32.dp)
                 .weight(1f)
                 .background(
-                    color = colorResource(R.color.intl_v2_grey_90),
+                    color = IntlV2Grey90,
                     shape = RoundedCornerShape(18.dp)
                 )
                 .clickable { composeNavigator.navigate(TapTapScreens.Search.route) },
@@ -200,7 +198,7 @@ private fun TopBar(searchPlaceHolderText: String, composeNavigator: AppComposeNa
             Icon(
                 painter = painterResource(R.drawable.cw_toolbar_search_ic),
                 contentDescription = "Search",
-                tint = colorResource(R.color.intl_v2_grey_80),
+                tint = IntlV2Grey80,
                 modifier = Modifier
                     .padding(start = 6.dp)
                     .size(24.dp)
@@ -211,7 +209,7 @@ private fun TopBar(searchPlaceHolderText: String, composeNavigator: AppComposeNa
                 fontWeight = FontWeight.Medium,
                 fontFamily = PPNeu,
                 fontSize = 14.sp,
-                color = colorResource(R.color.intl_v2_grey_60),
+                color = IntlV2Grey60,
                 overflow = TextOverflow.Ellipsis
             )
         }
@@ -220,7 +218,6 @@ private fun TopBar(searchPlaceHolderText: String, composeNavigator: AppComposeNa
             onClick = { composeNavigator.navigate(TapTapScreens.Notifications.route) })
     }
 }
-
 
 @Composable
 fun NotificationBell(
@@ -233,7 +230,7 @@ fun NotificationBell(
                     .offset(x = -(7).dp)
                     .height(12.dp)
                     .width(16.dp),
-                containerColor = colorResource(R.color.v3_common_primary_red),
+                containerColor = V3CommonPrimaryRed,
                 contentColor = White,
             ) {
 
@@ -269,7 +266,6 @@ fun NotificationBell(
     }
 }
 
-
 @Composable
 fun PageContent(
     pagerState: PagerState,
@@ -297,7 +293,6 @@ fun PageContent(
         }
     }
 }
-
 
 @Composable
 fun DiscoverPage(
@@ -328,7 +323,7 @@ fun DiscoverPage(
                         modifier = Modifier
                             .background(
                                 color = if (selected.value) White
-                                else colorResource(R.color.intl_v2_grey_90),
+                                else IntlV2Grey90,
                                 shape = RoundedCornerShape(8.dp)
                             )
                             .clickable { onSubTabSelected(i) }
@@ -465,7 +460,6 @@ private fun CategorySection(
         }
     }
 }
-
 
 @Composable
 private fun CategoryGameItem(

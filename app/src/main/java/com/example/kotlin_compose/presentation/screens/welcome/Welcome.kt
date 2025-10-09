@@ -42,7 +42,6 @@ import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalResources
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -64,10 +63,10 @@ import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.sin
+import com.example.kotlin_compose.ui.theme.*
 
 val TextUnit.nonScaledSp
     @Composable get() = (this.value / LocalDensity.current.fontScale).sp
-
 
 @Composable
 fun Welcome(
@@ -93,7 +92,7 @@ fun Welcome(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(id = R.color.intl_v2_black))
+            .background(IntlV2Black)
     ) {
         // Wallpaper with mask
         WallPagerImage(resId = R.drawable.wall_paper)
@@ -104,8 +103,8 @@ fun Welcome(
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            colorResource(R.color.v3_login_home_wallpaper_mask_start_color),
-                            colorResource(R.color.v3_login_home_wallpaper_mask_end_color),
+                            V3LoginHomeWallpaperMaskStartColor,
+                            V3LoginHomeWallpaperMaskEndColor,
                         ), startY = 0f, endY = with(LocalDensity.current) { 450.dp.toPx() })
                 )
         )
@@ -141,7 +140,7 @@ fun Welcome(
             ) {
                 Text(
                     text = "Log in",
-                    color = colorResource(id = R.color.green_primary),
+                    color = GreenPrimary,
                     fontSize = 14.sp.nonScaledSp,
                     fontWeight = FontWeight.Bold,
                     fontFamily = PPNeu,
@@ -184,7 +183,7 @@ fun ProtocolText(
 
     Text(
         text = protocolText,
-        color = colorResource(R.color.intl_v2_auxiliary_grey_20),
+        color = IntlV2AuxiliaryGrey20,
         fontSize = 12.sp.nonScaledSp,
         fontFamily = PPNeu,
         textAlign = TextAlign.Center,
@@ -194,7 +193,6 @@ fun ProtocolText(
             .padding(top = 40.dp, bottom = 72.dp)
     )
 }
-
 
 @Composable
 fun ThirdLoginSection(composeNavigator: AppComposeNavigator, welcomeViewModel: WelcomeViewModel) {
@@ -238,7 +236,7 @@ fun ThirdLoginSection(composeNavigator: AppComposeNavigator, welcomeViewModel: W
 
                 Text(
                     text = "Continue with Facebook",
-                    color = colorResource(id = R.color.v3_login_home_third_login_button_text_color),
+                    color = V3LoginHomeThirdLoginButtonTextColor,
                     fontSize = 14.sp.nonScaledSp,
                     fontWeight = FontWeight.Bold,
                     fontFamily = PPNeu,
@@ -280,7 +278,7 @@ fun ThirdLoginSection(composeNavigator: AppComposeNavigator, welcomeViewModel: W
 
                 Text(
                     text = "Continue with Google",
-                    color = colorResource(id = R.color.v3_login_home_third_login_button_text_color),
+                    color = V3LoginHomeThirdLoginButtonTextColor,
                     fontSize = 14.sp.nonScaledSp,
                     fontWeight = FontWeight.Bold,
                     fontFamily = PPNeu,
@@ -307,12 +305,12 @@ fun ThirdLoginSection(composeNavigator: AppComposeNavigator, welcomeViewModel: W
                 .widthIn(max = 320.dp)
                 .height(44.dp),
             elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green_primary)),
+            colors = ButtonDefaults.buttonColors(containerColor = GreenPrimary),
             shape = RoundedCornerShape(24.dp),
         ) {
             Text(
                 text = "Sign up",
-                color = colorResource(id = R.color.v3_login_home_third_login_button_text_color),
+                color = V3LoginHomeThirdLoginButtonTextColor,
                 fontSize = 14.sp.nonScaledSp,
                 fontWeight = FontWeight.Bold,
                 fontFamily = PPNeu,
@@ -369,7 +367,6 @@ fun WallPagerImage(
         LaunchedEffect(autoScroll, maxScrollY, maxScrollX, animationDurationMillis) {
             progress.snapTo(0f)
             if (!autoScroll || maxScrollY == 0f) return@LaunchedEffect
-
 
             while (isActive) {
                 progress.animateTo(

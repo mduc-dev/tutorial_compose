@@ -42,7 +42,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -63,10 +62,11 @@ import com.example.kotlin_compose.presentation.utils.isEmpty
 import com.example.kotlin_compose.ui.theme.Black1A
 import com.example.kotlin_compose.ui.theme.BlackDisable
 import com.example.kotlin_compose.ui.theme.BlackF3
-import com.example.kotlin_compose.ui.theme.Green1a
+import com.example.kotlin_compose.ui.theme.Green1A
 import com.example.kotlin_compose.ui.theme.PPNeu
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import com.example.kotlin_compose.ui.theme.*
 
 val tabs = listOf("Posts", "Saved", "Drafts")
 val enumValuesChip = listOf("All", "Gamelists", "Articles", "Videos")
@@ -163,7 +163,7 @@ fun Account(
                         TabRowDefaults.PrimaryIndicator(
                             modifier = Modifier.tabIndicatorOffset(pagerState.currentPage),
                             width = tabWidths[pagerState.currentPage],
-                            color = colorResource(R.color.intl_cc_green_primary)
+                            color = IntlCcGreenPrimary
                         )
                     },
                 ) {
@@ -203,7 +203,6 @@ fun Account(
     }
 }
 
-
 @Composable
 fun PageContent(
     pagerState: PagerState, composeNavigator: AppComposeNavigator, viewModel: WelcomeViewModel
@@ -236,7 +235,7 @@ fun PageContent(
                             label = { Text(text = it, style = styleTextBtn) },
                             interactionSource = DisabledInteractionSource(),
                             colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = Green1a,
+                                selectedContainerColor = Green1A,
                                 labelColor = BlackDisable,
                                 selectedLabelColor = Color.White,
                                 containerColor = Black1A,
@@ -268,7 +267,6 @@ fun PageContent(
     }
 }
 
-
 @Composable
 fun HeaderAccount() {
     AsyncImage(
@@ -276,7 +274,6 @@ fun HeaderAccount() {
         contentDescription = null
     )
 }
-
 
 @Composable
 fun Content(composeNavigator: AppComposeNavigator, viewModel: WelcomeViewModel) {
@@ -310,5 +307,3 @@ fun Content(composeNavigator: AppComposeNavigator, viewModel: WelcomeViewModel) 
 //        Text(text = "hello world")
 //    }
 //}
-
-

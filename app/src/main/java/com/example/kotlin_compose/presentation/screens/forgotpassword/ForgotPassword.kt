@@ -24,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -40,7 +39,9 @@ import com.example.kotlin_compose.presentation.navigation.AppComposeNavigator
 import com.example.kotlin_compose.presentation.screens.welcome.nonScaledSp
 import com.example.kotlin_compose.presentation.screens.signup.extraSafeBottomPadding
 import com.example.kotlin_compose.ui.theme.BlackF16
+import com.example.kotlin_compose.ui.theme.IntlV2Grey40
 import com.example.kotlin_compose.ui.theme.PPNeu
+import com.example.kotlin_compose.ui.theme.PrimaryTextDisabledMaterialDark
 
 @Composable
 fun ForgotPassword(composeNavigator: AppComposeNavigator) {
@@ -79,7 +80,7 @@ fun ForgotPassword(composeNavigator: AppComposeNavigator) {
                     if (email.isEmpty()) {
                         Text(
                             text = "Enter your email",
-                            color = colorResource(R.color.intl_v2_grey_40),
+                            color = IntlV2Grey40,
                         )
                     }
                     innerTextField()
@@ -97,7 +98,7 @@ fun ForgotPassword(composeNavigator: AppComposeNavigator) {
 
         Text(
             "We’ll email you a code to reset your password.",
-            color = colorResource(R.color.primary_text_disabled_material_dark),
+            color = PrimaryTextDisabledMaterialDark,
             fontFamily = PPNeu,
             fontSize = 14.sp.nonScaledSp,
             fontWeight = FontWeight.Normal,
