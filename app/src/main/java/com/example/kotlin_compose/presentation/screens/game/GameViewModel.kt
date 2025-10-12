@@ -18,7 +18,6 @@ import kotlinx.coroutines.launch
 
 @Immutable
 sealed interface GameEvent {
-
     data object ShowRefreshFailure : GameEvent
 }
 

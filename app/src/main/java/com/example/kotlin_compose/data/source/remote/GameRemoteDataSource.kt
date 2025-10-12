@@ -12,7 +12,8 @@ interface GamesRemoteDataSource {
     suspend fun fetchGames(): Result<GamesDto>
 }
 
-class KtorGamesRemoteDataSource(
+//TODO: xem lai viec dispatchers io
+class GameRemoteDataSourceImpl(
     private val httpClient: HttpClient,
     private val endpointProvider: () -> String = { Constants.gameUrl() }
 ) : GamesRemoteDataSource {

@@ -1,5 +1,3 @@
-package com.klitsie.dataloading.data.source.local
-
 import com.example.kotlin_compose.domain.models.Games
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,7 +9,6 @@ import kotlin.Result.Companion.success
  * In-memory cache for games data.
  */
 interface GamesLocalDataSource {
-
     fun getCachedGames(): Result<List<Games>>
 
     fun saveGames(games: List<Games>)
@@ -20,7 +17,6 @@ interface GamesLocalDataSource {
 }
 
 class InMemoryGamesLocalDataSource : GamesLocalDataSource {
-
     private val gamesState = MutableStateFlow<List<Games>>(emptyList())
 
     override fun getCachedGames(): Result<List<Games>> {

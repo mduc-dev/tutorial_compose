@@ -1,11 +1,10 @@
 package com.example.kotlin_compose.di
 
+import WelcomeRemoteDataSourceImpl
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import com.example.kotlin_compose.data.datasources.PlayRepositoryImpl
-import com.example.kotlin_compose.data.datasources.SearchRepositoryImpl
-import com.example.kotlin_compose.data.datasources.WelcomeRepositoryImpl
 import com.example.kotlin_compose.data.loader.DataLoader
 import com.example.kotlin_compose.data.loader.DefaultGamesDataLoader
 import com.example.kotlin_compose.data.loader.GamesDataLoader
@@ -13,7 +12,8 @@ import com.example.kotlin_compose.data.loader.RefreshTrigger
 import com.example.kotlin_compose.data.mappers.DefaultGameDataMapper
 import com.example.kotlin_compose.data.mappers.GamesDataMapper
 import com.example.kotlin_compose.data.source.remote.GamesRemoteDataSource
-import com.example.kotlin_compose.data.source.remote.KtorGamesRemoteDataSource
+import com.example.kotlin_compose.data.source.remote.GameRemoteDataSourceImpl
+import com.example.kotlin_compose.data.source.remote.SearchRemoteDataSourceImpl
 import com.example.kotlin_compose.domain.models.Games
 import com.example.kotlin_compose.domain.repositories.DefaultGamesRepository
 import com.example.kotlin_compose.domain.repositories.GamesRepository
@@ -89,8 +89,11 @@ fun commonModule() = module {
 
     //data
     single<GamesLocalDataSource> { InMemoryGamesLocalDataSource() }
-    single<GamesRemoteDataSource> { KtorGamesRemoteDataSource(get()) }
+    single<GamesRemoteDataSource> { GameRemoteDataSourceImpl(get()) }
     single<GamesRepository> { DefaultGamesRepository(get(), get()) }
+
+    single<SearchRepository> { SearchRemoteDataSourceImpl(get()) }
+    single<WelcomeRepository> { WelcomeRemoteDataSourceImpl(get(), prefs = get()) }
 
     //presentation
     factory { RefreshTrigger() }
@@ -99,9 +102,7 @@ fun commonModule() = module {
     single<GamesDataMapper> { DefaultGameDataMapper() }
 
 
-    single<WelcomeRepository> { WelcomeRepositoryImpl(get(), prefs = get()) }
     single<AppComposeNavigator> { TapComposeNavigator() }
-    single<SearchRepository> { SearchRepositoryImpl(get()) }
     single<PlayRepository> { PlayRepositoryImpl(get(), prefs = get(), json = get()) }
 
     viewModel {
