@@ -12,7 +12,6 @@ import com.compose.taptap.di.initKoin
 class KotlinComposeApp : Application() {
     override fun onCreate() {
         super.onCreate()
-
         initKoin {
             androidLogger(level = Level.ERROR)
             androidContext(this@KotlinComposeApp)

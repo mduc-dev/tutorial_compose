@@ -1,6 +1,5 @@
 package com.compose.taptap.ui.launcher.account
 
-//import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -49,9 +48,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.compose.R
-import com.compose.presentation.navigation.AppComposeNavigator
-import com.compose.presentation.navigation.TapTapScreens
+import com.compose.taptap.R
+import com.compose.taptap.core.navigation.AppComposeNavigator
+import com.compose.taptap.core.navigation.TapTapScreen
+import com.compose.taptap.core.navigation.currentComposeNavigator
 import com.compose.taptap.ui.components.ButtonSize
 import com.compose.taptap.ui.components.DDButton
 import com.compose.taptap.ui.components.NoExistData
@@ -65,7 +65,6 @@ import com.compose.taptap.ui.theme.IntlCcGreenPrimary
 import com.compose.taptap.ui.theme.PPNeu
 import com.compose.taptap.ui.utils.DisabledInteractionSource
 import com.compose.taptap.ui.utils.isEmpty
-import com.compose.ui.theme.*
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -75,9 +74,9 @@ val enumValuesChip = listOf("All", "Gamelists", "Articles", "Videos")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Account(
-    composeNavigator: AppComposeNavigator,
     viewModel: WelcomeViewModel = koinViewModel<WelcomeViewModel>()
 ) {
+    val composeNavigator = currentComposeNavigator
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { tabs.size })
@@ -206,7 +205,9 @@ fun Account(
 
 @Composable
 fun PageContent(
-    pagerState: PagerState, composeNavigator: AppComposeNavigator, viewModel: WelcomeViewModel
+    pagerState: PagerState,
+    composeNavigator: AppComposeNavigator<TapTapScreen>,
+    viewModel: WelcomeViewModel
 ) {
     val styleTextBtn: TextStyle = MaterialTheme.typography.titleMedium.copy(
         fontFamily = PPNeu, fontWeight = FontWeight.Bold
@@ -277,7 +278,7 @@ fun HeaderAccount() {
 }
 
 @Composable
-fun Content(composeNavigator: AppComposeNavigator, viewModel: WelcomeViewModel) {
+fun Content(composeNavigator: AppComposeNavigator<TapTapScreen>, viewModel: WelcomeViewModel) {
     if (isEmpty("null")) {
         NoExistData(
             subTextNull = "Write a post to start your profile’s never-ending journey.",
@@ -294,9 +295,9 @@ fun Content(composeNavigator: AppComposeNavigator, viewModel: WelcomeViewModel) 
         )
         Text("logout", modifier = Modifier.clickable(onClick = {
             viewModel.signOut()
-            composeNavigator.navigate(TapTapScreens.Welcome.route) {
+            composeNavigator.navigate(TapTapScreen.Welcome) {
                 // clear out the main graph so we don't come back on back-press
-                popUpTo(TapTapScreens.MainGraph.route) { inclusive = true }
+                popUpTo(TapTapScreen.MainGraph) { inclusive = true }
             }
         }), Color.White)
     }

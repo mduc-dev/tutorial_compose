@@ -9,10 +9,11 @@ import androidx.compose.runtime.CompositionLocalProvider
 import com.compose.taptap.core.navigation.AppComposeNavigator
 import com.compose.taptap.core.navigation.LocalComposeNavigator
 import com.compose.taptap.core.navigation.TapTapScreen
-import com.compose.taptap.navigation.TapMain
+import com.compose.taptap.ui.TapTapMain
+import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
-    internal lateinit var composeNavigator: AppComposeNavigator<TapTapScreen>
+    internal val composeNavigator: AppComposeNavigator<TapTapScreen> by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +23,7 @@ class MainActivity : ComponentActivity() {
             CompositionLocalProvider(
                 LocalComposeNavigator provides composeNavigator,
             ) {
-                TapMain(composeNavigator = composeNavigator)
+                TapTapMain(composeNavigator = composeNavigator)
             }
         }
     }

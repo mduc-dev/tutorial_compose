@@ -14,7 +14,7 @@ android {
     namespace = "com.compose.taptap"
 
     defaultConfig {
-        applicationId = "com.compose.compose.taptap"
+        applicationId = "com.compose.taptap"
         versionCode = Configuration.versionCode
         versionName = Configuration.versionName
 

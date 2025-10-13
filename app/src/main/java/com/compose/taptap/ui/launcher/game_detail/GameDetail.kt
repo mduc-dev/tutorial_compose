@@ -7,11 +7,10 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.compose.presentation.navigation.AppComposeNavigator
 import com.compose.taptap.ui.theme.BlackF16
 
 @Composable
-fun GameDetail(composeNavigator: AppComposeNavigator) {
+fun GameDetail() {
     Column(
         modifier = Modifier
             .fillMaxSize()

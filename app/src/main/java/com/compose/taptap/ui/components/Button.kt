@@ -23,17 +23,17 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.compose.presentation.screens.welcome.nonScaledSp
+import com.compose.taptap.ui.launcher.welcome.nonScaledSp
 import com.compose.taptap.ui.theme.Black1A
 import com.compose.taptap.ui.theme.Black20
 import com.compose.taptap.ui.theme.BlackDisable
@@ -120,8 +120,7 @@ fun DDButton(
 
     val buttonColors = when (variant) {
         Variant.SOLID -> ButtonDefaults.buttonColors(
-            containerColor = PrimaryColor,
-            disabledContainerColor = PrimaryColor.copy(alpha = 0.3f)
+            containerColor = PrimaryColor, disabledContainerColor = PrimaryColor.copy(alpha = 0.3f)
         )
 
         Variant.BORDERED -> ButtonDefaults.buttonColors(
@@ -188,5 +187,4 @@ fun DDButton(
             }
         }
     }
-
 }

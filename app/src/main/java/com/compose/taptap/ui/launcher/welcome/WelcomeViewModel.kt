@@ -25,6 +25,7 @@ class WelcomeViewModel(
 
     val welcomeUiState = _welcomeUiState.asStateFlow()
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
+        Log.e("WelcomeVM", "Unhandled coroutine exception", exception)
         _welcomeUiState.value = AuthState.Error(exception.message ?: "Unknown error")
     }
 

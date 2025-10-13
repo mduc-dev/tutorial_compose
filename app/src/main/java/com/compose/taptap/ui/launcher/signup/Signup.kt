@@ -26,10 +26,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.compose.taptap.ui.components.AppBar
 import com.compose.taptap.ui.components.DDButton
-import com.compose.taptap.ui.theme.BlackF16
-import com.compose.taptap.ui.theme.IntlV2Grey40
 import com.compose.taptap.ui.theme.*
-import com.taptap.R
+import com.compose.taptap.R
+import com.compose.taptap.core.navigation.currentComposeNavigator
 
 fun extraSafeBottomPadding(): Dp {
     return if (Build.VERSION.SDK_INT == 29) 16.dp else 0.dp
@@ -40,6 +39,7 @@ fun Signup(
 ) {
     val nextPressed = remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
+    val composeNavigator = currentComposeNavigator
     Column(
         modifier = Modifier
             .fillMaxSize()

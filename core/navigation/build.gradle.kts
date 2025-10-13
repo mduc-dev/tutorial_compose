@@ -1,6 +1,6 @@
 plugins {
-    id("compose.taptap.android.application")
-    id("compose.taptap.android.application.compose")
+    id("compose.taptap.android.library")
+    id("compose.taptap.android.library.compose")
     alias(libs.plugins.kotlinx.serialization)
 }
 

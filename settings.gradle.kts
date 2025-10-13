@@ -1,4 +1,8 @@
+@file:Suppress("UnstableApiUsage")
+
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google()
         mavenCentral()
@@ -12,7 +16,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-includeBuild("build-logic")
 rootProject.name = "taptap-compose"
+
 include(":app")
 include(":core:navigation")

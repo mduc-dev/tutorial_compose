@@ -41,6 +41,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.compose.taptap.R
 import com.compose.taptap.data.network.models.App
 import com.compose.taptap.data.network.models.Banner
 import com.compose.taptap.data.network.models.Cover
@@ -49,14 +50,9 @@ import com.compose.taptap.data.network.models.Rating
 import com.compose.taptap.data.network.models.Stat
 import com.compose.taptap.data.network.models.Tag
 import com.compose.taptap.domain.models.Games
-import com.compose.R
-import com.compose.presentation.screens.welcome.nonScaledSp
-import com.compose.taptap.ui.theme.BlackF16
-import com.compose.taptap.ui.theme.GreenPrimary
-import com.compose.taptap.ui.theme.IntlV2Grey20
-import com.compose.taptap.ui.theme.IntlV2Grey40
-import com.compose.taptap.ui.theme.Kotlin_composeTheme
-import com.compose.taptap.ui.theme.PPNeu
+import com.compose.taptap.ui.launcher.welcome.nonScaledSp
+import com.compose.taptap.ui.theme.*
+
 
 @Composable
 fun TagLine(items: List<String>?) {
@@ -277,9 +273,7 @@ fun CardGame(
         }
 
         HorizontalDivider(
-            modifier = Modifier.padding(vertical = 10.dp),
-            thickness = 0.2.dp,
-            color = IntlV2Grey20
+            modifier = Modifier.padding(vertical = 10.dp), thickness = 0.2.dp, color = IntlV2Grey20
         )
     }
 }

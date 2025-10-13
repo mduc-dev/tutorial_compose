@@ -1,6 +1,7 @@
 package com.compose.taptap.data.mappers
 
 import com.compose.taptap.data.loader.LoadingResult
+import com.compose.taptap.data.loader.map
 import com.compose.taptap.domain.models.Games
 
 interface GamesDataMapper {

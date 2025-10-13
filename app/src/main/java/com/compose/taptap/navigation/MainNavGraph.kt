@@ -10,25 +10,27 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.compose.presentation.screens.account.Account
-import com.compose.presentation.screens.game.Game
-import com.compose.presentation.screens.play.Play
-import com.compose.presentation.screens.tavern.Tavern
+import androidx.navigation.toRoute
+import com.compose.taptap.core.navigation.TapTapScreen
+import com.compose.taptap.ui.launcher.account.Account
+import com.compose.taptap.ui.launcher.game.Game
+import com.compose.taptap.ui.launcher.play.Play
+import com.compose.taptap.ui.launcher.tavern.Tavern
 
 @Composable
-fun MainNavGraph(composeNavigator: AppComposeNavigator) {
+fun MainNavGraph() {
     val innerNavController = rememberNavController()
 
-    val backStackState by innerNavController.currentBackStackEntryAsState()
-    val currentRoute = backStackState?.destination?.route
-
-    val isBottomBarVisible = currentRoute contains BOTTOM_TAB.map { it.route }
+    val currentDestination by innerNavController.currentBackStackEntryAsState()
+    val currentScreen = currentDestination?.toRoute<TapTapScreen>()
+    val bottomTabRoutes = BOTTOM_TAB.map { it.route }
+    val isBottomBarVisible = bottomTabRoutes.contains(currentScreen)
 
     Scaffold(
         modifier = Modifier.fillMaxSize(), bottomBar = {
             if (isBottomBarVisible) {
                 BottomTabNavigator(
-                    currentRoute = currentRoute, onItemClick = { route ->
+                    currentRoute = currentScreen, onItemClick = { route ->
                         innerNavController.navigate(route) {
                             innerNavController.graph.startDestinationRoute?.let { startRoute ->
                                 popUpTo(startRoute) { saveState = true }
@@ -41,13 +43,13 @@ fun MainNavGraph(composeNavigator: AppComposeNavigator) {
         }) { innerPadding ->
         NavHost(
             navController = innerNavController,
-            startDestination = TapTapScreens.Game.route,
+            startDestination = TapTapScreen.Game,
             modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())
         ) {
-            composable(TapTapScreens.Game.route) { Game(composeNavigator) }
-            composable(TapTapScreens.Play.route) { Play(composeNavigator) }
-            composable(TapTapScreens.Tavern.route) { Tavern(composeNavigator) }
-            composable(TapTapScreens.You.route) { Account(composeNavigator) }
+            composable<TapTapScreen.Game> { Game() }
+            composable<TapTapScreen.Play> { Play() }
+            composable<TapTapScreen.Tavern> { Tavern() }
+            composable<TapTapScreen.You> { Account() }
         }
     }
 }

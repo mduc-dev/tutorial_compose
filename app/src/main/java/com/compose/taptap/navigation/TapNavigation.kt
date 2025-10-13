@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.ui.launcher.forgotpassword.ForgotPassword
 import com.compose.taptap.ui.launcher.game_detail.GameDetail
 import com.compose.taptap.ui.launcher.login.Login
@@ -16,13 +17,13 @@ import com.compose.taptap.ui.launcher.welcome.Welcome
 
 fun NavGraphBuilder.tapAuthNavigation(
 ) {
-    navigation(
-        route = TapTapScreens.AuthGraph.route, startDestination = TapTapScreens.Welcome.route
+    navigation<TapTapScreen.AuthGraph>(
+        startDestination = TapTapScreen.Welcome
     ) {
-        composable(route = TapTapScreens.Welcome.route) {
+        composable<TapTapScreen.Welcome> {
             Welcome()
         }
-        composable(route = TapTapScreens.Login.route, enterTransition = {
+        composable<TapTapScreen.Login>(enterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(300)
             )
@@ -41,32 +42,32 @@ fun NavGraphBuilder.tapAuthNavigation(
         }) {
             Login()
         }
-        composable(route = TapTapScreens.SignUp.route) {
+        composable<TapTapScreen.SignUp> {
             Signup()
         }
-        composable(route = TapTapScreens.ForgotPassword.route) {
+        composable<TapTapScreen.ForgotPassword> {
             ForgotPassword()
         }
-        composable(route = TapTapScreens.LoginWithoutPassword.route) {
+        composable<TapTapScreen.LoginWithoutPassword> {
             LoginWithoutPassword()
         }
     }
 }
 
 fun NavGraphBuilder.tapMainNavigation() {
-    navigation(
-        route = TapTapScreens.MainGraph.route, startDestination = TapTapScreens.MainScaffold.route
+    navigation<TapTapScreen.MainGraph>(
+        startDestination = TapTapScreen.MainScaffold
     ) {
-        composable(TapTapScreens.MainScaffold.route) {
+        composable<TapTapScreen.MainScaffold> {
             MainNavGraph()
         }
-        composable(TapTapScreens.Search.route) {
+        composable<TapTapScreen.Search> {
             Search()
         }
-        composable(TapTapScreens.Notifications.route) {
+        composable<TapTapScreen.Notifications> {
             Notifications()
         }
-        composable(TapTapScreens.GameDetail.route) {
+        composable<TapTapScreen.GameDetail> {
             GameDetail()
         }
     }

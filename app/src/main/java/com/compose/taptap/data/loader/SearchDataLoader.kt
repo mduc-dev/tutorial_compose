@@ -10,7 +10,7 @@ interface SearchDataLoader {
         coroutineScope: CoroutineScope,
         refreshTrigger: RefreshTrigger,
         onRefreshFailure: (Throwable) -> Unit,
-    ): StateFlow<LoadingResult<List<Games>>>
+    ): Any
 }
 
 class DefaultSearchDataLoader(
@@ -22,16 +22,7 @@ class DefaultSearchDataLoader(
         coroutineScope: CoroutineScope,
         refreshTrigger: RefreshTrigger,
         onRefreshFailure: (Throwable) -> Unit,
-    ): StateFlow<LoadingResult<List<Games>>> {
-        return dataLoader.loadAndObserveDataAsState(
-            coroutineScope = coroutineScope,
-            refreshTrigger = refreshTrigger,
-            initialData = loading(),
-            observeData = { searchRepository.observeGames() },
-            fetchData = {
-                searchRepository.refreshGames()
-            },
-            onRefreshFailure = onRefreshFailure,
-        )
+    ) {
+        return
     }
 }

@@ -56,7 +56,7 @@ import com.compose.taptap.core.navigation.currentComposeNavigator
 import com.compose.taptap.ui.theme.*
 import com.compose.taptap.ui.utils.AuthState
 import com.compose.taptap.ui.utils.Provider
-import com.taptap.R
+import com.compose.taptap.R
 import kotlinx.coroutines.isActive
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.cos
@@ -122,14 +122,14 @@ fun Welcome(
             Spacer(modifier = Modifier.weight(1f))
 
             // Third-party login section
-            ThirdLoginSection(composeNavigator, viewModel)
+            ThirdLoginSection(viewModel)
 
             Spacer(modifier = Modifier.height(30.dp))
 
             // Login button
             TextButton(
                 onClick = {
-                    composeNavigator.navigate(TapTapScreen.Login.route)
+                    composeNavigator.navigate(TapTapScreen.Login)
                 }, modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp)
             ) {
                 Text(
@@ -291,7 +291,7 @@ fun ThirdLoginSection(welcomeViewModel: WelcomeViewModel) {
         }
         Button(
             onClick = {
-                composeNavigator.navigate(TapTapScreen.SignUp.route)
+                composeNavigator.navigate(TapTapScreen.SignUp)
             },
             modifier = Modifier
                 .fillMaxWidth()

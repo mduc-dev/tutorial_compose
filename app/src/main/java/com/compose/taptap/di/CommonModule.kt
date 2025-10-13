@@ -6,6 +6,10 @@ import WelcomeRemoteDataSourceImpl
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import androidx.navigation.compose.ComposeNavigator
+import com.compose.taptap.core.navigation.AppComposeNavigator
+import com.compose.taptap.core.navigation.TapComposeNavigator
+import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.data.loader.DataLoader
 import com.compose.taptap.data.loader.DefaultGamesDataLoader
 import com.compose.taptap.data.loader.GamesDataLoader
@@ -23,12 +27,10 @@ import com.compose.taptap.domain.repositories.PlayRepository
 import com.compose.taptap.domain.repositories.SearchRepository
 import com.compose.taptap.domain.repositories.WelcomeRepository
 import com.compose.taptap.domain.utils.Constants
-import com.compose.presentation.navigation.AppComposeNavigator
-import com.compose.presentation.navigation.TapComposeNavigator
-import com.compose.presentation.screens.game.GameViewModel
-import com.compose.presentation.screens.play.PlayViewModel
-import com.compose.presentation.screens.search.SearchViewModel
-import com.compose.presentation.screens.welcome.WelcomeViewModel
+import com.compose.taptap.ui.launcher.game.GameViewModel
+import com.compose.taptap.ui.launcher.play.PlayViewModel
+import com.compose.taptap.ui.launcher.search.SearchViewModel
+import com.compose.taptap.ui.launcher.welcome.WelcomeViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.addDefaultResponseValidation
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -95,6 +97,7 @@ fun commonModule() = module {
     single<SearchRepository> { SearchRemoteDataSourceImpl(get()) }
     single<WelcomeRepository> { WelcomeRemoteDataSourceImpl(get(), prefs = get()) }
 
+
     //presentation
     factory { RefreshTrigger() }
     factory<DataLoader<List<Games>>> { DataLoader() }
@@ -102,7 +105,8 @@ fun commonModule() = module {
     single<GamesDataMapper> { DefaultGameDataMapper() }
 
 
-    single<AppComposeNavigator> { TapComposeNavigator() }
+    single<AppComposeNavigator<TapTapScreen>> { TapComposeNavigator() }
+
     single<PlayRepository> { PlayRemoteDataSourceImpl(get(), prefs = get(), json = get()) }
 
     viewModel {

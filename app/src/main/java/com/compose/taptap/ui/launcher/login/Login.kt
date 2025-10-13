@@ -50,30 +50,25 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.compose.R
+import com.compose.taptap.R
+import com.compose.taptap.core.navigation.AppComposeNavigator
+import com.compose.taptap.core.navigation.TapTapScreen
+import com.compose.taptap.core.navigation.currentComposeNavigator
 import com.compose.taptap.ui.components.AppBar
 import com.compose.taptap.ui.components.DDButton
 import com.compose.taptap.ui.components.Input
 import com.compose.taptap.ui.components.NoExistData
-import com.compose.presentation.navigation.AppComposeNavigator
-import com.compose.presentation.navigation.TapTapScreens
-import com.compose.presentation.screens.signup.extraSafeBottomPadding
-import com.compose.presentation.screens.welcome.nonScaledSp
-import com.compose.taptap.ui.theme.BlackDisable
-import com.compose.taptap.ui.theme.BlackF16
-import com.compose.taptap.ui.theme.GreenPrimary
-import com.compose.taptap.ui.theme.IntlCcGreenPrimary
-import com.compose.taptap.ui.theme.IntlV2Grey60
-import com.compose.taptap.ui.theme.PPNeu
-import com.compose.taptap.ui.theme.PrimaryTextDisabledMaterialDark
+import com.compose.taptap.ui.launcher.signup.extraSafeBottomPadding
+import com.compose.taptap.ui.launcher.welcome.nonScaledSp
+import com.compose.taptap.ui.theme.*
 import com.compose.taptap.ui.utils.DisabledInteractionSource
 import kotlinx.coroutines.launch
-import com.compose.ui.theme.*
 
 val tabs = listOf("Email", "Phone")
 
 @Composable
 fun Login() {
+    val composeNavigator = currentComposeNavigator
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val density = LocalDensity.current
@@ -158,7 +153,9 @@ fun Login() {
 
 @Composable
 fun PageContent(
-    pagerState: PagerState, modifier: Modifier = Modifier, composeNavigator: AppComposeNavigator
+    pagerState: PagerState,
+    modifier: Modifier = Modifier,
+    composeNavigator: AppComposeNavigator<TapTapScreen>
 ) {
     HorizontalPager(
         state = pagerState, modifier
@@ -266,7 +263,7 @@ fun PageContent(
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier
                             .align(Alignment.End)
-                            .clickable { composeNavigator.navigate(TapTapScreens.ForgotPassword.route) })
+                            .clickable { composeNavigator.navigate(TapTapScreen.ForgotPassword) })
 
                     Spacer(Modifier.weight(1f))
 
@@ -276,7 +273,7 @@ fun PageContent(
                         fontFamily = PPNeu,
                         fontSize = 13.sp.nonScaledSp,
                         fontWeight = FontWeight.Normal,
-                        modifier = Modifier.clickable { composeNavigator.navigate(TapTapScreens.LoginWithoutPassword.route) })
+                        modifier = Modifier.clickable { composeNavigator.navigate(TapTapScreen.LoginWithoutPassword) })
                     DDButton(
                         label = "Log in",
                         modifier = Modifier

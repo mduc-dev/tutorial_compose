@@ -31,15 +31,13 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.compose.R
+import com.compose.taptap.R
 import com.compose.taptap.ui.components.DDButton
 import com.compose.taptap.ui.components.Input
-import com.compose.presentation.screens.welcome.nonScaledSp
-import com.compose.presentation.screens.signup.extraSafeBottomPadding
-import com.compose.taptap.ui.theme.BlackF16
-import com.compose.taptap.ui.theme.IntlV2Grey40
-import com.compose.taptap.ui.theme.PPNeu
-import com.compose.taptap.ui.theme.PrimaryTextDisabledMaterialDark
+import com.compose.taptap.ui.launcher.signup.extraSafeBottomPadding
+import com.compose.taptap.ui.launcher.welcome.nonScaledSp
+import com.compose.taptap.ui.theme.*
+
 
 @Composable
 fun ForgotPassword() {

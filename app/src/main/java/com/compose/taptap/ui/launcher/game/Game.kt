@@ -59,10 +59,14 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.compose.taptap.R
+import com.compose.taptap.core.navigation.AppComposeNavigator
+import com.compose.taptap.core.navigation.TapTapScreen
+import com.compose.taptap.core.navigation.currentComposeNavigator
 import com.compose.taptap.data.network.models.App
 import com.compose.taptap.data.network.models.Category
+import com.compose.taptap.data.network.utils.ApiResult
 import com.compose.taptap.domain.models.Games
-import com.taptap.R
 import com.compose.taptap.ui.components.CardGame
 import com.compose.taptap.ui.components.LoadingResultScreen
 import com.compose.taptap.ui.components.NoExistData
@@ -79,7 +83,6 @@ import com.compose.taptap.ui.theme.V3CommonPrimaryRed
 import com.compose.taptap.ui.utils.DisabledInteractionSource
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
-import com.compose.taptap.ui.theme.*
 
 val topTabs: List<String> = listOf("Discover", "Top charts", "Calendar", "Gamelist")
 
@@ -91,6 +94,7 @@ fun Game(
     gameViewModel: GameViewModel = koinViewModel<GameViewModel>(),
     searchViewModel: SearchViewModel = koinViewModel<SearchViewModel>()
 ) {
+    val composeNavigator = currentComposeNavigator
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { topTabs.size })
     var selectedSubTab by remember { mutableIntStateOf(0) }
@@ -179,7 +183,10 @@ fun Game(
 }
 
 @Composable
-private fun TopBar(searchPlaceHolderText: String, composeNavigator: AppComposeNavigator) {
+private fun TopBar(
+    searchPlaceHolderText: String,
+    composeNavigator: AppComposeNavigator<TapTapScreen>
+) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -195,7 +202,7 @@ private fun TopBar(searchPlaceHolderText: String, composeNavigator: AppComposeNa
                     color = IntlV2Grey90,
                     shape = RoundedCornerShape(18.dp)
                 )
-                .clickable { composeNavigator.navigate(TapTapScreens.Search.route) },
+                .clickable { composeNavigator.navigate(TapTapScreen.Search) },
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -219,7 +226,7 @@ private fun TopBar(searchPlaceHolderText: String, composeNavigator: AppComposeNa
         }
         NotificationBell(
             unreadCount = 5,
-            onClick = { composeNavigator.navigate(TapTapScreens.Notifications.route) })
+            onClick = { composeNavigator.navigate(TapTapScreen.Notifications) })
     }
 }
 
@@ -273,7 +280,7 @@ fun NotificationBell(
 @Composable
 fun PageContent(
     pagerState: PagerState,
-    composeNavigator: AppComposeNavigator,
+    composeNavigator: AppComposeNavigator<TapTapScreen>,
     selectedSubTab: Int,
     onSubTabSelected: (Int) -> Unit,
     games: List<Games>,
@@ -304,7 +311,7 @@ fun DiscoverPage(
     selectedSubTab: Int,
     onSubTabSelected: (Int) -> Unit,
     games: List<Games>,
-    composeNavigator: AppComposeNavigator
+    composeNavigator: AppComposeNavigator<TapTapScreen>
 ) {
     LazyColumn(
         modifier = Modifier
@@ -361,7 +368,7 @@ fun DiscoverPage(
                                 .padding(vertical = 8.dp),
                             game = firstDailyGame,
                             onClick = {
-                                composeNavigator.navigate(TapTapScreens.GameDetail.route)
+                                composeNavigator.navigate(TapTapScreen.GameDetail)
                             })
                     }
                 }
@@ -372,7 +379,7 @@ fun DiscoverPage(
                             .padding(vertical = 8.dp),
                         game = game,
                         onClick = {
-                            composeNavigator.navigate(TapTapScreens.GameDetail.route)
+                            composeNavigator.navigate(TapTapScreen.GameDetail)
                         })
                 }
 
@@ -389,7 +396,7 @@ fun DiscoverPage(
 @Composable
 private fun CategorySection(
     category: Category,
-    composeNavigator: AppComposeNavigator,
+    composeNavigator: AppComposeNavigator<TapTapScreen>,
 ) {
     Column(
         modifier = Modifier
@@ -468,13 +475,13 @@ private fun CategorySection(
 @Composable
 private fun CategoryGameItem(
     item: App,
-    composeNavigator: AppComposeNavigator,
+    composeNavigator: AppComposeNavigator<TapTapScreen>,
 ) {
 
     Column(
         modifier = Modifier
             .width(84.dp)
-            .clickable { composeNavigator.navigate(TapTapScreens.GameDetail.route) },
+            .clickable { composeNavigator.navigate(TapTapScreen.GameDetail) },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {

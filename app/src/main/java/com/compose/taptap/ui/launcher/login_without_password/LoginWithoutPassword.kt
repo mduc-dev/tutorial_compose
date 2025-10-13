@@ -34,12 +34,8 @@ import com.compose.taptap.ui.components.DDButton
 import com.compose.taptap.ui.components.Input
 import com.compose.taptap.ui.launcher.signup.extraSafeBottomPadding
 import com.compose.taptap.ui.launcher.welcome.nonScaledSp
-import com.compose.taptap.ui.theme.BlackF16
-import com.compose.taptap.ui.theme.IntlV2Grey40
-import com.compose.taptap.ui.theme.PPNeu
-import com.compose.taptap.ui.theme.PrimaryTextDisabledMaterialDark
 import com.compose.taptap.ui.theme.*
-import com.taptap.R
+import com.compose.taptap.R
 
 @Composable
 fun LoginWithoutPassword() {
@@ -109,7 +105,7 @@ fun LoginWithoutPassword() {
                 .fillMaxWidth()
                 .navigationBarsPadding()
                 .imePadding()
-                .padding(bottom = extraSafeBottomPadding),
+                .padding(bottom = extraSafeBottomPadding()),
             onPress = {},
             enable = false
         )

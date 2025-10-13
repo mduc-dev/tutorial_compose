@@ -13,15 +13,15 @@ import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.Color.Companion.Unspecified
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.tooling.preview.Preview
+import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.ui.theme.BlackF16
 import com.compose.taptap.ui.theme.Kotlin_composeTheme
 import com.compose.taptap.ui.utils.DisabledInteractionSource
 
-
 @Composable
 fun BottomTabNavigator(
-    currentRoute: String?,
-    onItemClick: (String) -> Unit,
+    currentRoute: TapTapScreen?,
+    onItemClick: (TapTapScreen) -> Unit,
 ) {
     val navBarColors = NavigationBarItemDefaults.colors(
         selectedTextColor = MaterialTheme.colorScheme.primary,
@@ -54,7 +54,7 @@ fun BottomTabNavigator(
 @Composable
 fun BottomTabNavigationPreview() {
     Kotlin_composeTheme(dynamicColor = false) {
-        BottomTabNavigator(currentRoute = "Games", onItemClick = {
+        BottomTabNavigator(currentRoute = TapTapScreen.Game, onItemClick = {
             println("vao day")
         })
     }
