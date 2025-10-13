@@ -12,6 +12,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-
-rootProject.name = "kotlin_compose"
+includeBuild("build-logic")
+rootProject.name = "taptap-compose"
 include(":app")
+include(":core:navigation")
