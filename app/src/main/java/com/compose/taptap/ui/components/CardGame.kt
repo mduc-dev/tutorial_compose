@@ -298,7 +298,10 @@ fun CardGame(
     val isPreview = LocalInspectionMode.current
     Card(
         modifier = modifier.clickable { onClick(game) },
-        colors = CardDefaults.cardColors(containerColor = BlackF16),
+        colors = CardDefaults.cardColors(
+            containerColor = BlackF16,
+            contentColor = WhitePrimary
+        ),
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()

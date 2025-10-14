@@ -1,13 +1,19 @@
 package com.compose.taptap.navigation
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -28,13 +34,9 @@ fun TapNavHost(
 
     CompositionLocalProvider(LocalWelcomeViewModel provides welcomeViewModel) {
         when (authState) {
-            is AuthState.Authenticated ->
-                TapMainNavigationHost(navHostController)
+            is AuthState.Authenticated -> TapMainNavigationHost(navHostController)
 
-            is AuthState.Unauthenticated,
-            is AuthState.Idle,
-            is AuthState.Error,
-            is AuthState.Loading -> {
+            is AuthState.Unauthenticated, is AuthState.Idle, is AuthState.Error, is AuthState.Loading -> {
                 TapAuthNavigationHost(navHostController)
             }
         }
@@ -67,30 +69,45 @@ private fun TapMainNavigationHost(navHostController: NavHostController) {
         TapTapScreen.You::class.qualifiedName -> TapTapScreen.You
         else -> null
     }
-
     val bottomDestinations = remember {
         setOf(TapTapScreen.Game, TapTapScreen.Play, TapTapScreen.Tavern, TapTapScreen.You)
     }
 
+    val bottomBarHeight = 56.dp
+    val bottomBarHeightPx = with(LocalDensity.current) { bottomBarHeight.roundToPx().toFloat() }
+
+    val isBottomBarVisible = currentScreen in bottomDestinations
+
+    val bottomBarOffsetY by animateFloatAsState(
+        targetValue = if (isBottomBarVisible) 0f else bottomBarHeightPx,
+        animationSpec = tween(durationMillis = 300),
+        label = "BottomBarOffset"
+    )
+    val bottomBarAlpha by animateFloatAsState(
+        targetValue = if (isBottomBarVisible) 1f else 0f,
+        animationSpec = tween(durationMillis = 300),
+        label = "BottomBarAlpha"
+    )
+
     Scaffold(
-        bottomBar = {
-            if (currentScreen in bottomDestinations) {
-                BottomTabNavigator(currentRoute = currentScreen) { target ->
+        containerColor = BlackF16, bottomBar = {
+                TapBottomTab(  modifier = Modifier
+                    .graphicsLayer {
+                        translationY = bottomBarOffsetY
+                        alpha = bottomBarAlpha
+                    },currentRoute = currentScreen) { target ->
                     navHostController.navigate(target) {
                         popUpTo(TapTapScreen.Game) { saveState = true }
                         launchSingleTop = true
                         restoreState = true
                     }
                 }
-            }
-        }
-    ) { innerPadding ->
+        }) { innerPadding ->
         NavHost(
             navHostController,
             startDestination = TapTapScreen.MainGraph,
             modifier = Modifier
                 .padding(innerPadding)
-                .background(BlackF16)
                 .fillMaxSize()
         ) {
             tapMainNavigation()

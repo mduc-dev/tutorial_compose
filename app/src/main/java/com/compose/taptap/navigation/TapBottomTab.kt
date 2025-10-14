@@ -8,6 +8,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.Color.Companion.Unspecified
@@ -20,7 +21,8 @@ import com.compose.taptap.ui.utils.BOTTOM_TAB
 import com.compose.taptap.ui.utils.DisabledInteractionSource
 
 @Composable
-fun BottomTabNavigator(
+fun TapBottomTab(
+    modifier: Modifier,
     currentRoute: TapTapScreen?,
     onItemClick: (TapTapScreen) -> Unit,
 ) {
@@ -31,7 +33,7 @@ fun BottomTabNavigator(
         indicatorColor = Transparent,
     )
 
-    NavigationBar(containerColor = BlackF16) {
+    NavigationBar(modifier = modifier, containerColor = BlackF16) {
         BOTTOM_TAB.map { item ->
             NavigationBarItem(
                 selected = currentRoute == item.route,
@@ -55,7 +57,7 @@ fun BottomTabNavigator(
 @Composable
 fun BottomTabNavigationPreview() {
     Kotlin_composeTheme(dynamicColor = false) {
-        BottomTabNavigator(currentRoute = TapTapScreen.Game, onItemClick = {
+        TapBottomTab(currentRoute = TapTapScreen.Game, modifier = Modifier, onItemClick = {
             println("vao day")
         })
     }

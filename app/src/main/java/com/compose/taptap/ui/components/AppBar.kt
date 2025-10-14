@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.compose.taptap.ui.theme.BlackF16
 import com.compose.taptap.ui.theme.PPNeu
+import com.compose.taptap.ui.theme.WhitePrimary
 
 object AppBarDefaults {
     val Height = 56.dp
@@ -36,7 +37,7 @@ fun AppBar(
     modifier: Modifier = Modifier,
     navigationIcon: @Composable (() -> Unit)? = null,
     backgroundColor: Color = BlackF16,
-    contentColor: Color = Color.White,
+    contentColor: Color = WhitePrimary,
     actions: @Composable RowScope.() -> Unit = {}
 ) {
     Surface(

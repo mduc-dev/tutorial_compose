@@ -59,6 +59,7 @@ import com.compose.taptap.ui.launcher.welcome.WelcomeViewModel
 import com.compose.taptap.ui.theme.Black
 import com.compose.taptap.ui.theme.Black1A
 import com.compose.taptap.ui.theme.BlackDisable
+import com.compose.taptap.ui.theme.BlackF16
 import com.compose.taptap.ui.theme.BlackF3
 import com.compose.taptap.ui.theme.Green1A
 import com.compose.taptap.ui.theme.IntlCcGreenPrimary
@@ -87,10 +88,10 @@ fun Account(
         tabWidthStateList
     }
 
-    Scaffold(containerColor = Color.Black, topBar = {
+    Scaffold(containerColor = BlackF16, topBar = {
         TopAppBar(
             title = { }, colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Black
+            containerColor = BlackF16
         ), navigationIcon = {
             Column(
                 modifier = Modifier.padding(horizontal = 8.dp),
@@ -144,7 +145,8 @@ fun Account(
         LazyColumn(
             state = listState,
             modifier = Modifier
-                .fillMaxSize().background(Black),
+                .fillMaxSize()
+                .background(Black),
             horizontalAlignment = CenterHorizontally,
         ) {
             item {
@@ -202,8 +204,7 @@ fun Account(
 
 @Composable
 fun PageContent(
-    pagerState: PagerState,
-    viewModel: WelcomeViewModel
+    pagerState: PagerState, viewModel: WelcomeViewModel
 ) {
     val styleTextBtn: TextStyle = MaterialTheme.typography.titleMedium.copy(
         fontFamily = PPNeu, fontWeight = FontWeight.Bold
