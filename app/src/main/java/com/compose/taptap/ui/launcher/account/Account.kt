@@ -1,5 +1,6 @@
 package com.compose.taptap.ui.launcher.account
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -49,14 +50,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.compose.taptap.R
-import com.compose.taptap.core.navigation.AppComposeNavigator
-import com.compose.taptap.core.navigation.TapTapScreen
-import com.compose.taptap.core.navigation.currentComposeNavigator
 import com.compose.taptap.ui.components.ButtonSize
 import com.compose.taptap.ui.components.DDButton
 import com.compose.taptap.ui.components.NoExistData
 import com.compose.taptap.ui.components.Variant
+import com.compose.taptap.ui.launcher.welcome.LocalWelcomeViewModel
 import com.compose.taptap.ui.launcher.welcome.WelcomeViewModel
+import com.compose.taptap.ui.theme.Black
 import com.compose.taptap.ui.theme.Black1A
 import com.compose.taptap.ui.theme.BlackDisable
 import com.compose.taptap.ui.theme.BlackF3
@@ -66,7 +66,6 @@ import com.compose.taptap.ui.theme.PPNeu
 import com.compose.taptap.ui.utils.DisabledInteractionSource
 import com.compose.taptap.ui.utils.isEmpty
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
 
 val tabs = listOf("Posts", "Saved", "Drafts")
 val enumValuesChip = listOf("All", "Gamelists", "Articles", "Videos")
@@ -74,9 +73,8 @@ val enumValuesChip = listOf("All", "Gamelists", "Articles", "Videos")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Account(
-    viewModel: WelcomeViewModel = koinViewModel<WelcomeViewModel>()
+    viewModel: WelcomeViewModel = LocalWelcomeViewModel.current
 ) {
-    val composeNavigator = currentComposeNavigator
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { tabs.size })
@@ -146,8 +144,7 @@ fun Account(
         LazyColumn(
             state = listState,
             modifier = Modifier
-                .fillMaxSize()
-                .padding(top = padding.calculateTopPadding()),
+                .fillMaxSize().background(Black),
             horizontalAlignment = CenterHorizontally,
         ) {
             item {
@@ -197,7 +194,7 @@ fun Account(
                     }
                 }
                 //Content Tab
-                PageContent(pagerState, composeNavigator, viewModel)
+                PageContent(pagerState, viewModel)
             }
         }
     }
@@ -206,7 +203,6 @@ fun Account(
 @Composable
 fun PageContent(
     pagerState: PagerState,
-    composeNavigator: AppComposeNavigator<TapTapScreen>,
     viewModel: WelcomeViewModel
 ) {
     val styleTextBtn: TextStyle = MaterialTheme.typography.titleMedium.copy(
@@ -254,7 +250,7 @@ fun PageContent(
 
                     }
                 }
-                Content(composeNavigator, viewModel)
+                Content(viewModel)
             }
 
             2 -> {
@@ -278,7 +274,7 @@ fun HeaderAccount() {
 }
 
 @Composable
-fun Content(composeNavigator: AppComposeNavigator<TapTapScreen>, viewModel: WelcomeViewModel) {
+fun Content(viewModel: WelcomeViewModel) {
     if (isEmpty("null")) {
         NoExistData(
             subTextNull = "Write a post to start your profile’s never-ending journey.",
@@ -293,13 +289,11 @@ fun Content(composeNavigator: AppComposeNavigator<TapTapScreen>, viewModel: Welc
             size = ButtonSize.LG,
             variant = Variant.BORDERED
         )
-        Text("logout", modifier = Modifier.clickable(onClick = {
-            viewModel.signOut()
-            composeNavigator.navigate(TapTapScreen.Welcome) {
-                // clear out the main graph so we don't come back on back-press
-                popUpTo(TapTapScreen.MainGraph) { inclusive = true }
-            }
-        }), Color.White)
+        Text(
+            "logout",
+            modifier = Modifier.clickable(onClick = { viewModel.signOut() }),
+            color = Color.White
+        )
     }
 
 }

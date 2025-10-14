@@ -6,13 +6,17 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.compose.taptap.core.navigation.TapTapScreen
+import com.compose.taptap.ui.launcher.account.Account
 import com.compose.taptap.ui.launcher.forgotpassword.ForgotPassword
+import com.compose.taptap.ui.launcher.game.Game
 import com.compose.taptap.ui.launcher.game_detail.GameDetail
 import com.compose.taptap.ui.launcher.login.Login
 import com.compose.taptap.ui.launcher.login_without_password.LoginWithoutPassword
 import com.compose.taptap.ui.launcher.notifications.Notifications
+import com.compose.taptap.ui.launcher.play.Play
 import com.compose.taptap.ui.launcher.search.Search
 import com.compose.taptap.ui.launcher.signup.Signup
+import com.compose.taptap.ui.launcher.tavern.Tavern
 import com.compose.taptap.ui.launcher.welcome.Welcome
 
 fun NavGraphBuilder.tapAuthNavigation(
@@ -56,11 +60,13 @@ fun NavGraphBuilder.tapAuthNavigation(
 
 fun NavGraphBuilder.tapMainNavigation() {
     navigation<TapTapScreen.MainGraph>(
-        startDestination = TapTapScreen.MainScaffold
+        startDestination = TapTapScreen.Game
     ) {
-        composable<TapTapScreen.MainScaffold> {
-            MainNavGraph()
-        }
+        composable<TapTapScreen.Game> { Game() }
+        composable<TapTapScreen.Play> { Play() }
+        composable<TapTapScreen.Tavern> { Tavern() }
+        composable<TapTapScreen.You> { Account() }
+
         composable<TapTapScreen.Search> {
             Search()
         }

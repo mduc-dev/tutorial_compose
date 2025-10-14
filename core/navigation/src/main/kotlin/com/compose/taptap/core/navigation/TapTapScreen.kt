@@ -2,13 +2,9 @@ package com.compose.taptap.core.navigation
 
 import kotlinx.serialization.Serializable
 
-//TODO: checking if @Serializable is needed for sealed classes
 sealed interface TapTapScreen {
-    @Serializable
-    data object AuthGraph : TapTapScreen
-
-    @Serializable
-    data object MainGraph : TapTapScreen
+    @Serializable data object AuthGraph : TapTapScreen
+    @Serializable data object MainGraph : TapTapScreen
 
     //auth screens
     @Serializable
@@ -26,10 +22,7 @@ sealed interface TapTapScreen {
     @Serializable
     data object LoginWithoutPassword : TapTapScreen
 
-    //main screens
-    @Serializable
-    data object MainScaffold : TapTapScreen
-
+    //bottom tab screens
     @Serializable
     data object Game : TapTapScreen
 

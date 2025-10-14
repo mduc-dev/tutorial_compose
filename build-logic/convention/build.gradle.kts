@@ -2,7 +2,7 @@ plugins {
     `kotlin-dsl`
 }
 
-group = "com.compose.compose.taptap.buildlogic"
+group = "com.compose.taptap.buildlogic"
 
 java {
     toolchain {

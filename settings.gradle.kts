@@ -20,3 +20,4 @@ rootProject.name = "taptap-compose"
 
 include(":app")
 include(":core:navigation")
+include(":core:model")

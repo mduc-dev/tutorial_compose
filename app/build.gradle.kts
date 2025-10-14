@@ -6,6 +6,8 @@ plugins {
     id("compose.taptap.android.application.compose")
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlin)
+    //TODO: remove after create a new module model
+    alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.ktLint)
     alias(libs.plugins.compose.compiler)
 }
@@ -91,6 +93,9 @@ dependencies {
     implementation(libs.koin.composeViewModel)
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
+
+    //TODO: remove after create a new module model
+    implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.androidx.paging.compose)
 

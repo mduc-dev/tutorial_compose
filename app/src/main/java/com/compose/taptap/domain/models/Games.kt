@@ -4,8 +4,9 @@ import com.compose.taptap.data.network.models.App
 import com.compose.taptap.data.network.models.Category
 import com.compose.taptap.data.network.models.Dailies
 import com.compose.taptap.data.network.models.RecReason
+import kotlinx.serialization.Serializable
 
-
+@Serializable
 data class Games(
     val type: String?,
     val identification: String?,

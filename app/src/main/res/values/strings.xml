@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">kotlin_compose</string>
+    <string name="app_name">TapTap Compose</string>
     <string name="unknown_game">unknown game</string>
     <string name="sad_icon_right">sad_icon_right</string>
     <string name="sad_icon_top">sad_icon_top</string>

@@ -18,7 +18,6 @@ fun Search(
         modifier = Modifier
             .fillMaxSize()
             .background(IntlV2Black)
-            .statusBarsPadding()
     ) {
         Text("Search")
     }

@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.ui.theme.BlackF16
 import com.compose.taptap.ui.theme.Kotlin_composeTheme
+import com.compose.taptap.ui.utils.BOTTOM_TAB
 import com.compose.taptap.ui.utils.DisabledInteractionSource
 
 @Composable

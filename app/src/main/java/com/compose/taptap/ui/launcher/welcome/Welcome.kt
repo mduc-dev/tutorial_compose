@@ -51,14 +51,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.compose.taptap.core.navigation.TapTapScreen
+import com.compose.taptap.R
 import com.compose.taptap.core.navigation.currentComposeNavigator
+import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.ui.theme.*
 import com.compose.taptap.ui.utils.AuthState
 import com.compose.taptap.ui.utils.Provider
-import com.compose.taptap.R
 import kotlinx.coroutines.isActive
-import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.sin
@@ -68,23 +67,9 @@ val TextUnit.nonScaledSp
 
 @Composable
 fun Welcome(
-    viewModel: WelcomeViewModel = koinViewModel<WelcomeViewModel>(),
+    viewModel: WelcomeViewModel = LocalWelcomeViewModel.current,
 ) {
     val composeNavigator = currentComposeNavigator
-    val welcomeState by viewModel.welcomeUiState.collectAsState()
-
-    LaunchedEffect(welcomeState) {
-        when (welcomeState) {
-            is AuthState.Authenticated -> {
-                composeNavigator.navigate(TapTapScreen.MainGraph)
-            }
-
-            is AuthState.Error -> { /* show error UI */
-            }
-
-            else -> Unit
-        }
-    }
     Box(
         modifier = Modifier
             .fillMaxSize()

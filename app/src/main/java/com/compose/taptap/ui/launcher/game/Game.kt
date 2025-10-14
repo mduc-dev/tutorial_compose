@@ -114,8 +114,7 @@ fun Game(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BlackF16)
-            .statusBarsPadding(),
+            .background(BlackF16),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         TopBar(searchPlaceHolderText, composeNavigator)
