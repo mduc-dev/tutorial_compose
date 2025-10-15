@@ -13,7 +13,6 @@ import com.compose.taptap.data.loader.DataLoader
 import com.compose.taptap.data.loader.DefaultSearchDataLoader
 import com.compose.taptap.data.loader.RefreshTrigger
 import com.compose.taptap.data.loader.SearchDataLoader
-import com.compose.taptap.data.mappers.GamesDataMapper
 import com.compose.taptap.data.source.remote.GameRemoteDataSourceImpl
 import com.compose.taptap.data.source.remote.GamesRemoteDataSource
 import com.compose.taptap.data.source.remote.PlayRemoteDataSourceImpl
