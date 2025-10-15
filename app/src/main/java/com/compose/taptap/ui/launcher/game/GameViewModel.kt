@@ -4,9 +4,10 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.compose.taptap.data.loader.LoadingResult
 import com.compose.taptap.data.loader.RefreshTrigger
 import com.compose.taptap.data.loader.loading
-import com.compose.taptap.data.mappers.GamesDataMapper
+import com.compose.taptap.domain.models.Games
 import com.compose.taptap.domain.usecases.game.ObserveGameUseCase
 import com.compose.taptap.domain.usecases.game.ObserveGamesInput
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +18,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+
+sealed interface GamesDataMapper {
+    fun map(data: LoadingResult<List<Games>>): LoadingResult<List<Games>>
+}
 
 @Immutable
 sealed interface GameEvent {
