@@ -6,7 +6,6 @@ import WelcomeRemoteDataSourceImpl
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
-import androidx.navigation.compose.ComposeNavigator
 import com.compose.taptap.core.navigation.AppComposeNavigator
 import com.compose.taptap.core.navigation.TapComposeNavigator
 import com.compose.taptap.core.navigation.TapTapScreen
@@ -14,7 +13,6 @@ import com.compose.taptap.data.loader.DataLoader
 import com.compose.taptap.data.loader.DefaultSearchDataLoader
 import com.compose.taptap.data.loader.RefreshTrigger
 import com.compose.taptap.data.loader.SearchDataLoader
-import com.compose.taptap.data.mappers.DefaultGameDataMapper
 import com.compose.taptap.data.mappers.GamesDataMapper
 import com.compose.taptap.data.source.remote.GameRemoteDataSourceImpl
 import com.compose.taptap.data.source.remote.GamesRemoteDataSource
@@ -103,8 +101,6 @@ fun commonModule() = module {
     //presentation
     factory { RefreshTrigger() }
     factory<DataLoader<List<Games>>> { DataLoader() }
-    single<GamesDataMapper> { DefaultGameDataMapper() }
-
 
     factory<SearchDataLoader> { DefaultSearchDataLoader(get()) }
 
