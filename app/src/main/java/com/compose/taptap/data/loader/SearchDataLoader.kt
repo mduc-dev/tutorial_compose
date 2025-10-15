@@ -1,28 +1,41 @@
 package com.compose.taptap.data.loader
 
-import com.compose.taptap.domain.models.Games
-import com.compose.taptap.domain.repositories.SearchRepository
+import com.compose.taptap.data.network.models.SearchPlaceHolder
+import com.compose.taptap.data.network.utils.ApiResult
+import com.compose.taptap.domain.usecases.search.FetchSearchPlaceholderUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 
 interface SearchDataLoader {
-    fun loadAndObserveSearch(
+    fun loadSearchPlaceholder(
         coroutineScope: CoroutineScope,
-        refreshTrigger: RefreshTrigger,
-        onRefreshFailure: (Throwable) -> Unit,
-    ): Any
+        refreshTrigger: RefreshTrigger? = null,
+        onRefreshFailure: (Throwable) -> Unit = {},
+    ): StateFlow<LoadingResult<ApiResult<SearchPlaceHolder>>>
 }
 
 class DefaultSearchDataLoader(
-    private val searchRepository: SearchRepository,
-    private val dataLoader: DataLoader<List<Games>> = DataLoader(),
+    private val fetchSearchPlaceholderUseCase: FetchSearchPlaceholderUseCase,
+    private val dataLoader: DataLoader<ApiResult<SearchPlaceHolder>> = DataLoader(),
 ) : SearchDataLoader {
 
-    override fun loadAndObserveSearch(
+    override fun loadSearchPlaceholder(
         coroutineScope: CoroutineScope,
-        refreshTrigger: RefreshTrigger,
+        refreshTrigger: RefreshTrigger?,
         onRefreshFailure: (Throwable) -> Unit,
-    ) {
-        return
+    ): StateFlow<LoadingResult<ApiResult<SearchPlaceHolder>>> {
+
+        return dataLoader.loadAndObserveDataAsState(
+            coroutineScope = coroutineScope,
+            refreshTrigger = refreshTrigger,
+            initialData = loading(),
+            fetchData = { previous ->
+                runCatching {
+                    fetchSearchPlaceholderUseCase.execute(Unit).first()
+                }
+            },
+            onRefreshFailure = onRefreshFailure,
+        )
     }
 }

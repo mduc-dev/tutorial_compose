@@ -35,7 +35,6 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -57,6 +56,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.compose.taptap.R
 import com.compose.taptap.core.navigation.AppComposeNavigator
@@ -89,7 +89,6 @@ val subTabs: List<String> = listOf("For you", "Editors' choice", "Arcade", "Stra
 
 @Composable
 fun Game(
-//    composeNavigator: AppComposeNavigator,
     gameViewModel: GameViewModel = koinViewModel<GameViewModel>(),
     searchViewModel: SearchViewModel = koinViewModel<SearchViewModel>()
 ) {
@@ -97,25 +96,18 @@ fun Game(
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { topTabs.size })
     var selectedSubTab by remember { mutableIntStateOf(0) }
-    val screenState by gameViewModel.screenState.collectAsState()
+
+    val gameState by gameViewModel.gameUiState.collectAsStateWithLifecycle()
 //    val event by gameViewModel.event.collectAsState()
-    val placeholderState by searchViewModel.searchUiState.collectAsState()
-    val searchPlaceHolderText by remember {
-        derivedStateOf {
-            when (placeholderState) {
-                is ApiResult.Success -> (placeholderState as ApiResult.Success).data.firstTextOrDefault()
-                is ApiResult.Error -> "Discover Superb Games"
-                is ApiResult.Loading -> "Loading..."
-            }
-        }
-    }
+    val placeholderState by searchViewModel.searchUiState.collectAsStateWithLifecycle()
+
 
     Column(
         modifier = Modifier
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        TopBar(searchPlaceHolderText, composeNavigator)
+        TopBar(placeholderState.placeholderText, composeNavigator)
 
         HorizontalDivider(
             color = IntlCcDivider, thickness = 1.dp
@@ -164,7 +156,7 @@ fun Game(
         }
         LoadingResultScreen(
             modifier = Modifier.fillMaxSize(),
-            loadingResult = screenState,
+            loadingResult = gameState,
             onRefresh = gameViewModel::refresh,
             content = { games, isLoading ->
                 PageContent(

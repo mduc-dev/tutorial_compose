@@ -11,9 +11,9 @@ import com.compose.taptap.core.navigation.AppComposeNavigator
 import com.compose.taptap.core.navigation.TapComposeNavigator
 import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.data.loader.DataLoader
-import com.compose.taptap.data.loader.DefaultGamesDataLoader
-import com.compose.taptap.data.loader.GamesDataLoader
+import com.compose.taptap.data.loader.DefaultSearchDataLoader
 import com.compose.taptap.data.loader.RefreshTrigger
+import com.compose.taptap.data.loader.SearchDataLoader
 import com.compose.taptap.data.mappers.DefaultGameDataMapper
 import com.compose.taptap.data.mappers.GamesDataMapper
 import com.compose.taptap.data.source.remote.GameRemoteDataSourceImpl
@@ -26,6 +26,8 @@ import com.compose.taptap.domain.repositories.GamesRepository
 import com.compose.taptap.domain.repositories.PlayRepository
 import com.compose.taptap.domain.repositories.SearchRepository
 import com.compose.taptap.domain.repositories.WelcomeRepository
+import com.compose.taptap.domain.usecases.game.ObserveGameUseCase
+import com.compose.taptap.domain.usecases.search.FetchSearchPlaceholderUseCase
 import com.compose.taptap.domain.utils.Constants
 import com.compose.taptap.ui.launcher.game.GameViewModel
 import com.compose.taptap.ui.launcher.play.PlayViewModel
@@ -101,9 +103,14 @@ fun commonModule() = module {
     //presentation
     factory { RefreshTrigger() }
     factory<DataLoader<List<Games>>> { DataLoader() }
-    factory<GamesDataLoader> { DefaultGamesDataLoader(get(), get()) }
     single<GamesDataMapper> { DefaultGameDataMapper() }
 
+
+    factory<SearchDataLoader> { DefaultSearchDataLoader(get()) }
+
+    //use-case
+    factory<ObserveGameUseCase> { ObserveGameUseCase(get()) }
+    factory<FetchSearchPlaceholderUseCase> { FetchSearchPlaceholderUseCase(get()) }
 
     single<AppComposeNavigator<TapTapScreen>> { TapComposeNavigator() }
 
