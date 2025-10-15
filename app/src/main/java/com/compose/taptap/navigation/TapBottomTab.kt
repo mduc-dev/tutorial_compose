@@ -10,12 +10,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.Gray
-import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.Color.Companion.Unspecified
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.tooling.preview.Preview
 import com.compose.taptap.core.navigation.TapTapScreen
-import com.compose.taptap.ui.theme.BlackF16
+import com.compose.taptap.ui.theme.*
 import com.compose.taptap.ui.theme.Kotlin_composeTheme
 import com.compose.taptap.ui.utils.BOTTOM_TAB
 import com.compose.taptap.ui.utils.DisabledInteractionSource
@@ -28,7 +26,7 @@ fun TapBottomTab(
 ) {
     val navBarColors = NavigationBarItemDefaults.colors(
         selectedTextColor = MaterialTheme.colorScheme.primary,
-        unselectedIconColor = White,
+        unselectedIconColor = WhitePrimary,
         unselectedTextColor = Gray,
         indicatorColor = Transparent,
     )
@@ -43,10 +41,10 @@ fun TapBottomTab(
                     Icon(
                         painter = if (currentRoute == item.route) item.selectedIcon else item.icon,
                         contentDescription = item.title,
-                        tint = if (item.title == "You") White else Unspecified
+                        tint = if (item.title == "You") WhitePrimary else Unspecified
                     )
                 },
-                label = { Text(item.title, color = White) },
+                label = { Text(item.title, color = WhitePrimary) },
                 colors = navBarColors,
             )
         }

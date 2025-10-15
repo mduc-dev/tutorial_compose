@@ -22,3 +22,6 @@
 
 #---------------Begin: proguard configuration for Pusher Java Client  ----------
 -dontwarn org.slf4j.impl.StaticLoggerBinder
+# Keep the names of the TapTapScreen sealed class/interface and its nested objects
+# This is crucial for navigation logic that relies on qualified class names.
+-keepnames class com.compose.taptap.core.navigation.TapTapScreen, com.compose.taptap.core.navigation.TapTapScreen$*
