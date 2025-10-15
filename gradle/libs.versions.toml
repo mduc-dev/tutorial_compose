@@ -1,35 +1,40 @@
 [versions]
 agp = "8.13.0"
-kotlin = "2.2.10"
-ktLint = "11.6.0"
+kotlin = "2.2.20"
+ktLint = "13.1.0"
 
 core-ktx = "1.17.0"
-lifecycle-runtime-ktx = "2.9.3"
-activity-compose = "1.10.1"
-compose-bom = "2025.08.01"
+lifecycle-runtime-ktx = "2.9.4"
+activity-compose = "1.11.0"
+compose-bom = "2025.09.01"
 
 androidx-junit = "1.3.0"
 espresso-core = "3.7.0"
 junit = "4.13.2"
 
 material-icons-extended = "1.7.8"
-navigation-compose = "2.9.3"
-accompanist-systemuicontroller = "0.34.0"
+navigation-compose = "2.9.5"
 
-accompanist-navigation-animation = "0.28.0"
 coil = "3.3.0"
 constraintlayout-compose = "1.1.1"
 
-paging = "3.3.0-alpha02-0.5.1"
+#paging = "3.3.0-alpha02-0.5.1"
 
-koinCore = "3.5.6"
-koinCompose = "1.1.5"
-koinComposeViewModel = "1.2.0-Beta5"
-koinAndroid = "3.5.6"
-koinAndroidxCompose = "3.5.6"
+koinCore = "4.1.1"
+koinCompose = "4.1.1"
+koinComposeViewModel = "4.1.1"
+koinAndroid = "4.1.1"
+koinAndroidxCompose = "4.1.1"
 
-ktor = "3.1.0"
-kotlinxSerializationJson = "1.8.0"
+ktor = "3.3.0"
+kotlinxSerializationJson = "1.9.0"
+pagingCompose = "3.3.6"
+
+coroutines = "1.10.2"
+
+media3-exoplayer = "1.8.0"
+appcompat = "1.7.1"
+material = "1.13.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -53,11 +58,18 @@ koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", versi
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koinCompose" }
 koin-composeViewModel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koinComposeViewModel" }
 
-paging-common = { module = "app.cash.paging:paging-common", version.ref = "paging" }
-paging-compose = { module = "app.cash.paging:paging-compose-common", version.ref = "paging" }
+# ExoPlayer
+media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3-exoplayer" }
+media3-exoplayer-dash = { module = "androidx.media3:media3-exoplayer-dash", version.ref = "media3-exoplayer" }
+media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3-exoplayer" }
+media3-ui-compose = { module = "androidx.media3:media3-ui-compose", version.ref = "media3-exoplayer" }
 
-kotlinX-serializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
+# Dependencies of the included build-logic
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+compose-compiler-gradlePlugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
 ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-contentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
@@ -71,23 +83,25 @@ coil-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coi
 
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayout-compose" }
 
-accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist-systemuicontroller" }
-
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "material-icons-extended" }
 
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
+androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "pagingCompose" }
 
-accompanist-navigation-animation = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanist-navigation-animation" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 
 [plugins]
 ktLint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktLint" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlinX-serialization-plugin = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 #kotlin 2.0 require compose compiler https://developer.android.com/develop/ui/compose/compiler?hl=vi
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+android-library = { id = "com.android.library", version.ref = "agp" }
 
 [bundles]
 ktor = ["ktor-core", "ktor-contentNegotiation", "ktor-json", "ktor-logging"]

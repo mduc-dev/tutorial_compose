@@ -1,4 +1,8 @@
+@file:Suppress("UnstableApiUsage")
+
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google()
         mavenCentral()
@@ -12,6 +16,8 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+rootProject.name = "taptap-compose"
 
-rootProject.name = "kotlin_compose"
 include(":app")
+include(":core:navigation")
+include(":core:model")

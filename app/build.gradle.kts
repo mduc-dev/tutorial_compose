@@ -1,23 +1,24 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import com.compose.taptap.Configuration
 
 plugins {
+    id("compose.taptap.android.application")
+    id("compose.taptap.android.application.compose")
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlin)
-    alias(libs.plugins.kotlinX.serialization.plugin)
+    //TODO: remove after create a new module model
+    alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.ktLint)
     alias(libs.plugins.compose.compiler)
 }
 
 android {
-    namespace = "com.example.kotlin_compose"
-    compileSdk = 36
+    namespace = "com.compose.taptap"
 
     defaultConfig {
-        applicationId = "com.example.kotlin_compose"
-        minSdk = 24
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        applicationId = "com.compose.taptap"
+        versionCode = Configuration.versionCode
+        versionName = Configuration.versionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -41,8 +42,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     buildFeatures {
@@ -58,11 +59,14 @@ android {
 
 kotlin {
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_1_8)
+        jvmTarget.set(JvmTarget.JVM_21)
     }
 }
 
 dependencies {
+    //cores
+    implementation(projects.core.navigation)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -73,23 +77,29 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.constraintlayout.compose)
 
-    implementation(libs.kotlinX.serializationJson)
-
     implementation(libs.bundles.ktor)
     implementation(libs.ktor.android)
     implementation(libs.bundles.coil)
 
-    implementation(libs.paging.compose)
-    implementation(libs.paging.common)
 
+    implementation(libs.media3.exoplayer)
+    implementation(libs.media3.exoplayer.dash)
+    implementation(libs.media3.ui)
+    implementation(libs.media3.ui.compose)
+
+    // di
     implementation(libs.koin.core)
     implementation(libs.koin.compose)
     implementation(libs.koin.composeViewModel)
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
 
-    implementation(libs.koin.compose)
+    //TODO: remove after create a new module model
+    implementation(libs.kotlinx.serialization.json)
 
+    implementation(libs.androidx.paging.compose)
+
+    //unit test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -98,15 +108,8 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.tooling.manifest)
 
-    // System UI Controller
-    implementation(libs.accompanist.systemuicontroller)
-
-    // Navigation
-    implementation(libs.androidx.navigation.compose)
 
     // Extend icons
     implementation(libs.androidx.material.icons.extended)
 
-    // Navigation Animation
-    implementation(libs.accompanist.navigation.animation)
 }
