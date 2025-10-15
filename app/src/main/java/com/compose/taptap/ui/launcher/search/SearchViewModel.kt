@@ -1,34 +1,63 @@
 package com.compose.taptap.ui.launcher.search
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.compose.taptap.data.network.models.SearchPlaceHolder
+import com.compose.taptap.data.loader.LoadingResult
+import com.compose.taptap.data.loader.RefreshTrigger
+import com.compose.taptap.data.loader.SearchDataLoader
 import com.compose.taptap.data.network.utils.ApiResult
-import com.compose.taptap.domain.repositories.SearchRepository
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+@Stable
+data class SearchUiState(
+    val isLoading: Boolean = false,
+    val placeholderText: String = "Discover Superb Games",
+    val error: Throwable? = null,
+)
 
-class SearchViewModel(private val searchRepository: SearchRepository) : ViewModel() {
-    private val _searchUiState = MutableStateFlow<ApiResult<SearchPlaceHolder>>(ApiResult.Loading)
-    val searchUiState = _searchUiState.asStateFlow()
+class SearchViewModel(
+    searchDataLoader: SearchDataLoader,
+    private val refreshTrigger: RefreshTrigger,
+) : ViewModel() {
 
-    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
-        _searchUiState.update { ApiResult.Error(exception) }
-    }
+    val data = searchDataLoader.loadSearchPlaceholder(
+        coroutineScope = viewModelScope,
+        refreshTrigger = refreshTrigger,
+        onRefreshFailure = { throwable ->
+            println(throwable)
+        })
+
+    val searchUiState = data.map { result ->
+        when (result) {
+            is LoadingResult.Loading -> SearchUiState(isLoading = true)
+            is LoadingResult.Success -> {
+                when (val api = result.value) {
+                    is ApiResult.Success -> {
+                        val text = api.data.firstTextOrDefault()
+                        SearchUiState(isLoading = false, placeholderText = text)
+                    }
+
+                    is ApiResult.Error -> SearchUiState(error = api.exception)
+                    else -> SearchUiState(isLoading = true)
+                }
+            }
+
+            is LoadingResult.Failure -> SearchUiState(error = result.throwable)
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = SearchUiState(isLoading = true)
+    )
 
     init {
-        fetchSearchPLaceHolder()
-    }
-
-    fun fetchSearchPLaceHolder() {
-        viewModelScope.launch(coroutineExceptionHandler) {
-            searchRepository.fetchSearchPlaceholder().collect {
-                _searchUiState.value = it
-            }
+        viewModelScope.launch {
+            println("🚀 Manually triggering fetchSearchPlaceholder")
+            refreshTrigger.refresh()
         }
     }
 }

@@ -4,9 +4,11 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.compose.taptap.data.loader.GamesDataLoader
 import com.compose.taptap.data.loader.RefreshTrigger
+import com.compose.taptap.data.loader.loading
 import com.compose.taptap.data.mappers.GamesDataMapper
+import com.compose.taptap.domain.usecases.game.ObserveGameUseCase
+import com.compose.taptap.domain.usecases.game.ObserveGamesInput
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,7 +25,7 @@ sealed interface GameEvent {
 
 @Stable
 class GameViewModel(
-    gamesDataLoader: GamesDataLoader,
+    observeGamesUseCase: ObserveGameUseCase,
     private val gamesDataMapper: GamesDataMapper,
     private val refreshTrigger: RefreshTrigger,
 ) : ViewModel() {
@@ -31,19 +33,18 @@ class GameViewModel(
     private val _event = MutableStateFlow<GameEvent?>(null)
     val event = _event.asStateFlow()
 
-    private val data = gamesDataLoader.loadAndObserveGames(
-        coroutineScope = viewModelScope,
-        refreshTrigger = refreshTrigger,
-        onRefreshFailure = { throwable ->
-            println(throwable)
-            _event.update { GameEvent.ShowRefreshFailure }
-        },
-    )
-
-    val screenState = data.map { gamesDataMapper.map(it) }.stateIn(
+    private val data = observeGamesUseCase.execute(
+        ObserveGamesInput(refreshTrigger = refreshTrigger)
+    ).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(),
-        initialValue = gamesDataMapper.map(data.value),
+        initialValue = loading()
+    )
+
+    val gameUiState = data.map { gamesDataMapper.map(it) }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = gamesDataMapper.map(data.value)
     )
 
     fun refresh() {
