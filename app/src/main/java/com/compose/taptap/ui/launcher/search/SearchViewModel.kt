@@ -3,14 +3,10 @@ package com.compose.taptap.ui.launcher.search
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.compose.taptap.data.loader.LoadingResult
-import com.compose.taptap.data.loader.RefreshTrigger
-import com.compose.taptap.data.loader.SearchDataLoader
-import com.compose.taptap.data.network.utils.ApiResult
+import com.compose.taptap.data.util.LoadingResult
+import com.compose.taptap.domain.usecases.search.GetSearchPlaceholderFlowUseCase
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
 @Stable
 data class SearchUiState(
@@ -20,44 +16,12 @@ data class SearchUiState(
 )
 
 class SearchViewModel(
-    searchDataLoader: SearchDataLoader,
-    private val refreshTrigger: RefreshTrigger,
+    getSearchPlaceholderUseCase: GetSearchPlaceholderFlowUseCase,
 ) : ViewModel() {
-
-    val data = searchDataLoader.loadSearchPlaceholder(
-        coroutineScope = viewModelScope,
-        refreshTrigger = refreshTrigger,
-        onRefreshFailure = { throwable ->
-            println(throwable)
-        })
-
-    val searchUiState = data.map { result ->
-        when (result) {
-            is LoadingResult.Loading -> SearchUiState(isLoading = true)
-            is LoadingResult.Success -> {
-                when (val api = result.value) {
-                    is ApiResult.Success -> {
-                        val text = api.data.firstTextOrDefault()
-                        SearchUiState(isLoading = false, placeholderText = text)
-                    }
-
-                    is ApiResult.Error -> SearchUiState(error = api.exception)
-                    else -> SearchUiState(isLoading = true)
-                }
-            }
-
-            is LoadingResult.Failure -> SearchUiState(error = result.throwable)
-        }
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(),
-        initialValue = SearchUiState(isLoading = true)
-    )
-
-    init {
-        viewModelScope.launch {
-            println("🚀 Manually triggering fetchSearchPlaceholder")
-            refreshTrigger.refresh()
-        }
-    }
+    val searchUiState =
+        getSearchPlaceholderUseCase(Unit).stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = LoadingResult.Loading
+        )
 }

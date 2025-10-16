@@ -45,8 +45,6 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil3.compose.AsyncImage
 import com.compose.taptap.R
-import com.compose.taptap.core.navigation.AppComposeNavigator
-import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.core.navigation.currentComposeNavigator
 import com.compose.taptap.ui.launcher.welcome.nonScaledSp
 import com.compose.taptap.ui.theme.BlackF16
@@ -56,6 +54,7 @@ import com.compose.taptap.ui.theme.IntlCcGreenPrimary
 import com.compose.taptap.ui.theme.IntlV2Grey20
 import com.compose.taptap.ui.theme.IntlV2Grey60
 import com.compose.taptap.ui.theme.PPNeu
+import com.compose.taptap.ui.theme.WhitePrimary
 import com.compose.taptap.ui.utils.DisabledInteractionSource
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -106,7 +105,7 @@ fun Play(
         ) {
             tabs.forEachIndexed { tabIndex, item ->
                 Tab(
-                    selectedContentColor = Color.White,
+                    selectedContentColor = WhitePrimary,
                     unselectedContentColor = IntlV2Grey60,
                     selected = tabIndex == pagerState.currentPage,
                     interactionSource = DisabledInteractionSource(),
@@ -136,7 +135,6 @@ fun Play(
             instantGames = instantGames,
             recentlyGames = recentlyGames,
             modifier = Modifier.weight(1f),
-            composeNavigator = composeNavigator,
             onPlayGame = { game ->
                 playViewModel.onPLayGame(game)
             })
@@ -150,7 +148,6 @@ fun PageContent(
     instantGames: LazyPagingItems<InstantGameItem>,
     recentlyGames: List<InstantGameItem>,
     modifier: Modifier = Modifier,
-    composeNavigator: AppComposeNavigator<TapTapScreen>,
     onPlayGame: (InstantGameItem) -> Unit
 ) {
 
@@ -238,12 +235,13 @@ fun CardGame(item: InstantGameItem, onClick: () -> Unit) {
                     Icon(
                         painter = painterResource(id = R.drawable.thi_score_icon),
                         contentDescription = "rating_score",
-                        modifier = Modifier.size(14.dp)
+                        modifier = Modifier.size(14.dp),
+                        tint = WhitePrimary
                     )
 
                     Text(
                         text = score,
-                        color = Color.White,
+                        color = WhitePrimary,
                         style = MaterialTheme.typography.labelMedium,
                         fontFamily = PPNeu,
                         fontWeight = FontWeight.Bold,
@@ -255,7 +253,7 @@ fun CardGame(item: InstantGameItem, onClick: () -> Unit) {
 
         Text(
             text = item.title,
-            color = Color.White,
+            color = WhitePrimary,
             style = MaterialTheme.typography.titleMedium,
             fontFamily = PPNeu,
             fontWeight = FontWeight.Bold,

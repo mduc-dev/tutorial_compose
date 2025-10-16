@@ -35,7 +35,6 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -62,10 +61,9 @@ import com.compose.taptap.R
 import com.compose.taptap.core.navigation.AppComposeNavigator
 import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.core.navigation.currentComposeNavigator
-import com.compose.taptap.data.network.models.App
-import com.compose.taptap.data.network.models.Category
-import com.compose.taptap.data.network.utils.ApiResult
-import com.compose.taptap.domain.models.Games
+import com.compose.taptap.data.model.App
+import com.compose.taptap.data.model.Category
+import com.compose.taptap.data.model.ListItem
 import com.compose.taptap.ui.components.CardGame
 import com.compose.taptap.ui.components.LoadingResultScreen
 import com.compose.taptap.ui.components.NoExistData
@@ -97,9 +95,9 @@ fun Game(
     val pagerState = rememberPagerState(pageCount = { topTabs.size })
     var selectedSubTab by remember { mutableIntStateOf(0) }
 
-    val gameState by gameViewModel.gameUiState.collectAsStateWithLifecycle()
+    val gameUiState by gameViewModel.gameUiStateFlow.collectAsStateWithLifecycle()
 //    val event by gameViewModel.event.collectAsState()
-    val placeholderState by searchViewModel.searchUiState.collectAsStateWithLifecycle()
+//    val placeholderState by searchViewModel.searchUiState.collectAsStateWithLifecycle()
 
 
     Column(
@@ -107,7 +105,7 @@ fun Game(
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        TopBar(placeholderState.placeholderText, composeNavigator)
+//        TopBar(placeholderState, composeNavigator)
 
         HorizontalDivider(
             color = IntlCcDivider, thickness = 1.dp
@@ -156,7 +154,7 @@ fun Game(
         }
         LoadingResultScreen(
             modifier = Modifier.fillMaxSize(),
-            loadingResult = gameState,
+            loadingResult = gameUiState,
             onRefresh = gameViewModel::refresh,
             content = { games, isLoading ->
                 PageContent(
@@ -272,7 +270,7 @@ fun PageContent(
     composeNavigator: AppComposeNavigator<TapTapScreen>,
     selectedSubTab: Int,
     onSubTabSelected: (Int) -> Unit,
-    games: List<Games>,
+    games: List<ListItem>,
     subTabs: List<String>
 ) {
     HorizontalPager(
@@ -299,7 +297,7 @@ fun DiscoverPage(
     subTabs: List<String>,
     selectedSubTab: Int,
     onSubTabSelected: (Int) -> Unit,
-    games: List<Games>,
+    games: List<ListItem>,
     composeNavigator: AppComposeNavigator<TapTapScreen>
 ) {
     LazyColumn(

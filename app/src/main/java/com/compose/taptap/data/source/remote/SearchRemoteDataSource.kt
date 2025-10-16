@@ -1,8 +1,8 @@
 package com.compose.taptap.data.source.remote
 
-import com.compose.taptap.data.network.models.SearchPlaceHolder
-import com.compose.taptap.data.network.utils.safeRequest
-import com.compose.taptap.domain.repositories.SearchRepository
+import com.compose.taptap.network.models.SearchPlaceHolder
+import com.compose.taptap.network.utils.safeRequest
+import com.compose.taptap.data.repository.SearchRepository
 import com.compose.taptap.domain.utils.Constants
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body

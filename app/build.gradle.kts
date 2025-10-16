@@ -4,10 +4,9 @@ import com.compose.taptap.Configuration
 plugins {
     id("compose.taptap.android.application")
     id("compose.taptap.android.application.compose")
+    id("compose.taptap.android.koin")
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlin)
-    //TODO: remove after create a new module model
-    alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.ktLint)
     alias(libs.plugins.compose.compiler)
 }
@@ -66,6 +65,7 @@ kotlin {
 dependencies {
     //cores
     implementation(projects.core.navigation)
+    implementation(projects.core.model)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -77,8 +77,6 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.constraintlayout.compose)
 
-    implementation(libs.bundles.ktor)
-    implementation(libs.ktor.android)
     implementation(libs.bundles.coil)
 
 
@@ -94,8 +92,6 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
 
-    //TODO: remove after create a new module model
-    implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.androidx.paging.compose)
 

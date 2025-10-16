@@ -8,7 +8,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.compose.taptap.data.paging.CursorPagingSource
-import com.compose.taptap.domain.repositories.PlayRepository
+import com.compose.taptap.data.repository.PlayRepository
 import com.compose.taptap.domain.utils.Constants
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body

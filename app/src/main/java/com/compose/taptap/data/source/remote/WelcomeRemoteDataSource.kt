@@ -1,7 +1,9 @@
+package com.compose.taptap.data.source.remote
+
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.compose.taptap.data.network.models.User
-import com.compose.taptap.domain.repositories.WelcomeRepository
+import com.compose.taptap.data.model.User
+import com.compose.taptap.data.repository.WelcomeRepository
 import com.compose.taptap.ui.utils.AuthState
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.delay

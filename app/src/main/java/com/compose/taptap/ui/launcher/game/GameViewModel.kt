@@ -4,24 +4,16 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.compose.taptap.data.loader.LoadingResult
-import com.compose.taptap.data.loader.RefreshTrigger
-import com.compose.taptap.data.loader.loading
-import com.compose.taptap.domain.models.Games
-import com.compose.taptap.domain.usecases.game.ObserveGameUseCase
-import com.compose.taptap.domain.usecases.game.ObserveGamesInput
+import com.compose.taptap.data.util.LoadingResult
+import com.compose.taptap.data.model.ListItem
+import com.compose.taptap.domain.usecases.game.GetGameFlowUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
-
-sealed interface GamesDataMapper {
-    fun map(data: LoadingResult<List<Games>>): LoadingResult<List<Games>>
-}
 
 @Immutable
 sealed interface GameEvent {
@@ -30,32 +22,21 @@ sealed interface GameEvent {
 
 @Stable
 class GameViewModel(
-    observeGamesUseCase: ObserveGameUseCase,
-    private val gamesDataMapper: GamesDataMapper,
-    private val refreshTrigger: RefreshTrigger,
+    getGameUseCase: GetGameFlowUseCase,
 ) : ViewModel() {
 
     private val _event = MutableStateFlow<GameEvent?>(null)
     val event = _event.asStateFlow()
 
-    private val data = observeGamesUseCase.execute(
-        ObserveGamesInput(refreshTrigger = refreshTrigger)
-    ).stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(),
-        initialValue = loading()
-    )
-
-    val gameUiState = data.map { gamesDataMapper.map(it) }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(),
-        initialValue = gamesDataMapper.map(data.value)
-    )
+    val gameUiStateFlow: StateFlow<LoadingResult<List<ListItem>>> = getGameUseCase(Unit)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = LoadingResult.Loading
+        )
 
     fun refresh() {
-        viewModelScope.launch {
-            refreshTrigger.refresh()
-        }
+
     }
 
     fun consumeEvent() {
