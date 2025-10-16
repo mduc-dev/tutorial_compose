@@ -2,7 +2,7 @@ package com.compose.taptap.ui.components
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.compose.taptap.data.loader.LoadingResult
+import com.compose.taptap.data.util.LoadingResult
 
 @Composable
 fun <T> LoadingResultScreen(

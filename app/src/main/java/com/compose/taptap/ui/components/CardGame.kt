@@ -20,7 +20,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -35,23 +34,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.compose.taptap.R
-import com.compose.taptap.data.network.models.App
-import com.compose.taptap.data.network.models.Banner
-import com.compose.taptap.data.network.models.Cover
-import com.compose.taptap.data.network.models.DailiesItem
-import com.compose.taptap.data.network.models.Rating
-import com.compose.taptap.data.network.models.Stat
-import com.compose.taptap.data.network.models.Tag
-import com.compose.taptap.domain.models.Games
+import com.compose.taptap.data.model.DailiesItem
+import com.compose.taptap.data.model.ListItem
 import com.compose.taptap.ui.launcher.welcome.nonScaledSp
-import com.compose.taptap.ui.theme.*
+import com.compose.taptap.ui.theme.BlackF16
+import com.compose.taptap.ui.theme.GreenPrimary
+import com.compose.taptap.ui.theme.IntlV2Grey20
+import com.compose.taptap.ui.theme.IntlV2Grey40
+import com.compose.taptap.ui.theme.PPNeu
+import com.compose.taptap.ui.theme.WhitePrimary
 
 
 @Composable
@@ -144,9 +139,9 @@ fun isPlatform(item: String): Boolean {
 
 @Composable
 fun CardGame(
-    game: Games,
+    game: ListItem,
     modifier: Modifier = Modifier,
-    onClick: (Games) -> Unit,
+    onClick: (ListItem) -> Unit,
 ) {
     val currentGame = rememberUpdatedState(game)
     val clickAction = remember(onClick) { { onClick(currentGame.value) } }
@@ -352,76 +347,3 @@ fun CardGame(
     }
 }
 
-@Preview
-@Composable
-fun CardGamePreview(
-    @PreviewParameter(CardGamePreviewProvider::class) game: DailiesItem
-) {
-    Kotlin_composeTheme {
-        Surface(color = MaterialTheme.colorScheme.background) {
-            CardGame(game = game, onClick = {})
-        }
-    }
-}
-
-
-class CardGamePreviewProvider : PreviewParameterProvider<DailiesItem> {
-    override val values: Sequence<DailiesItem> = sequenceOf(
-        DailiesItem(
-            identification = "sample-001", type = "game", app = App(
-                id = 1,
-                identifier = "hero_game",
-                title = "Hero Game",
-                titleLabels = listOf("Featured", "Top Rated"),
-                uri = "https://example.com/game/hero",
-                canView = true,
-                stat = Stat(
-                    rating = Rating(
-                        score = "4.8", max = 5, latestScore = "4.9", latestVersionScore = "4.7"
-                    ),
-                    voteInfo = null,
-                    hitsTotal = 10000,
-                    reviewCount = 1234,
-                    fansCount = 5000,
-                    userWantCount = 2000,
-                    userPlayedCount = 3000,
-                    userPlayingCount = 400,
-                    reserveCount = 50
-                ),
-                banner = Banner(
-                    url = "https://img.tapimg.net/market/images/FgNV-WKYmmNL_L5-XYSx1T4o32iG.png/appbanner",
-                    mediumUrl = "https://img.tapimg.net/market/images/FgNV-WKYmmNL_L5-XYSx1T4o32iG.png/appbanner_m",
-                    smallUrl = null,
-                    originalUrl = null,
-                    originalFormat = null,
-                    width = 1080,
-                    height = 540,
-                    color = "#000000"
-                ),
-                tags = listOf(
-                    Tag(id = 0, value = "Action", uri = "", webUrl = ""),
-                    Tag(id = 1, value = "Multiplayer", uri = "", webUrl = ""),
-                    Tag(id = 2, value = "Shooter", uri = "", webUrl = "")
-                ),
-                log = null,
-                eventLog = null,
-                complaint = null,
-                supportedPlatforms = null,
-                itunesId = null,
-                recText = "Exciting action game!",
-                videoResource = null,
-                icon = null,
-                releasedTime = null
-            ), sort = 1, description = "Join epic battles and become a hero!", cover = Cover(
-                url = "https://img.tapimg.net/market/images/11f0df847f02f476da2b13fb484fa806.png?imageView2/0/w/1080/h/608/format/jpg/interlace/1/ignore-error/1&t=1",
-                mediumUrl = "https://img.tapimg.net/market/images/11f0df847f02f476da2b13fb484fa806.png?imageView2/0/w/720/h/405/format/jpg/interlace/1/ignore-error/1&t=1",
-                smallUrl = "",
-                originalUrl = "",
-                originalFormat = "png",
-                width = 1920,
-                height = 1080,
-                color = "#222222"
-            ), title = "Hero Game", eventEndTime = null, video = null, videoId = null
-        )
-    )
-}

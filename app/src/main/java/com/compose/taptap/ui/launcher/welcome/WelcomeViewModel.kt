@@ -4,7 +4,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.compose.taptap.domain.repositories.WelcomeRepository
+import com.compose.taptap.data.repository.WelcomeRepository
 import com.compose.taptap.ui.utils.AuthState
 import com.compose.taptap.ui.utils.Provider
 import kotlinx.coroutines.CoroutineExceptionHandler

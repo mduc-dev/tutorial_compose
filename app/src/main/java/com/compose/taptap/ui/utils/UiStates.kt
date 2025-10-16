@@ -2,8 +2,8 @@ package com.compose.taptap.ui.utils
 
 import InstantGameItem
 import androidx.paging.PagingData
-import com.compose.taptap.data.network.utils.ApiResult
-import com.compose.taptap.domain.models.Games
+import com.compose.taptap.network.utils.ApiResult
+import com.compose.taptap.data.model.Games
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 

@@ -4,7 +4,7 @@ import InstantGameItem
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.compose.taptap.domain.repositories.PlayRepository
+import com.compose.taptap.data.repository.PlayRepository
 import com.compose.taptap.ui.utils.PLayUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
