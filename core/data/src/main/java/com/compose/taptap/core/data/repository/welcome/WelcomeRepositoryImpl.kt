@@ -1,10 +1,9 @@
-package com.compose.taptap.core.data.repository
+package com.compose.taptap.core.data.repository.welcome
 
-import com.compose.taptap.data.model.User
-import com.compose.taptap.ui.utils.AuthState
+import com.compose.taptap.core.model.User
 import kotlinx.coroutines.flow.Flow
 
-interface WelcomeRepository {
+interface WelcomeRepositoryImpl {
     fun getAuthState(): Flow<AuthState>
 
     suspend fun signInWithGoogle(): Result<Unit> //replace temporary Unit with User

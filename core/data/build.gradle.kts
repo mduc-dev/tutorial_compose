@@ -8,5 +8,17 @@ android {
 }
 
 dependencies {
+    implementation(projects.core.model)
+    implementation(projects.core.network)
+    implementation(projects.core.navigation)
+    implementation(projects.core.database)
+
     implementation(libs.kotlinx.serialization.json)
+    // di
+    implementation(libs.koin.core)
+    implementation(libs.koin.compose)
+    implementation(libs.koin.composeViewModel)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+
 }

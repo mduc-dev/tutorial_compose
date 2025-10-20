@@ -9,23 +9,15 @@ import kotlinx.serialization.Serializable
  * Copyright © 2025 mduc. All rights reserved.
  */
 
-
 @Serializable
 data class Games(
-    @SerialName("data") val data: Data,
-    @SerialName("now") val now: Long,
-    @SerialName("success") val success: Boolean,
-)
-
-@Serializable
-data class Data(
-    val list: List<ListItem>,
+    val list: List<ListGameItem>,
     @SerialName("prev_page") val prevPage: String,
     @SerialName("next_page") val nextPage: String,
 )
 
 @Serializable
-data class ListItem(
+data class ListGameItem(
     val type: String? = null,
     val identification: String? = null,
     val app: App? = null,
@@ -397,4 +389,3 @@ data class Cover(
     val color: String,
     @SerialName("original_size") val originalSize: Long = 0,
 )
-

@@ -1,17 +1,15 @@
-package com.compose.taptap.network.models
+package com.compose.taptap.core.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/**
+ * Created by duc on 20/10/25
+ *
+ * Copyright © 2025 mduc. All rights reserved.
+ */
 @Serializable
-data class InstantGameResponse(
-    val data: InstantGameData,
-    val now: Long,
-    val success: Boolean
-)
-
-@Serializable
-data class InstantGameData(
+data class InstantGame(
     val list: List<InstantGameItem>,
     @SerialName("prev_page") val prevPage: String,
     @SerialName("next_page") val nextPage: String

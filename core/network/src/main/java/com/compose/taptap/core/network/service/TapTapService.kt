@@ -1,10 +1,13 @@
 package com.compose.taptap.core.network.service
 
-/**
- * Created by duc on 16/10/25
- *
- * Copyright © 2025 mduc. All rights reserved.
- */
-interface TapTapService {
+import com.compose.taptap.core.network.model.GameResponse
+import com.compose.taptap.core.network.model.PlayGameResponse
+import com.compose.taptap.core.network.model.SearchResponse
 
+interface TapTapService {
+    suspend fun getGames(): Result<GameResponse>
+
+    suspend fun getPlayGames(): Result<PlayGameResponse>
+
+    suspend fun getSearchPlaceholder(): Result<SearchResponse>
 }
