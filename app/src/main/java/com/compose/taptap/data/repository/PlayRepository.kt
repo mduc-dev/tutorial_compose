@@ -1,7 +1,7 @@
 package com.compose.taptap.data.repository
 
-import InstantGameItem
 import androidx.paging.PagingData
+import com.compose.taptap.network.models.InstantGameItem
 import kotlinx.coroutines.flow.Flow
 
 interface PlayRepository {

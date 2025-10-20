@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlin)
     alias(libs.plugins.ktLint)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 android {
@@ -66,6 +67,8 @@ dependencies {
     //cores
     implementation(projects.core.navigation)
     implementation(projects.core.model)
+    implementation(projects.core.network)
+    implementation(projects.core.database)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -84,13 +87,15 @@ dependencies {
     implementation(libs.media3.exoplayer.dash)
     implementation(libs.media3.ui)
     implementation(libs.media3.ui.compose)
+    
+    implementation(libs.kotlinx.serialization.json)
 
     // di
-    implementation(libs.koin.core)
-    implementation(libs.koin.compose)
-    implementation(libs.koin.composeViewModel)
-    implementation(libs.koin.android)
-    implementation(libs.koin.androidx.compose)
+//    implementation(libs.koin.core)
+//    implementation(libs.koin.compose)
+//    implementation(libs.koin.composeViewModel)
+//    implementation(libs.koin.android)
+//    implementation(libs.koin.androidx.compose)
 
 
     implementation(libs.androidx.paging.compose)

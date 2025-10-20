@@ -1,10 +1,10 @@
 package com.compose.taptap.ui.launcher.play
 
-import InstantGameItem
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.compose.taptap.data.repository.PlayRepository
+import com.compose.taptap.network.models.InstantGameItem
 import com.compose.taptap.ui.utils.PLayUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

@@ -1,7 +1,5 @@
 package com.compose.taptap.data.source.remote
 
-import InstantGameItem
-import InstantGameResponse
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.paging.Pager
@@ -10,6 +8,8 @@ import androidx.paging.PagingData
 import com.compose.taptap.data.paging.CursorPagingSource
 import com.compose.taptap.data.repository.PlayRepository
 import com.compose.taptap.domain.utils.Constants
+import com.compose.taptap.network.models.InstantGameItem
+import com.compose.taptap.network.models.InstantGameResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.HttpRequestBuilder

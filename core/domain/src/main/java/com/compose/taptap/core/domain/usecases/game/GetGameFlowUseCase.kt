@@ -1,8 +1,8 @@
 package com.compose.taptap.core.domain.usecases.game
 
-import com.compose.taptap.data.model.ListItem
-import com.compose.taptap.data.repository.GamesRepository
-import com.compose.taptap.domain.usecases.base.BaseFlowUseCase
+import com.compose.taptap.core.data.repository.game.GamesRepository
+import com.compose.taptap.core.domain.usecases.base.BaseFlowUseCase
+import com.compose.taptap.core.model.ListGameItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -12,13 +12,12 @@ import kotlinx.coroutines.flow.map
  * Copyright © 2025 mduc. All rights reserved.
  */
 
-
 class GetGameFlowUseCase(
     private val repository: GamesRepository,
-) : BaseFlowUseCase<Unit, List<ListItem>>() {
+) : BaseFlowUseCase<Unit, List<ListGameItem>>() {
 
-    override fun execute(parameters: Unit): Flow<List<ListItem>> =
-        repository.getGameFlow().map { it.getOrThrow() }
+    override fun execute(parameters: Unit): Flow<List<ListGameItem>> =
+        repository.getGames().map { it.getOrThrow() }
 
-    suspend fun refresh(): Flow<Unit> = repository.refreshGames().map { }
+    fun refresh(): Flow<Unit> = repository.refreshGames().map { }
 }
