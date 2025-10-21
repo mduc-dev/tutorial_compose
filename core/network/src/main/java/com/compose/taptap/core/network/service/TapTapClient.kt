@@ -9,15 +9,25 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 
 class TapTapClient(private val httpClient: HttpClient) : TapTapService {
-    override suspend fun getGames(): Result<GameResponse> {
-        return httpClient.get(BUILDCONFIG.gameUrl()).body()
+    override suspend fun getGames(cursor: String?): GameResponse {
+        val url = cursor?.takeIf { it.isNotBlank() }?.let(::resolveCursorUrl) ?: BUILDCONFIG.gameUrl()
+        return httpClient.get(url).body()
     }
 
-    override suspend fun getPlayGames(): Result<PlayGameResponse> {
+    override suspend fun getPlayGames(): PlayGameResponse {
         return httpClient.get(BUILDCONFIG.instantPlay()).body()
     }
 
-    override suspend fun getSearchPlaceholder(): Result<SearchResponse> {
+    override suspend fun getSearchPlaceholder(): SearchResponse {
         return httpClient.get(BUILDCONFIG.instantPlay()).body()
+    }
+
+    private fun resolveCursorUrl(cursor: String): String {
+        val trimmed = cursor.trim()
+        return when {
+            trimmed.startsWith("http", ignoreCase = true) -> trimmed
+            trimmed.startsWith("/") -> "${BUILDCONFIG.BASE_URL}$trimmed"
+            else -> "${BUILDCONFIG.BASE_URL}/$trimmed"
+        }
     }
 }

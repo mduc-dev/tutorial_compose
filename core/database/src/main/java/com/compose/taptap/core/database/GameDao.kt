@@ -1,9 +1,10 @@
 package com.compose.taptap.core.database
+
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.compose.taptap.core.database.entity.TapTapInfoEntity
+import com.compose.taptap.core.database.entity.GameEntity
 
 /**
  * Created by duc on 20/10/25
@@ -13,10 +14,13 @@ import com.compose.taptap.core.database.entity.TapTapInfoEntity
 
 //TODO: write exactly the name of game here
 @Dao
-interface TapTapInfoDao {
+interface GameDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTapTapInfo(taptapInfo: TapTapInfoEntity)
+    suspend fun insertGameList(taptapList: List<GameEntity>)
 
-    @Query("SELECT * FROM TapTapInfoEntity WHERE id = :id_")
-    suspend fun getTapTapInfo(id_: String): TapTapInfoEntity?
+    @Query("SELECT * FROM GameEntity")
+    suspend fun getGameList(): List<GameEntity>
+
+    @Query("SELECT * FROM GameEntity")
+    suspend fun getAllGameList(): List<GameEntity>
 }

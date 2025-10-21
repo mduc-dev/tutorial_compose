@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.compose.taptap.data.util.LoadingResult
+import com.compose.taptap.core.data.util.LoadingResult
 import com.compose.taptap.data.model.ListItem
 import com.compose.taptap.domain.usecases.game.GetGameFlowUseCase
 import kotlinx.coroutines.flow.MutableStateFlow

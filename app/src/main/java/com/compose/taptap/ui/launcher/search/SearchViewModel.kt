@@ -3,7 +3,7 @@ package com.compose.taptap.ui.launcher.search
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.compose.taptap.data.util.LoadingResult
+import com.compose.taptap.core.data.util.LoadingResult
 import com.compose.taptap.domain.usecases.search.GetSearchPlaceholderFlowUseCase
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn

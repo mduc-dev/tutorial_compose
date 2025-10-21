@@ -8,10 +8,9 @@ import androidx.room.PrimaryKey
  *
  * Copyright © 2025 mduc. All rights reserved.
  */
-
 @Entity
-data class TapTapInfoEntity(
+data class GameInfoEntity(
     val page: Int = 0,
 
-    @PrimaryKey val id: String
+    @PrimaryKey val gameId: Long
 )

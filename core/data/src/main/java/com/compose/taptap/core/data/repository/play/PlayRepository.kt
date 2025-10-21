@@ -1,10 +1,11 @@
 package com.compose.taptap.core.data.repository.play
 
+import androidx.paging.PagingData
 import com.compose.taptap.core.model.InstantGameItem
 import kotlinx.coroutines.flow.Flow
 
 interface PlayRepository {
-    fun fetchInstantGames(): Flow<PagingData<InstantGameItem>>
+    fun fetchInstantGameStream(): Flow<PagingData<InstantGameItem>>
 
     fun getHistory(): List<InstantGameItem>
 

@@ -66,8 +66,9 @@ kotlin {
 dependencies {
     //cores
     implementation(projects.core.navigation)
-    implementation(projects.core.model)
     implementation(projects.core.network)
+    implementation(projects.core.model)
+    implementation(projects.core.data)
     implementation(projects.core.database)
 
     implementation(libs.androidx.core.ktx)

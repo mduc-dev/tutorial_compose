@@ -1,4 +1,4 @@
-package com.compose.taptap.data.util
+package com.compose.taptap.core.data.util
 
 import androidx.compose.runtime.Immutable
 

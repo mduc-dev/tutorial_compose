@@ -1,40 +1,42 @@
 package com.compose.taptap.core.data.repository.game
 
-import androidx.annotation.WorkerThread
-import com.compose.taptap.core.data.model.Games
-import com.compose.taptap.core.database.TapTapDao
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import com.compose.taptap.core.data.paging.CursorPage
+import com.compose.taptap.core.data.paging.CursorPagingSource
 import com.compose.taptap.core.model.ListGameItem
-import com.compose.taptap.core.network.di.TapTapAppDispatcher
-import com.compose.taptap.core.network.service.TapTapClient
+import com.compose.taptap.core.network.service.TapTapService
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 
 class GamesRepositoryImpl(
-    private val taptapClient: TapTapClient,
-    private val taptapDao: TapTapDao,
-    private val dispatcher: TapTapAppDispatcher
+    private val tapTapService: TapTapService,
+    private val dispatcher: CoroutineDispatcher,
 ) : GamesRepository {
-
-    @WorkerThread
-    override fun getCachedGames(): Flow<Result<List<ListGameItem>>> = flow {
-
+    override fun gamesStream(): Flow<PagingData<ListGameItem>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = DEFAULT_PAGE_SIZE,
+                prefetchDistance = 2,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                CursorPagingSource { cursor ->
+                    val response = tapTapService.getGames(cursor)
+                    val data = response.data
+                    CursorPage(
+                        items = data.list,
+                        prevCursor = data.prevPage.takeIf { it.isNotBlank() },
+                        nextCursor = data.nextPage.takeIf { it.isNotBlank() },
+                    )
+                }
+            }
+        ).flow.flowOn(dispatcher)
     }
 
-    override fun refreshGames(): Flow<Result<Games>> = flow {
-
-    }
-
-    override fun getGames(): Flow<Result<List<ListGameItem>>> = flow {
-
+    companion object {
+        const val DEFAULT_PAGE_SIZE = 20
     }
 }
-
-
-private fun ListGameItem.toDomain(): ListGameItem = ListGameItem(
-    type = type,
-    identification = identification,
-    app = app,
-    recReason = recReason,
-    category = category,
-    dailies = dailies
-)
