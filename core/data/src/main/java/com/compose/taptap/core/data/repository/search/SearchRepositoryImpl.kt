@@ -1,9 +1,10 @@
 package com.compose.taptap.core.data.repository.search
 
-import com.compose.taptap.core.model.Search
+import com.compose.taptap.core.network.model.SearchResponse
 import kotlinx.coroutines.flow.Flow
 
-interface SearchRepositoryImpl {
-    /** Fetch Search placeholder from data source*/
-    fun fetchSearchPlaceholder(): Flow<Search>
+class SearchRepositoryImpl : SearchRepository {
+    override fun fetchSearchPlaceholder(): Flow<SearchResponse> {
+        TODO("Not yet implemented")
+    }
 }

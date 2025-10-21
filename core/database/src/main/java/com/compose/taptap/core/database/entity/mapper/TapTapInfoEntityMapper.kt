@@ -1,6 +1,6 @@
 package com.compose.taptap.core.database.entity.mapper
 
-import com.compose.taptap.core.database.entity.TapTapInfoEntity
+import com.compose.taptap.core.database.entity.GameInfoEntity
 
 /**
  * Created by duc on 20/10/25
@@ -9,13 +9,12 @@ import com.compose.taptap.core.database.entity.TapTapInfoEntity
  */
 
 //TODO: write exactly data type of game detail here
-object TapTapInfoEntityMapper : EntityMapper<Any, TapTapInfoEntity> {
-    override fun asEntity(entity: TapTapInfoEntity): TapTapInfoEntity {
+object TapTapInfoEntityMapper : EntityMapper<Any, GameInfoEntity> {
+    override fun asEntity(domain: Any): GameInfoEntity {
         TODO("Not yet implemented")
     }
 
-    override fun asDomain(domain: Any): Any {
+    override fun asDomain(entity: GameInfoEntity): Any {
         TODO("Not yet implemented")
     }
-
 }

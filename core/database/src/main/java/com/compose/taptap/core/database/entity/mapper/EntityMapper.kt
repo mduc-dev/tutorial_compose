@@ -7,7 +7,7 @@ package com.compose.taptap.core.database.entity.mapper
  */
 
 interface EntityMapper<Domain, Entity> {
-    fun asEntity(entity: Entity): Entity
+    fun asEntity(domain: Domain): Entity
 
-    fun asDomain(domain: Domain): Domain
+    fun asDomain(entity: Entity): Domain
 }

@@ -1,9 +1,9 @@
 package com.compose.taptap.core.domain.usecases.base
 
-import com.compose.taptap.data.util.LoadingResult
-import com.compose.taptap.data.util.loading
-import com.compose.taptap.data.util.loadingFailure
-import com.compose.taptap.data.util.loadingSuccess
+import com.compose.taptap.core.data.util.LoadingResult
+import com.compose.taptap.core.data.util.loading
+import com.compose.taptap.core.data.util.loadingFailure
+import com.compose.taptap.core.data.util.loadingSuccess
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map

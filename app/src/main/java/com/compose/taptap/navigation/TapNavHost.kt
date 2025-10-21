@@ -91,17 +91,19 @@ private fun TapMainNavigationHost(navHostController: NavHostController) {
 
     Scaffold(
         containerColor = BlackF16, bottomBar = {
-                TapBottomTab(  modifier = Modifier
-                    .graphicsLayer {
-                        translationY = bottomBarOffsetY
-                        alpha = bottomBarAlpha
-                    },currentRoute = currentScreen) { target ->
-                    navHostController.navigate(target) {
-                        popUpTo(TapTapScreen.Game) { saveState = true }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
+            TapBottomTab(
+                modifier = Modifier
+                .graphicsLayer {
+                    translationY = bottomBarOffsetY
+                    alpha = bottomBarAlpha
+                }, currentRoute = currentScreen
+            ) { target ->
+                navHostController.navigate(target) {
+                    popUpTo(TapTapScreen.Game) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
                 }
+            }
         }) { innerPadding ->
         NavHost(
             navHostController,

@@ -4,17 +4,17 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.compose.taptap.core.database.converter.StringListConverter
-import com.compose.taptap.core.database.entity.TapTapEntity
-import com.compose.taptap.core.database.entity.TapTapInfoEntity
+import com.compose.taptap.core.database.entity.GameEntity
+import com.compose.taptap.core.database.entity.GameInfoEntity
 
 @Database(
-    entities = [TapTapEntity::class, TapTapInfoEntity::class],
+    entities = [GameEntity::class, GameInfoEntity::class],
     version = 1,
     exportSchema = false
 )
 
 @TypeConverters(value = [StringListConverter::class])
 abstract class TapTapDatabase : RoomDatabase() {
-    abstract fun taptapDao(): TapTapDao
-    abstract fun taptapInfoDao(): TapTapInfoDao
+    abstract fun gameDao(): GameDao
+    abstract fun gameInfoDao(): GameInfoDao
 }

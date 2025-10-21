@@ -1,10 +1,9 @@
 package com.compose.taptap.core.domain.usecases.search
 
-import com.compose.taptap.network.models.SearchPlaceHolder
-import com.compose.taptap.network.utils.ApiResult
-import com.compose.taptap.data.repository.SearchRepository
-import com.compose.taptap.domain.usecases.base.BaseFlowUseCase
+import com.compose.taptap.core.data.repository.search.SearchRepository
+import com.compose.taptap.core.domain.usecases.base.BaseFlowUseCase
 import kotlinx.coroutines.flow.Flow
+import com.compose.taptap.core.network.model.SearchResponse
 
 /**
  * Created by duc on 15/10/25
@@ -15,11 +14,11 @@ import kotlinx.coroutines.flow.Flow
 //TODO: now it not working, check again to can be fetch
 class GetSearchPlaceholderFlowUseCase(
     private val searchRepository: SearchRepository
-) : BaseFlowUseCase<Unit, ApiResult<SearchPlaceHolder>>() {
+) : BaseFlowUseCase<Unit, SearchResponse>() {
 
     override fun execute(
         parameters: Unit
-    ): Flow<ApiResult<SearchPlaceHolder>> {
+    ): Flow<SearchResponse> {
         return searchRepository.fetchSearchPlaceholder()
     }
 }

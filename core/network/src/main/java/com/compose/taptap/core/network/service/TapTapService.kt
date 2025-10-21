@@ -5,9 +5,9 @@ import com.compose.taptap.core.network.model.PlayGameResponse
 import com.compose.taptap.core.network.model.SearchResponse
 
 interface TapTapService {
-    suspend fun getGames(): Result<GameResponse>
+    suspend fun getGames(cursor: String? = null): GameResponse
 
-    suspend fun getPlayGames(): Result<PlayGameResponse>
+    suspend fun getPlayGames(cursor: String? = null): PlayGameResponse
 
-    suspend fun getSearchPlaceholder(): Result<SearchResponse>
+    suspend fun getSearchPlaceholder(): SearchResponse
 }

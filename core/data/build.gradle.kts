@@ -14,6 +14,8 @@ dependencies {
     implementation(projects.core.database)
 
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.paging.compose)
+
     // di
     implementation(libs.koin.core)
     implementation(libs.koin.compose)
