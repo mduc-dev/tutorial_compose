@@ -38,8 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.compose.taptap.R
-import com.compose.taptap.data.model.DailiesItem
-import com.compose.taptap.data.model.ListItem
+import com.compose.taptap.core.model.DailiesItem
+import com.compose.taptap.core.model.ListGameItem
 import com.compose.taptap.ui.launcher.welcome.nonScaledSp
 import com.compose.taptap.ui.theme.BlackF16
 import com.compose.taptap.ui.theme.GreenPrimary
@@ -139,9 +139,9 @@ fun isPlatform(item: String): Boolean {
 
 @Composable
 fun CardGame(
-    game: ListItem,
+    game: ListGameItem,
     modifier: Modifier = Modifier,
-    onClick: (ListItem) -> Unit,
+    onClick: (ListGameItem) -> Unit,
 ) {
     val currentGame = rememberUpdatedState(game)
     val clickAction = remember(onClick) { { onClick(currentGame.value) } }

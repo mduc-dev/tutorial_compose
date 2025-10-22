@@ -30,6 +30,6 @@ fun databaseModule() = module {
             .build()
     }
 
-    single { get<TapTapDatabase>().taptapDao() }
-    single { get<TapTapDatabase>().taptapInfoDao() }
+    single { get<TapTapDatabase>().gameDao() }
+    single { get<TapTapDatabase>().gameInfoDao() }
 }

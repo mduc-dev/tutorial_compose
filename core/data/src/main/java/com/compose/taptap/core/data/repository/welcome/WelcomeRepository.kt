@@ -4,7 +4,7 @@ import com.compose.taptap.core.model.User
 import kotlinx.coroutines.flow.Flow
 
 interface WelcomeRepository {
-    fun getAuthState(): Flow<AuthState>
+    fun getAuthState(): Flow<Any> //TODO: replace Any with AuthState
 
     suspend fun signInWithGoogle(): Result<Unit> //replace temporary Unit with User
 

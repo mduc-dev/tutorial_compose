@@ -55,29 +55,32 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.PagingData
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil3.compose.AsyncImage
 import com.compose.taptap.R
+import com.compose.taptap.core.data.util.LoadingResult
+import com.compose.taptap.core.model.App
+import com.compose.taptap.core.model.Category
+import com.compose.taptap.core.model.ListGameItem
 import com.compose.taptap.core.navigation.AppComposeNavigator
 import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.core.navigation.currentComposeNavigator
-import com.compose.taptap.data.model.App
-import com.compose.taptap.data.model.Category
-import com.compose.taptap.data.model.ListItem
 import com.compose.taptap.ui.components.CardGame
 import com.compose.taptap.ui.components.LoadingResultScreen
 import com.compose.taptap.ui.components.NoExistData
-import com.compose.taptap.ui.launcher.search.SearchViewModel
 import com.compose.taptap.ui.theme.BlackF16
 import com.compose.taptap.ui.theme.IntlCcDivider
 import com.compose.taptap.ui.theme.IntlCcGreenPrimary
 import com.compose.taptap.ui.theme.IntlV2Grey40
 import com.compose.taptap.ui.theme.IntlV2Grey60
-import com.compose.taptap.ui.theme.IntlV2Grey80
 import com.compose.taptap.ui.theme.IntlV2Grey90
 import com.compose.taptap.ui.theme.PPNeu
 import com.compose.taptap.ui.theme.V3CommonPrimaryRed
 import com.compose.taptap.ui.utils.DisabledInteractionSource
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -88,24 +91,23 @@ val subTabs: List<String> = listOf("For you", "Editors' choice", "Arcade", "Stra
 @Composable
 fun Game(
     gameViewModel: GameViewModel = koinViewModel<GameViewModel>(),
-    searchViewModel: SearchViewModel = koinViewModel<SearchViewModel>()
 ) {
     val composeNavigator = currentComposeNavigator
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { topTabs.size })
     var selectedSubTab by remember { mutableIntStateOf(0) }
 
-    val gameUiState by gameViewModel.gameUiStateFlow.collectAsStateWithLifecycle()
+    val gameUiState by gameViewModel.gameUiStateFlow.collectAsStateWithLifecycle(
+        initialValue = LoadingResult.Loading, lifecycle = LocalLifecycleOwner.current.lifecycle
+    )
 //    val event by gameViewModel.event.collectAsState()
 //    val placeholderState by searchViewModel.searchUiState.collectAsStateWithLifecycle()
 
 
     Column(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-//        TopBar(placeholderState, composeNavigator)
 
         HorizontalDivider(
             color = IntlCcDivider, thickness = 1.dp
@@ -159,61 +161,12 @@ fun Game(
             content = { games, isLoading ->
                 PageContent(
                     pagerState = pagerState,
-                    composeNavigator = composeNavigator,
                     selectedSubTab = selectedSubTab,
                     onSubTabSelected = { selectedSubTab = it },
                     games = games,
                     subTabs = subTabs
                 )
             })
-    }
-}
-
-@Composable
-private fun TopBar(
-    searchPlaceHolderText: String,
-    composeNavigator: AppComposeNavigator<TapTapScreen>
-) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, top = 6.dp, end = 6.dp, bottom = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .height(32.dp)
-                .weight(1f)
-                .background(
-                    color = IntlV2Grey90,
-                    shape = RoundedCornerShape(18.dp)
-                )
-                .clickable { composeNavigator.navigate(TapTapScreen.Search) },
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.cw_toolbar_search_ic),
-                contentDescription = "Search",
-                tint = IntlV2Grey80,
-                modifier = Modifier
-                    .padding(start = 6.dp)
-                    .size(24.dp)
-            )
-            Text(
-                text = searchPlaceHolderText,
-                maxLines = 1,
-                fontWeight = FontWeight.Medium,
-                fontFamily = PPNeu,
-                fontSize = 14.sp,
-                color = IntlV2Grey60,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
-        NotificationBell(
-            unreadCount = 5,
-            onClick = { composeNavigator.navigate(TapTapScreen.Notifications) })
     }
 }
 
@@ -267,10 +220,9 @@ fun NotificationBell(
 @Composable
 fun PageContent(
     pagerState: PagerState,
-    composeNavigator: AppComposeNavigator<TapTapScreen>,
     selectedSubTab: Int,
     onSubTabSelected: (Int) -> Unit,
-    games: List<ListItem>,
+    games: PagingData<ListGameItem>,
     subTabs: List<String>
 ) {
     HorizontalPager(
@@ -281,8 +233,7 @@ fun PageContent(
                 subTabs = subTabs,
                 selectedSubTab = selectedSubTab,
                 onSubTabSelected = onSubTabSelected,
-                games = games,
-                composeNavigator = composeNavigator
+                games = games
             )
 
             1 -> Text("Top charts", color = White, modifier = Modifier.fillMaxSize())
@@ -297,9 +248,11 @@ fun DiscoverPage(
     subTabs: List<String>,
     selectedSubTab: Int,
     onSubTabSelected: (Int) -> Unit,
-    games: List<ListItem>,
-    composeNavigator: AppComposeNavigator<TapTapScreen>
+    games: PagingData<ListGameItem>
 ) {
+    val composeNavigator = currentComposeNavigator
+    val lazyGames = flowOf(games).collectAsLazyPagingItems()
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -321,8 +274,7 @@ fun DiscoverPage(
                         modifier = Modifier
                             .background(
                                 color = if (selected.value) White
-                                else IntlV2Grey90,
-                                shape = RoundedCornerShape(8.dp)
+                                else IntlV2Grey90, shape = RoundedCornerShape(8.dp)
                             )
                             .clickable { onSubTabSelected(i) }
                             .padding(horizontal = 9.dp, vertical = 1.dp),
@@ -333,7 +285,8 @@ fun DiscoverPage(
                 }
             }
         }
-        if (games.isEmpty()) {
+        // Show empty state when there are no items
+        if (lazyGames.itemCount == 0) {
             item {
                 NoExistData(
                     modifier = Modifier.fillParentMaxSize(),
@@ -341,13 +294,15 @@ fun DiscoverPage(
                 )
             }
         } else {
-            itemsIndexed(
-                games, key = { index, game ->
-                    game.identification ?: game.category?.id?.let { "category-$it-$index" }
-                    ?: "game-$index"
-                }) { _, game ->
-                if (game.dailies != null && game.type.isDailiesType()) {
-                    val firstDailyGame = game.dailies.list.firstOrNull()
+            items(
+                count = lazyGames.itemCount, key = { index ->
+                    val item = lazyGames.peek(index)
+                    item?.identification ?: item?.category?.id ?: item?.app?.id ?: "game-$index"
+                }) { index ->
+                val game = lazyGames[index] ?: return@items
+
+                if (game.dailies != null && (game.type?.isDailiesType() == true)) {
+                    val firstDailyGame = game.dailies?.list?.firstOrNull()
                     if (firstDailyGame != null) {
                         CardGame(
                             modifier = Modifier
@@ -359,6 +314,7 @@ fun DiscoverPage(
                             })
                     }
                 }
+
                 if (game.app != null) {
                     CardGame(
                         modifier = Modifier
@@ -370,9 +326,9 @@ fun DiscoverPage(
                         })
                 }
 
-                if (game.category != null && game.type.isCategoryType()) {
+                if (game.category != null && (game.type?.isCategoryType() == true)) {
                     CategorySection(
-                        category = game.category, composeNavigator = composeNavigator
+                        category = game.category!!, composeNavigator = composeNavigator
                     )
                 }
             }
@@ -497,8 +453,3 @@ private fun String?.isCategoryType(): Boolean =
     this?.contains("category", ignoreCase = true) == true
 
 private fun String?.isDailiesType(): Boolean = this?.contains("dailies", ignoreCase = true) == true
-
-private fun String?.isHeroType(): Boolean {
-    val value = this?.lowercase() ?: return false
-    return value.contains("video") || value.contains("banner") || value.contains("hero")
-}

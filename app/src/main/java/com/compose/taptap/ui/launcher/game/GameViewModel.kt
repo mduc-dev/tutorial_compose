@@ -4,12 +4,13 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
 import com.compose.taptap.core.data.util.LoadingResult
-import com.compose.taptap.data.model.ListItem
-import com.compose.taptap.domain.usecases.game.GetGameFlowUseCase
+import com.compose.taptap.core.domain.usecases.game.GetGameFlowUseCase
+import com.compose.taptap.core.model.ListGameItem
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -28,12 +29,13 @@ class GameViewModel(
     private val _event = MutableStateFlow<GameEvent?>(null)
     val event = _event.asStateFlow()
 
-    val gameUiStateFlow: StateFlow<LoadingResult<List<ListItem>>> = getGameUseCase(Unit)
-        .stateIn(
+    val gameUiStateFlow: Flow<LoadingResult<PagingData<ListGameItem>>> =
+        getGameUseCase(Unit).stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = LoadingResult.Loading
         )
+
 
     fun refresh() {
 

@@ -17,6 +17,6 @@ interface GameInfoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGameInfo(taptapInfo: GameInfoEntity)
 
-    @Query("SELECT * FROM GameInfoEntity WHERE id = :id_")
-    suspend fun getGameInfo(id_: String): GameInfoEntity?
+    @Query("SELECT * FROM GameInfoEntity WHERE gameId = :gameId")
+    suspend fun getGameInfo(gameId: Long): GameInfoEntity?
 }
