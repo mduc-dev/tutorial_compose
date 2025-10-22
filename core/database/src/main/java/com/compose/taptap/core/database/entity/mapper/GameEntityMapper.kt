@@ -12,14 +12,16 @@ import com.compose.taptap.core.model.ListGameItem
 //TODO: write exactly data type of game here
 object GameEntityMapper : EntityMapper<List<ListGameItem>, List<GameEntity>> {
     override fun asEntity(domain: List<ListGameItem>): List<GameEntity> {
-        return domain.map { game ->
-            val app = game.app
+        return domain.mapNotNull { game ->
+            val app = game.app ?: return@mapNotNull null
+            val identifier = app.identifier
+
             GameEntity(
-                identifier = app?.identifier,
-                title = app?.title,
-                iconUrl = app?.icon?.mediumUrl,
-                releasedTime = app?.releasedTime,
-                ratingScore = app?.stat?.rating?.score
+                identifier = identifier,
+                title = app.title,
+                iconUrl = app.icon?.mediumUrl,
+                releasedTime = app.releasedTime,
+                ratingScore = app.stat?.rating?.score
             )
         }
     }

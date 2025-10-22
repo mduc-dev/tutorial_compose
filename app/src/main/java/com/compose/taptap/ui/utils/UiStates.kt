@@ -1,9 +1,8 @@
 package com.compose.taptap.ui.utils
 
 import androidx.paging.PagingData
-import com.compose.taptap.network.utils.ApiResult
-import com.compose.taptap.data.model.Games
-import com.compose.taptap.network.models.InstantGameItem
+import com.compose.taptap.core.model.Games
+import com.compose.taptap.core.model.InstantGameItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -27,8 +26,7 @@ data class GameUiState(
 
 
 data class PLayUiState(
-    val games: Flow<PagingData<InstantGameItem>> = emptyFlow(),
-    val recently: ApiResult<Any> = ApiResult.Loading
+    val games: Flow<PagingData<InstantGameItem>> = emptyFlow(), val recently: Any = Any()
 )
 
 

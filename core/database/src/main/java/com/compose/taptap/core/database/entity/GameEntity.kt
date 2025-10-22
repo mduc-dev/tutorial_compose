@@ -11,7 +11,7 @@ import androidx.room.PrimaryKey
 @Entity
 data class GameEntity(
     @PrimaryKey
-    val identifier: String? = null,
+    val identifier: String,
     val title: String? = null,
     val iconUrl: String? = null,
     val releasedTime: Long? = null,

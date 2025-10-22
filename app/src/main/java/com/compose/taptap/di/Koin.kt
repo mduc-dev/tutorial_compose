@@ -1,4 +1,4 @@
-package com.compose.taptap.data.di
+package com.compose.taptap.di
 
 import com.compose.taptap.core.network.di.networkModule
 import com.compose.taptap.core.network.di.dispatchersModule

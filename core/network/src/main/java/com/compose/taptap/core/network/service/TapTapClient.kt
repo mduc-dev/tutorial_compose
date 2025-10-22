@@ -14,7 +14,7 @@ class TapTapClient(private val httpClient: HttpClient) : TapTapService {
         return httpClient.get(url).body()
     }
 
-    override suspend fun getPlayGames(): PlayGameResponse {
+    override suspend fun getPlayGames(cursor: String?): PlayGameResponse {
         return httpClient.get(BUILDCONFIG.instantPlay()).body()
     }
 

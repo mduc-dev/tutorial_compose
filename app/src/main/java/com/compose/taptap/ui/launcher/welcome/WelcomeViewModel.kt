@@ -2,16 +2,16 @@ package com.compose.taptap.ui.launcher.welcome
 
 import android.content.SharedPreferences
 import android.util.Log
+import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.compose.taptap.data.repository.WelcomeRepository
+import com.compose.taptap.core.data.repository.welcome.WelcomeRepository
 import com.compose.taptap.ui.utils.AuthState
 import com.compose.taptap.ui.utils.Provider
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import androidx.core.content.edit
 
 class WelcomeViewModel(
     private val welcomeRepository: WelcomeRepository, private val prefs: SharedPreferences

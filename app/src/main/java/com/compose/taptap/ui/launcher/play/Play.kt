@@ -44,8 +44,8 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil3.compose.AsyncImage
 import com.compose.taptap.R
+import com.compose.taptap.core.model.InstantGameItem
 import com.compose.taptap.core.navigation.currentComposeNavigator
-import com.compose.taptap.network.models.InstantGameItem
 import com.compose.taptap.ui.launcher.welcome.nonScaledSp
 import com.compose.taptap.ui.theme.BlackF16
 import com.compose.taptap.ui.theme.GreenPrimary
