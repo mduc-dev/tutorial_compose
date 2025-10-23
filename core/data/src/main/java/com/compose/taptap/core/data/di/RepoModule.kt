@@ -26,5 +26,5 @@ fun repoModule() = module {
             get(), get(), get(), get<CoroutineDispatcher>(named(TapTapAppDispatcher.IO))
         )
     }
-    single<SearchRepository> { SearchRepositoryImpl() }
+    single<SearchRepository> { SearchRepositoryImpl(get()) }
 }

@@ -28,18 +28,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,32 +56,33 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.PagingData
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil3.compose.AsyncImage
 import com.compose.taptap.R
-import com.compose.taptap.core.data.util.LoadingResult
+import com.compose.taptap.core.designsystem.util.LoadingResult
 import com.compose.taptap.core.model.App
 import com.compose.taptap.core.model.Category
 import com.compose.taptap.core.model.ListGameItem
 import com.compose.taptap.core.navigation.AppComposeNavigator
 import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.core.navigation.currentComposeNavigator
+import com.compose.taptap.core.network.model.SearchResponse
 import com.compose.taptap.ui.components.CardGame
-import com.compose.taptap.ui.components.LoadingResultScreen
-import com.compose.taptap.ui.components.NoExistData
+import com.compose.taptap.ui.components.LoadingScreen
+import com.compose.taptap.ui.launcher.search.SearchViewModel
 import com.compose.taptap.ui.theme.BlackF16
 import com.compose.taptap.ui.theme.IntlCcDivider
 import com.compose.taptap.ui.theme.IntlCcGreenPrimary
 import com.compose.taptap.ui.theme.IntlV2Grey40
 import com.compose.taptap.ui.theme.IntlV2Grey60
+import com.compose.taptap.ui.theme.IntlV2Grey80
 import com.compose.taptap.ui.theme.IntlV2Grey90
 import com.compose.taptap.ui.theme.PPNeu
 import com.compose.taptap.ui.theme.V3CommonPrimaryRed
 import com.compose.taptap.ui.utils.DisabledInteractionSource
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -91,82 +93,74 @@ val subTabs: List<String> = listOf("For you", "Editors' choice", "Arcade", "Stra
 @Composable
 fun Game(
     gameViewModel: GameViewModel = koinViewModel<GameViewModel>(),
+    searchViewModel: SearchViewModel = koinViewModel<SearchViewModel>()
 ) {
-    val composeNavigator = currentComposeNavigator
-    val scope = rememberCoroutineScope()
-    val pagerState = rememberPagerState(pageCount = { topTabs.size })
-    var selectedSubTab by remember { mutableIntStateOf(0) }
-
-    val gameUiState by gameViewModel.gameUiStateFlow.collectAsStateWithLifecycle(
-        initialValue = LoadingResult.Loading, lifecycle = LocalLifecycleOwner.current.lifecycle
-    )
-//    val event by gameViewModel.event.collectAsState()
-//    val placeholderState by searchViewModel.searchUiState.collectAsStateWithLifecycle()
-
+    val placeholderState by searchViewModel.searchUiState.collectAsStateWithLifecycle()
+    val gameList = gameViewModel.gameUiStateFlow.collectAsLazyPagingItems()
 
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        TopBar(placeholderState)
 
         HorizontalDivider(
             color = IntlCcDivider, thickness = 1.dp
         )
 
-        PrimaryScrollableTabRow(
-            selectedTabIndex = pagerState.currentPage,
-            edgePadding = 0.dp,
-            indicator = {
-                TabRowDefaults.PrimaryIndicator(
-                    modifier = Modifier.tabIndicatorOffset(
-                        pagerState.currentPage, matchContentSize = true
-                    ),
-                    color = IntlCcGreenPrimary,
-                    height = 3.dp,
-                    width = Dp.Unspecified,
-                    shape = RoundedCornerShape(50)
-                )
-            },
-            containerColor = Color.Transparent,
-            divider = {},
+        GameContent(gameList)
+    }
+}
+
+@Composable
+private fun TopBar(
+    placeholderState: LoadingResult<SearchResponse>,
+) {
+    val composeNavigator = currentComposeNavigator
+    val placeholderText = when (placeholderState) {
+        is LoadingResult.Success -> placeholderState.value.firstTextOrDefault()
+        is LoadingResult.Loading -> "Loading..."
+        is LoadingResult.Failure -> "Discover Superb Games"
+    }
+
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, top = 6.dp, end = 6.dp, bottom = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 14.dp),
+                .height(32.dp)
+                .weight(1f)
+                .background(
+                    color = IntlV2Grey90, shape = RoundedCornerShape(18.dp)
+                )
+                .clickable { composeNavigator.navigate(TapTapScreen.Search) },
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            topTabs.forEachIndexed { tabIndex, title ->
-                Tab(
-                    selected = tabIndex == pagerState.currentPage,
-                    onClick = { scope.launch { pagerState.animateScrollToPage(tabIndex) } },
-                    selectedContentColor = White,
-                    unselectedContentColor = IntlV2Grey60,
-                    text = {
-                        Text(
-                            text = title,
-                            fontWeight = if (pagerState.currentPage == tabIndex) FontWeight.Bold else FontWeight.Medium,
-                            color = if (pagerState.currentPage == tabIndex) White
-                            else IntlV2Grey40,
-                            fontFamily = PPNeu,
-                            fontSize = 15.sp
-                        )
-                    },
-                    modifier = Modifier.height(34.dp),
-                    interactionSource = DisabledInteractionSource()
-                )
-            }
+            Icon(
+                painter = painterResource(R.drawable.cw_toolbar_search_ic),
+                contentDescription = "Search",
+                tint = IntlV2Grey80,
+                modifier = Modifier
+                    .padding(start = 6.dp)
+                    .size(24.dp)
+            )
+            Text(
+                text = placeholderText,
+                maxLines = 1,
+                fontWeight = FontWeight.Medium,
+                fontFamily = PPNeu,
+                fontSize = 14.sp,
+                color = IntlV2Grey60,
+                overflow = TextOverflow.Ellipsis
+            )
         }
-        LoadingResultScreen(
-            modifier = Modifier.fillMaxSize(),
-            loadingResult = gameUiState,
-            onRefresh = gameViewModel::refresh,
-            content = { games, isLoading ->
-                PageContent(
-                    pagerState = pagerState,
-                    selectedSubTab = selectedSubTab,
-                    onSubTabSelected = { selectedSubTab = it },
-                    games = games,
-                    subTabs = subTabs
-                )
-            })
+        NotificationBell(
+            unreadCount = 5, onClick = { composeNavigator.navigate(TapTapScreen.Notifications) })
     }
 }
 
@@ -217,23 +211,80 @@ fun NotificationBell(
     }
 }
 
+
+@Composable
+fun GameContent(
+    gameList: LazyPagingItems<ListGameItem>
+) {
+
+    val scope = rememberCoroutineScope()
+
+    val pagerState = rememberPagerState(pageCount = { topTabs.size })
+
+    var selectedSubTab by remember { mutableIntStateOf(0) }
+
+    PrimaryScrollableTabRow(
+        selectedTabIndex = pagerState.currentPage,
+        edgePadding = 0.dp,
+        indicator = {
+            TabRowDefaults.PrimaryIndicator(
+                modifier = Modifier.tabIndicatorOffset(
+                    pagerState.currentPage, matchContentSize = true
+                ),
+                color = IntlCcGreenPrimary,
+                height = 3.dp,
+                width = Dp.Unspecified,
+                shape = RoundedCornerShape(50)
+            )
+        },
+        containerColor = Color.Transparent,
+        divider = {},
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 14.dp),
+    ) {
+        topTabs.forEachIndexed { tabIndex, title ->
+            Tab(
+                selected = tabIndex == pagerState.currentPage,
+                onClick = { scope.launch { pagerState.animateScrollToPage(tabIndex) } },
+                selectedContentColor = White,
+                unselectedContentColor = IntlV2Grey60,
+                text = {
+                    Text(
+                        text = title,
+                        fontWeight = if (pagerState.currentPage == tabIndex) FontWeight.Bold else FontWeight.Medium,
+                        color = if (pagerState.currentPage == tabIndex) White
+                        else IntlV2Grey40,
+                        fontFamily = PPNeu,
+                        fontSize = 15.sp
+                    )
+                },
+                modifier = Modifier.height(34.dp),
+                interactionSource = DisabledInteractionSource()
+            )
+        }
+    }
+    PageContent(
+        pagerState = pagerState,
+        selectedSubTab = selectedSubTab,
+        onSubTabSelected = { selectedSubTab = it },
+        games = gameList,
+    )
+}
+
 @Composable
 fun PageContent(
     pagerState: PagerState,
     selectedSubTab: Int,
     onSubTabSelected: (Int) -> Unit,
-    games: PagingData<ListGameItem>,
-    subTabs: List<String>
+    games: LazyPagingItems<ListGameItem>,
 ) {
     HorizontalPager(
         state = pagerState, modifier = Modifier.fillMaxSize()
     ) { page ->
         when (page) {
             0 -> DiscoverPage(
-                subTabs = subTabs,
-                selectedSubTab = selectedSubTab,
-                onSubTabSelected = onSubTabSelected,
-                games = games
+                selectedSubTab = selectedSubTab, onSubTabSelected = onSubTabSelected, games = games
             )
 
             1 -> Text("Top charts", color = White, modifier = Modifier.fillMaxSize())
@@ -245,13 +296,29 @@ fun PageContent(
 
 @Composable
 fun DiscoverPage(
-    subTabs: List<String>,
-    selectedSubTab: Int,
-    onSubTabSelected: (Int) -> Unit,
-    games: PagingData<ListGameItem>
+    selectedSubTab: Int, onSubTabSelected: (Int) -> Unit, games: LazyPagingItems<ListGameItem>
 ) {
     val composeNavigator = currentComposeNavigator
-    val lazyGames = flowOf(games).collectAsLazyPagingItems()
+
+    val loadState = games.loadState
+    val isInitialLoad = loadState.refresh is LoadState.Loading && games.itemCount == 0
+
+    if (isInitialLoad) {
+        LoadingScreen(modifier = Modifier.background(BlackF16))
+        return
+    }
+
+    val refreshError = loadState.refresh as? LoadState.Error
+    if (refreshError != null && games.itemCount == 0) {
+        PagingErrorState(
+            message = refreshError.error.localizedMessage,
+            onRetry = games::retry
+        )
+        return
+    }
+
+    val appendError = loadState.append as? LoadState.Error
+    val isAppending = loadState.append is LoadState.Loading
 
     LazyColumn(
         modifier = Modifier
@@ -268,39 +335,35 @@ fun DiscoverPage(
             ) {
                 itemsIndexed(subTabs, key = { i, _ -> i }) { i, title ->
                     val isSelected = i == selectedSubTab
-                    val selected = rememberUpdatedState(isSelected)
                     Text(
                         text = title,
                         modifier = Modifier
                             .background(
-                                color = if (selected.value) White
+                                color = if (isSelected) White
                                 else IntlV2Grey90, shape = RoundedCornerShape(8.dp)
                             )
                             .clickable { onSubTabSelected(i) }
                             .padding(horizontal = 9.dp, vertical = 1.dp),
-                        color = if (selected.value) BlackF16 else LightGray,
+                        color = if (isSelected) BlackF16 else LightGray,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
                         fontFamily = PPNeu)
                 }
             }
         }
-        // Show empty state when there are no items
-        if (lazyGames.itemCount == 0) {
-            item {
-                NoExistData(
-                    modifier = Modifier.fillParentMaxSize(),
-                    subTextNull = "No games to show",
+        items(
+            count = games.itemCount, key = { index ->
+                val game = games[index]
+                game?.identification ?: game?.category?.id ?: game?.app?.id ?: "game-$index"
+            }) { index ->
+            val game = games[index]
+            if (game == null) {
+                AppendLoadingIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp)
                 )
-            }
-        } else {
-            items(
-                count = lazyGames.itemCount, key = { index ->
-                    val item = lazyGames.peek(index)
-                    item?.identification ?: item?.category?.id ?: item?.app?.id ?: "game-$index"
-                }) { index ->
-                val game = lazyGames[index] ?: return@items
-
+            } else {
                 if (game.dailies != null && (game.type?.isDailiesType() == true)) {
                     val firstDailyGame = game.dailies?.list?.firstOrNull()
                     if (firstDailyGame != null) {
@@ -333,6 +396,103 @@ fun DiscoverPage(
                 }
             }
         }
+        if (appendError != null && games.itemCount > 0) {
+            item {
+                PagingAppendErrorFooter(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
+                    onRetry = games::retry
+                )
+            }
+        }
+        if (isAppending && games.itemCount > 0) {
+            item {
+                AppendLoadingIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun PagingErrorState(
+    message: String?,
+    onRetry: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BlackF16)
+            .padding(24.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = message ?: "Something went wrong.",
+            color = White,
+            fontFamily = PPNeu,
+            fontSize = 16.sp,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "Tap to retry",
+            color = IntlCcGreenPrimary,
+            fontFamily = PPNeu,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .clip(RoundedCornerShape(999.dp))
+                .clickable { onRetry() }
+                .padding(horizontal = 24.dp, vertical = 8.dp)
+        )
+    }
+}
+
+@Composable
+private fun PagingAppendErrorFooter(
+    modifier: Modifier = Modifier,
+    onRetry: () -> Unit,
+) {
+    Column(
+        modifier = modifier.wrapContentSize(Alignment.Center),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(
+            text = "Couldn't load more games.",
+            color = White,
+            fontFamily = PPNeu,
+            fontSize = 14.sp
+        )
+        Text(
+            text = "Retry",
+            color = IntlCcGreenPrimary,
+            fontFamily = PPNeu,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .clip(RoundedCornerShape(999.dp))
+                .clickable { onRetry() }
+                .padding(horizontal = 20.dp, vertical = 6.dp)
+        )
+    }
+}
+
+@Composable
+private fun AppendLoadingIndicator(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier.wrapContentSize(Alignment.Center),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        CircularProgressIndicator(
+            color = IntlCcGreenPrimary,
+            strokeWidth = 2.dp,
+            modifier = Modifier.size(24.dp)
+        )
     }
 }
 
@@ -420,7 +580,6 @@ private fun CategoryGameItem(
     item: App,
     composeNavigator: AppComposeNavigator<TapTapScreen>,
 ) {
-
     Column(
         modifier = Modifier
             .width(84.dp)

@@ -19,7 +19,8 @@ class GamesRepositoryImpl(
         return Pager(
             config = PagingConfig(
                 pageSize = DEFAULT_PAGE_SIZE,
-                prefetchDistance = 2,
+                prefetchDistance = PREFETCH_DISTANCE,
+                initialLoadSize = INITIAL_LOAD_SIZE,
                 enablePlaceholders = false
             ),
             pagingSourceFactory = {
@@ -29,7 +30,7 @@ class GamesRepositoryImpl(
                     CursorPage(
                         items = data.list,
                         prevCursor = data.prevPage.takeIf { it.isNotBlank() },
-                        nextCursor = data.nextPage.takeIf { it.isNotBlank() },
+                        nextCursor = data.nextPage.takeIf { it.isNotBlank() }
                     )
                 }
             }
@@ -37,6 +38,8 @@ class GamesRepositoryImpl(
     }
 
     companion object {
-        const val DEFAULT_PAGE_SIZE = 20
+        const val DEFAULT_PAGE_SIZE = 5
+        private const val PREFETCH_DISTANCE = 1
+        private const val INITIAL_LOAD_SIZE = 5
     }
 }

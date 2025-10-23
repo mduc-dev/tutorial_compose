@@ -11,6 +11,7 @@ dependencies {
     implementation(projects.core.data)
     implementation(projects.core.model)
     implementation(projects.core.network)
+    implementation(projects.core.designsystem)
 
     implementation(libs.androidx.paging.compose)
 

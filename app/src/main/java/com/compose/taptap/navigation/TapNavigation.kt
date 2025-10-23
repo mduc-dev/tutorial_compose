@@ -29,19 +29,23 @@ fun NavGraphBuilder.tapAuthNavigation(
         }
         composable<TapTapScreen.Login>(enterTransition = {
             slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(300)
+                AnimatedContentTransitionScope.SlideDirection.Left,
+                animationSpec = tween(durationMillis = 300, delayMillis = 50)
             )
         }, exitTransition = {
             slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(300)
+                AnimatedContentTransitionScope.SlideDirection.Left,
+                animationSpec = tween(durationMillis = 300, delayMillis = 50)
             )
         }, popEnterTransition = {
             slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Right, animationSpec = tween(300)
+                AnimatedContentTransitionScope.SlideDirection.Right,
+                animationSpec = tween(durationMillis = 300, delayMillis = 50)
             )
         }, popExitTransition = {
             slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.Right, animationSpec = tween(300)
+                AnimatedContentTransitionScope.SlideDirection.Right,
+                animationSpec = tween(durationMillis = 300, delayMillis = 50)
             )
         }) {
             Login()
