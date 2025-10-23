@@ -18,6 +18,8 @@ import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -27,16 +29,8 @@ import java.util.UUID
 object BUILDCONFIG {
     const val BASE_URL = "https://api.tap.io"
 
-    //Game
-    private const val GAME_URL_TEMPLATE = "/i/discover/v4/home?X-UA=%XUA%&date_key=%DATE_KEY%"
-
-    //PLay
-    private const val INSTANT_GAME_TEMPLATE = "/i/instant-game/v2/rec?X-UA=%XUA%"
-
-    private const val XUA_PLACEHOLDER = "%XUA%"
-    private const val DATE_KEY_PLACEHOLDER = "%DATE_KEY%"
-    const val SEARCH_PLACEHOLDER_URL =
-        "/i/search/v2/placeholder?X-UA=V%3D1%26PN%3DTapLite%26VN_CODE%3D356061000%26VN%3D3.56.6-lite.100000%26LOC%3DVN%26LANG%3Den_US%26CH%3Ddefault%26UID%3Daee8172a-80ed-4b17-a9cb-68f3ad03d57e%26VID%3D364066371%26NT%3D1%26SR%3D1080x2332%26DEB%3Drealme%26DEM%3DRMX1931%26OSV%3D10%26CURR%3DVN"
+    private const val SEARCH_UID = "aee8172a-80ed-4b17-a9cb-68f3ad03d57e"
+    private const val SEARCH_VID = "364066371"
 
     const val ACTION_ITEM_URL =
         "/i/app/v1/action-item?X-UA=V%3D1%26PN%3DTapLite%26VN_CODE%3D356061000%26VN%3D3.56.6-lite.100000%26LOC%3DVN%26LANG%3Den_US%26CH%3Ddefault%26UID%3Daee8172a-80ed-4b17-a9cb-68f3ad03d57e%26VID%3D364066371%26NT%3D1%26SR%3D1080x2332%26DEB%3Drealme%26DEM%3DRMX1931%26OSV%3D10%26CURR%3DVN"
@@ -45,10 +39,14 @@ object BUILDCONFIG {
     const val PROFILE_USER_URL =
         "/user-profile/v1/me?X-UA=V%3D1%26PN%3DTapLite%26VN_CODE%3D356061000%26VN%3D3.56.6-lite.100000%26LOC%3DVN%26LANG%3Den_US%26CH%3Ddefault%26UID%3Daee8172a-80ed-4b17-a9cb-68f3ad03d57e%26VID%3D364066371%26NT%3D1%26SR%3D1080x2332%26DEB%3Drealme%26DEM%3DRMX1931%26OSV%3D10%26CURR%3DVN"
 
-    private fun buildXUA(locale: Locale = Locale.getDefault()): String {
-        val deviceBrand = Build.BRAND ?: "unknown"
-        val deviceModel = Build.MODEL ?: "unknown"
-        val osVersion = Build.VERSION.RELEASE ?: "0"
+    private fun buildXUA(
+        locale: Locale = Locale.getDefault(),
+        uidOverride: String? = null,
+        vidOverride: String? = null
+    ): String {
+        val deviceBrand = Build.BRAND?.takeIf { it.isNotBlank() } ?: "unknown"
+        val deviceModel = Build.MODEL?.takeIf { it.isNotBlank() } ?: "unknown"
+        val osVersion = Build.VERSION.RELEASE?.takeIf { it.isNotBlank() } ?: "0"
         val country = locale.country.ifEmpty { "VN" }
         val lang = locale.toLanguageTag().replace('-', '_') // ex: en_US
 
@@ -60,37 +58,55 @@ object BUILDCONFIG {
             "LOC" to country,
             "LANG" to lang,
             "CH" to "default",
-            "UID" to UUID.randomUUID().toString(),
-            "VID" to (100000000..999999999).random().toString(),
+            "UID" to (uidOverride?.takeIf { it.isNotBlank() } ?: UUID.randomUUID().toString()),
+            "VID" to (vidOverride?.takeIf { it.isNotBlank() } ?: (100000000..999999999).random()
+                .toString()),
             "NT" to "1",
             "SR" to "1080x2332",
             "DEB" to deviceBrand,
             "DEM" to deviceModel,
             "OSV" to osVersion,
-            "CURR" to country
-        )
+            "CURR" to country)
 
-        // Encode để an toàn trong query
-        return params.entries.joinToString("%26") { "${it.key}%3D${it.value}" }
+        val rawXua = params.entries.joinToString("&") { "${it.key}=${it.value}" }
+        return URLEncoder.encode(rawXua, StandardCharsets.UTF_8.name())
+    }
+
+    fun newXUA(
+        locale: Locale = Locale.getDefault(),
+        uidOverride: String? = null,
+        vidOverride: String? = null
+    ): String = buildXUA(locale, uidOverride, vidOverride)
+
+    fun ensureXua(url: String, xua: String): String {
+        if (url.contains("X-UA=", ignoreCase = true)) {
+            return url
+        }
+        val separator = if (url.contains("?")) "&" else "?"
+        return "$url${separator}X-UA=$xua"
     }
 
     fun gameUrl(
-        date: Date = Date()
+        date: Date = Date(),
+        xua: String = newXUA(),
     ): String {
         val formatter = SimpleDateFormat("yyyyMMdd", Locale.US).apply {
             timeZone = TimeZone.getTimeZone("UTC")
         }
         val formattedDate = formatter.format(date)
-        val xua = buildXUA()
 
-        return BASE_URL + GAME_URL_TEMPLATE.replace(XUA_PLACEHOLDER, xua)
-            .replace(DATE_KEY_PLACEHOLDER, formattedDate)
+        return "$BASE_URL/i/discover/v4/home?X-UA=$xua&date_key=$formattedDate"
     }
 
-    fun instantPlay(): String {
-        val xua = buildXUA()
+    fun instantPlay(xua: String = newXUA()): String {
+        return "$BASE_URL/i/instant-game/v2/rec?X-UA=$xua"
+    }
 
-        return BASE_URL + INSTANT_GAME_TEMPLATE.replace(XUA_PLACEHOLDER, xua)
+    fun searchPlaceholder(locale: Locale = Locale.getDefault()): String {
+        val xua = newXUA(
+            locale = locale, uidOverride = SEARCH_UID, vidOverride = SEARCH_VID
+        )
+        return "$BASE_URL/i/search/v2/placeholder?X-UA=$xua"
     }
 
 }

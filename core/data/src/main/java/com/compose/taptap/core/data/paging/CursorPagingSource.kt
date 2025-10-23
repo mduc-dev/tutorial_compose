@@ -1,5 +1,6 @@
 package com.compose.taptap.core.data.paging
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 
@@ -21,7 +22,10 @@ class CursorPagingSource<T : Any>(
 ) : PagingSource<String, T>() {
 
     override suspend fun load(params: LoadParams<String>): LoadResult<String, T> = try {
+        val cursor = params.key // Get the cursor for this load
+        val loadSize = params.loadSize // How many items Paging wants NOW
         val page = loader(params.key)
+        Log.d("PagingSource", ">>> load() called - Cursor: '$cursor', Requested LoadSize: $loadSize")
         LoadResult.Page(
             data = page.items,
             prevKey = page.prevCursor,

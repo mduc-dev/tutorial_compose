@@ -11,7 +11,6 @@ import com.compose.taptap.core.network.model.SearchResponse
  * Copyright © 2025 mduc. All rights reserved.
  */
 
-//TODO: now it not working, check again to can be fetch
 class GetSearchPlaceholderFlowUseCase(
     private val searchRepository: SearchRepository
 ) : BaseFlowUseCase<Unit, SearchResponse>() {

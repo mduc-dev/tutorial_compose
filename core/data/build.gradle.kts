@@ -12,6 +12,7 @@ dependencies {
     implementation(projects.core.network)
     implementation(projects.core.navigation)
     implementation(projects.core.database)
+    implementation(projects.core.designsystem)
 
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.paging.compose)

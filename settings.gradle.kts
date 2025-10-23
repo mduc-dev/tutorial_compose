@@ -1,5 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
+include(":core:designsystem")
+
+
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 pluginManagement {
     includeBuild("build-logic")
@@ -19,6 +22,7 @@ dependencyResolutionManagement {
 rootProject.name = "taptap-compose"
 
 include(":app")
+include(":core:designsystem")
 include(":core:navigation")
 include(":core:model")
 include(":core:domain")
