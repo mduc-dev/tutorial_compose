@@ -54,16 +54,14 @@ import androidx.compose.ui.unit.sp
 import com.compose.taptap.R
 import com.compose.taptap.core.navigation.currentComposeNavigator
 import com.compose.taptap.core.navigation.TapTapScreen
-import com.compose.taptap.ui.theme.*
+import com.compose.taptap.core.designsystem.util.nonScaledSp
+import com.compose.taptap.core.designsystem.theme.*
 import com.compose.taptap.ui.utils.AuthState
 import com.compose.taptap.ui.utils.Provider
 import kotlinx.coroutines.isActive
 import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.sin
-
-val TextUnit.nonScaledSp
-    @Composable get() = (this.value / LocalDensity.current.fontScale).sp
 
 @Composable
 fun Welcome(

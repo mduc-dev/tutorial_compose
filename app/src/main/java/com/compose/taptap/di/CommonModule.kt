@@ -8,9 +8,9 @@ import com.compose.taptap.core.domain.usecases.search.GetSearchPlaceholderFlowUs
 import com.compose.taptap.core.navigation.AppComposeNavigator
 import com.compose.taptap.core.navigation.TapComposeNavigator
 import com.compose.taptap.core.navigation.TapTapScreen
-import com.compose.taptap.ui.launcher.game.GameViewModel
+import com.compose.taptap.feature.game.GameViewModel
 import com.compose.taptap.ui.launcher.play.PlayViewModel
-import com.compose.taptap.ui.launcher.search.SearchViewModel
+import com.compose.taptap.feature.search.SearchViewModel
 import com.compose.taptap.ui.launcher.welcome.WelcomeViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel

@@ -1,5 +1,4 @@
 package com.compose.taptap.core.designsystem.component
-
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
