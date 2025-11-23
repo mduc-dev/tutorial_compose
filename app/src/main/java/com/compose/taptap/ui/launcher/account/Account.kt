@@ -50,20 +50,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.compose.taptap.R
-import com.compose.taptap.ui.components.ButtonSize
-import com.compose.taptap.ui.components.DDButton
-import com.compose.taptap.ui.components.NoExistData
-import com.compose.taptap.ui.components.Variant
+import com.compose.taptap.core.designsystem.component.DDButton
+import com.compose.taptap.core.designsystem.theme.*
+import com.compose.taptap.core.designsystem.component.NoExistData
+import com.compose.taptap.core.designsystem.component.ButtonSize
+import com.compose.taptap.core.designsystem.component.Variant
 import com.compose.taptap.ui.launcher.welcome.LocalWelcomeViewModel
 import com.compose.taptap.ui.launcher.welcome.WelcomeViewModel
-import com.compose.taptap.ui.theme.Black
-import com.compose.taptap.ui.theme.Black1A
-import com.compose.taptap.ui.theme.BlackDisable
-import com.compose.taptap.ui.theme.BlackF16
-import com.compose.taptap.ui.theme.BlackF3
-import com.compose.taptap.ui.theme.Green1A
-import com.compose.taptap.ui.theme.IntlCcGreenPrimary
-import com.compose.taptap.ui.theme.PPNeu
+
 import com.compose.taptap.ui.utils.DisabledInteractionSource
 import com.compose.taptap.ui.utils.isEmpty
 import kotlinx.coroutines.launch

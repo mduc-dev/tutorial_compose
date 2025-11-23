@@ -6,11 +6,11 @@ import androidx.navigation.compose.rememberNavController
 import com.compose.taptap.core.navigation.AppComposeNavigator
 import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.navigation.TapNavHost
-import com.compose.taptap.ui.theme.Kotlin_composeTheme
+import com.compose.taptap.core.designsystem.theme.TapTapTheme
 
 @Composable
 fun TapTapMain(composeNavigator: AppComposeNavigator<TapTapScreen>) {
-    Kotlin_composeTheme(darkTheme = true) {
+    TapTapTheme(darkTheme = true) {
         val navHostController = rememberNavController()
         LaunchedEffect(Unit) {
             composeNavigator.handleNavigationCommands(navHostController)

@@ -53,6 +53,8 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/LICENSE.md"
+            excludes += "META-INF/LICENSE-notice.md"
         }
     }
 }
@@ -64,7 +66,11 @@ kotlin {
 }
 
 dependencies {
-    //cores
+    // Feature modules
+    implementation(project(":feature:game"))
+    implementation(project(":feature:search"))
+    
+    // Core modules
     implementation(projects.core.navigation)
     implementation(projects.core.network)
     implementation(projects.core.model)
@@ -111,7 +117,6 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.tooling.manifest)
-
 
     // Extend icons
     implementation(libs.androidx.material.icons.extended)

@@ -21,7 +21,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.ui.launcher.welcome.LocalWelcomeViewModel
 import com.compose.taptap.ui.launcher.welcome.WelcomeViewModel
-import com.compose.taptap.ui.theme.BlackF16
+import com.compose.taptap.core.designsystem.theme.*
 import com.compose.taptap.ui.utils.AuthState
 import org.koin.compose.viewmodel.koinViewModel
 

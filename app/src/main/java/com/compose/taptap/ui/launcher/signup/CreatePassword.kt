@@ -31,10 +31,12 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.compose.taptap.R
-import com.compose.taptap.ui.components.Input
-import com.compose.taptap.ui.theme.IntlV2Grey60
-import com.compose.taptap.ui.theme.PPNeu
-import com.compose.taptap.ui.theme.PrimaryTextDisabledMaterialDark
+import com.compose.taptap.core.designsystem.component.AppBar
+import com.compose.taptap.core.designsystem.component.DDButton
+import com.compose.taptap.core.designsystem.component.Input
+import com.compose.taptap.core.designsystem.theme.IntlV2Grey60
+import com.compose.taptap.core.designsystem.theme.PPNeu
+import com.compose.taptap.core.designsystem.theme.PrimaryTextDisabledMaterialDark
 
 //TODO: in this screen or in the last screen need to be defined when navigate is
 //    popUpTo("screen_to_go") { inclusive = true }

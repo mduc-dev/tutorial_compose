@@ -54,13 +54,13 @@ import com.compose.taptap.R
 import com.compose.taptap.core.navigation.AppComposeNavigator
 import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.core.navigation.currentComposeNavigator
-import com.compose.taptap.ui.components.AppBar
-import com.compose.taptap.ui.components.DDButton
-import com.compose.taptap.ui.components.Input
-import com.compose.taptap.ui.components.NoExistData
+import com.compose.taptap.core.designsystem.component.AppBar
+import com.compose.taptap.core.designsystem.component.DDButton
+import com.compose.taptap.core.designsystem.component.Input
+import com.compose.taptap.core.designsystem.component.NoExistData
 import com.compose.taptap.ui.launcher.signup.extraSafeBottomPadding
-import com.compose.taptap.ui.launcher.welcome.nonScaledSp
-import com.compose.taptap.ui.theme.*
+import com.compose.taptap.core.designsystem.util.nonScaledSp
+import com.compose.taptap.core.designsystem.theme.*
 import com.compose.taptap.ui.utils.DisabledInteractionSource
 import kotlinx.coroutines.launch
 

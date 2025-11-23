@@ -32,11 +32,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.compose.taptap.R
-import com.compose.taptap.ui.components.DDButton
-import com.compose.taptap.ui.components.Input
+import com.compose.taptap.core.designsystem.component.AppBar
+import com.compose.taptap.core.designsystem.component.DDButton
+import com.compose.taptap.core.designsystem.component.Input
 import com.compose.taptap.ui.launcher.signup.extraSafeBottomPadding
-import com.compose.taptap.ui.launcher.welcome.nonScaledSp
-import com.compose.taptap.ui.theme.*
+import com.compose.taptap.core.designsystem.util.nonScaledSp
+import com.compose.taptap.core.designsystem.theme.*
 
 
 @Composable

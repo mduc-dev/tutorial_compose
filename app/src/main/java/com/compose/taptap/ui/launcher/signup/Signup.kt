@@ -24,9 +24,10 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.compose.taptap.ui.components.AppBar
-import com.compose.taptap.ui.components.DDButton
-import com.compose.taptap.ui.theme.*
+import com.compose.taptap.core.designsystem.component.AppBar
+import com.compose.taptap.core.designsystem.component.DDButton
+import com.compose.taptap.core.designsystem.component.Input
+import com.compose.taptap.core.designsystem.theme.*
 import com.compose.taptap.R
 import com.compose.taptap.core.navigation.currentComposeNavigator
 

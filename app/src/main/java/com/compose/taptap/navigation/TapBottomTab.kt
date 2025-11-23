@@ -13,8 +13,8 @@ import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.Color.Companion.Unspecified
 import androidx.compose.ui.tooling.preview.Preview
 import com.compose.taptap.core.navigation.TapTapScreen
-import com.compose.taptap.ui.theme.*
-import com.compose.taptap.ui.theme.Kotlin_composeTheme
+import com.compose.taptap.core.designsystem.theme.*
+import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.ui.utils.BOTTOM_TAB
 import com.compose.taptap.ui.utils.DisabledInteractionSource
 
@@ -54,7 +54,7 @@ fun TapBottomTab(
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun BottomTabNavigationPreview() {
-    Kotlin_composeTheme(dynamicColor = false) {
+    TapTapTheme(dynamicColor = false) {
         TapBottomTab(currentRoute = TapTapScreen.Game, modifier = Modifier, onItemClick = {
             println("vao day")
         })

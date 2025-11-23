@@ -7,7 +7,10 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.compose.taptap.ui.theme.BlackF16
+import com.compose.taptap.core.designsystem.component.AppBar
+import com.compose.taptap.core.designsystem.theme.BlackF16
+import com.compose.taptap.core.designsystem.theme.PPNeu
+import com.compose.taptap.core.designsystem.theme.WhitePrimary
 
 @Composable
 fun GameDetail() {
