@@ -40,7 +40,7 @@ internal fun Project.configureKotlinAndroid(
         properties["warningsAsErrors"] as? Boolean ?: false
       )
 
-      jvmTarget.set(JvmTarget.JVM_17)
+      jvmTarget.set(JvmTarget.JVM_21)
     }
   }
 }

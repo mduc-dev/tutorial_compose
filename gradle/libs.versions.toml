@@ -38,6 +38,7 @@ coroutines = "1.10.2"
 media3-exoplayer = "1.8.0"
 appcompat = "1.7.1"
 material = "1.13.0"
+kotlinxCollectionsImmutable = "0.3.8"
 
 [libraries]
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "androidxRoom" }
@@ -98,6 +99,7 @@ androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", 
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxCollectionsImmutable" }
 
 
 [plugins]

@@ -1,4 +1,5 @@
 package com.compose.taptap.core.navigation
+import androidx.compose.runtime.Stable
 import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -19,6 +20,7 @@ abstract class Navigator {
     }
 }
 
+@Stable
 abstract class AppComposeNavigator<T: Any> : Navigator() {
     abstract fun navigate(route: T, optionsBuilder: (NavOptionsBuilder.() -> Unit)? = null)
     abstract fun <R> navigateBackWithResult(key: String, result: R, route: T?)

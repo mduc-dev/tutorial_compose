@@ -4,13 +4,12 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.compose.taptap.core.domain.usecases.game.GetGameFlowUseCase
 import com.compose.taptap.core.model.GameFilterType
 import com.compose.taptap.core.model.GameSortType
 import com.compose.taptap.core.model.GetGamesParams
-import com.compose.taptap.core.model.ListGameItem
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,7 +31,6 @@ data class GameUiState(
     val unreadNotifications: Int,
     val selectedTopTab: Int = 0,
     val selectedSubTab: Int = 0,
-    val isLoading: Boolean = false
 )
 
 /**
@@ -76,15 +74,16 @@ class GameViewModel(
     // One-time events channel
     private val _events = Channel<GameEvent>(Channel.BUFFERED)
     val events = _events.receiveAsFlow()
-    
+
     // Filter state - triggers new data fetch when changed
     private val _filterState = MutableStateFlow(GetGamesParams())
     val filterState = _filterState.asStateFlow()
 
     // Games flow - automatically updates when filter changes
+    @OptIn(ExperimentalCoroutinesApi::class)
     val gameUiStateFlow = _filterState
-        .flatMapLatest { params -> 
-            getGameUseCase.execute(params) 
+        .flatMapLatest { params ->
+            getGameUseCase.execute(params)
         }
         .cachedIn(viewModelScope)
 
@@ -104,7 +103,7 @@ class GameViewModel(
             )
         }
     }
-    
+
     /**
      * Reset filters to default values.
      */

@@ -20,4 +20,6 @@ dependencies {
     implementation(projects.core.model)
     implementation(libs.bundles.coil)
     api(libs.androidx.material.icons.extended)
+    implementation(libs.kotlinx.collections.immutable)
+    debugImplementation(libs.androidx.compose.ui.tooling)
 }
