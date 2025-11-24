@@ -1,5 +1,6 @@
 package com.compose.taptap.core.model
 
+import androidx.compose.runtime.Immutable
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -16,6 +17,7 @@ data class Games(
     @SerialName("next_page") val nextPage: String,
 )
 
+@Immutable
 @Serializable
 data class ListGameItem(
     val type: String? = null,
@@ -26,6 +28,7 @@ data class ListGameItem(
     val dailies: Dailies? = null
 )
 
+@Immutable
 @Serializable
 data class Dailies(
     @SerialName("date_key") val dateKey: String,
@@ -33,6 +36,7 @@ data class Dailies(
     @SerialName("event_log") val eventLog: EventLog? = null
 )
 
+@Immutable
 @Serializable
 data class DailiesItem(
     val identification: String,
@@ -47,6 +51,7 @@ data class DailiesItem(
     @SerialName("video_id") val videoId: Long? = null
 )
 
+@Immutable
 @Serializable
 data class App(
     val id: Long,
@@ -284,6 +289,7 @@ data class RecReason(
     val text: String,
 )
 
+@Immutable
 @Serializable
 data class Category(
     val id: Long,
