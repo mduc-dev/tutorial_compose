@@ -8,6 +8,8 @@ android {
 }
 
 dependencies {
+    implementation(projects.core.model)
+
     api(libs.androidx.core.ktx)
     api(libs.androidx.lifecycle.runtime.ktx)
     api(libs.androidx.activity.compose)
@@ -17,7 +19,6 @@ dependencies {
     api(libs.androidx.compose.ui.tooling.preview)
     api(libs.androidx.compose.material3)
     api(libs.androidx.constraintlayout.compose)
-    implementation(projects.core.model)
     implementation(libs.bundles.coil)
     api(libs.androidx.material.icons.extended)
     implementation(libs.kotlinx.collections.immutable)

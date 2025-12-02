@@ -5,14 +5,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.RippleAlpha
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalRippleConfiguration
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RippleConfiguration
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -34,13 +31,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.compose.taptap.core.designsystem.util.nonScaledSp
-import com.compose.taptap.core.designsystem.theme.Black1A
-import com.compose.taptap.core.designsystem.theme.Black20
-import com.compose.taptap.core.designsystem.theme.BlackDisable
-import com.compose.taptap.core.designsystem.theme.BlackF16
-import com.compose.taptap.core.designsystem.theme.BlackF3
-import com.compose.taptap.core.designsystem.theme.PPNeu
-import com.compose.taptap.core.designsystem.theme.PrimaryColor
+import com.compose.taptap.core.designsystem.theme.TapTapShape
+import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import kotlinx.coroutines.delay
 
 //TODO: border {color,width}, disable {color},
@@ -95,9 +87,9 @@ enum class ButtonSize(val size: Dp) {
 
     @Composable
     fun textStyle() = when (this) {
-        SM -> MaterialTheme.typography.bodySmall
-        MD -> MaterialTheme.typography.bodyMedium
-        LG -> MaterialTheme.typography.bodyLarge
+        SM -> TapTapTheme.typography.bodySmall
+        MD -> TapTapTheme.typography.bodyMedium
+        LG -> TapTapTheme.typography.bodyLarge
     }
 }
 
@@ -113,34 +105,40 @@ fun DDButton(
     onPress: () -> Unit
 ) {
     val rippleConfiguration = RippleConfiguration(
-        color = BlackDisable, rippleAlpha = RippleAlpha(
+        color = TapTapTheme.colors.onSurface, rippleAlpha = RippleAlpha(
             draggedAlpha = 0.16f, focusedAlpha = 0.12f, hoveredAlpha = 0.08f, pressedAlpha = 0.24f
         )
     )
 
     val buttonColors = when (variant) {
         Variant.SOLID -> ButtonDefaults.buttonColors(
-            containerColor = PrimaryColor, disabledContainerColor = PrimaryColor.copy(alpha = 0.3f)
+            containerColor = TapTapTheme.colors.primary,
+            disabledContainerColor = TapTapTheme.colors.primary.copy(alpha = 0.3f)
         )
 
         Variant.BORDERED -> ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent, disabledContainerColor = Black20
+            containerColor = Color.Transparent,
+            disabledContainerColor = TapTapTheme.colors.onSurface.copy(alpha = 0.12f)
         )
 
         Variant.LIGHT -> ButtonDefaults.buttonColors(
-            containerColor = Color.White, disabledContainerColor = Black20
+            containerColor = TapTapTheme.colors.surface,
+            disabledContainerColor = TapTapTheme.colors.onSurface.copy(alpha = 0.12f)
         )
 
         Variant.FLAT -> ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent, disabledContainerColor = Black20
+            containerColor = Color.Transparent,
+            disabledContainerColor = TapTapTheme.colors.onSurface.copy(alpha = 0.12f)
         )
 
         Variant.FADED -> ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent, disabledContainerColor = Black20
+            containerColor = Color.Transparent,
+            disabledContainerColor = TapTapTheme.colors.onSurface.copy(alpha = 0.12f)
         )
 
         Variant.SHADOW -> ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent, disabledContainerColor = Black20
+            containerColor = Color.Transparent,
+            disabledContainerColor = TapTapTheme.colors.onSurface.copy(alpha = 0.12f)
         )
     }
     CompositionLocalProvider(LocalRippleConfiguration provides rippleConfiguration) {
@@ -151,14 +149,15 @@ fun DDButton(
                 .testTag("dd_button"),
             colors = buttonColors,
             enabled = enable,
-            shape = RoundedCornerShape(24.dp),
+            shape = TapTapShape.corners.pill,
             border = if (variant == Variant.BORDERED) BorderStroke(
-                width = 0.5.dp, color = BlackF3
+                width = 0.5.dp,
+                color = TapTapTheme.colors.onSurface.copy(alpha = 0.2f)
             ) else null
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(TapTapTheme.spacing.small)
             ) {
                 if (isLoading == true) {
                     var progress by remember { mutableFloatStateOf(0f) }
@@ -169,20 +168,18 @@ fun DDButton(
                         }
                     }
                     CircularProgressIndicator(
-                        progress = { progress },
+                        progress = progress,
                         modifier = Modifier.size(ButtonDefaults.IconSize),
-                        color = Color.White,
+                        color = TapTapTheme.colors.onPrimary,
                         strokeWidth = 2.dp,
-                        trackColor = Black1A,
+                        trackColor = TapTapTheme.colors.surface,
                     )
                 }
                 Text(
                     text = label,
                     style = size.textStyle(),
-                    color = BlackF16,
-                    fontWeight = FontWeight.W600,
-                    fontSize = 15.sp.nonScaledSp,
-                    fontFamily = PPNeu
+                    color = if (variant == Variant.SOLID) TapTapTheme.colors.onPrimary else TapTapTheme.colors.onSurface,
+                    fontSize = 15.sp.nonScaledSp
                 )
             }
         }

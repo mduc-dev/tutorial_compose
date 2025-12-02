@@ -162,6 +162,7 @@ val GreenPrimary = Color(0xFF12D181)
 val ColorPrimary = GreenPrimary
 val ColorAccent = ColorPrimary
 val ColorPrimaryDark = Color.Transparent
+val ErrorRed = Color(0xFFB00020)
 val GreenOpacity60 = Color(0xFF14662B)
 val ColorPrimary55pct = GreenOpacity60
 val GreenOpacity80 = Color(0xFF0A3316)

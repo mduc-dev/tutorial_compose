@@ -10,7 +10,7 @@ import com.compose.taptap.core.designsystem.theme.TapTapTheme
 
 @Composable
 fun TapTapMain(composeNavigator: AppComposeNavigator<TapTapScreen>) {
-    TapTapTheme(darkTheme = true) {
+    TapTapTheme(darkTheme = true, dynamicColor = false) {
         val navHostController = rememberNavController()
         LaunchedEffect(Unit) {
             composeNavigator.handleNavigationCommands(navHostController)

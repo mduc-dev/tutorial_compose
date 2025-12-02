@@ -34,6 +34,10 @@ gradlePlugin {
             id = "compose.taptap.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"
         }
+        register("androidFeature") {
+            id = "compose.taptap.android.feature"
+            implementationClass = "AndroidFeatureConventionPlugin"
+        }
         register("androidKoin") {
             id = "compose.taptap.android.koin"
             implementationClass = "AndroidKoinConventionPlugin"

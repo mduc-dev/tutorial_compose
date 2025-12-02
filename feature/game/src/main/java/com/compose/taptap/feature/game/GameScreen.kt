@@ -40,11 +40,12 @@ import com.compose.taptap.core.designsystem.component.TapTapTabRow
 import com.compose.taptap.core.designsystem.component.toCardUiState
 import com.compose.taptap.core.designsystem.theme.BlackF16
 import com.compose.taptap.core.designsystem.theme.IntlCcDivider
-import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.core.designsystem.util.LoadingResult
 import com.compose.taptap.core.model.ListGameItem
 import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.core.navigation.currentComposeNavigator
+import com.compose.taptap.core.preview.PreviewUtils
+import com.compose.taptap.core.preview.TapTapPreviewTheme
 import com.compose.taptap.feature.search.SearchViewModel
 import kotlinx.coroutines.flow.flowOf
 import org.koin.compose.viewmodel.koinViewModel
@@ -292,11 +293,15 @@ fun DiscoverPageContent(
 }
 
 
-@Preview(showBackground = true, backgroundColor = 0xFF161616)
+
+@Preview()
 @Composable
 private fun GameScreenPreview() {
-    val games = flowOf(PagingData.from(emptyList<ListGameItem>())).collectAsLazyPagingItems()
-    TapTapTheme {
+    val games = flowOf(PagingData.from(PreviewUtils.mockGames.map {
+        ListGameItem(app = it) 
+    })).collectAsLazyPagingItems()
+    
+    TapTapPreviewTheme {
         CompositionLocalProvider(LocalGameList provides games) {
             GameScreen(
                 uiState = GameUiState(

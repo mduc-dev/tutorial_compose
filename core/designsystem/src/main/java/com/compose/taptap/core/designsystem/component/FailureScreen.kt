@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.compose.taptap.core.designsystem.theme.TapTapTheme
 
 @Composable
 fun FailureScreen(
@@ -25,17 +26,21 @@ fun FailureScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(text = "Oh no, something went wrong!")
+        Text(
+            text = "Oh no, something went wrong!",
+            style = TapTapTheme.typography.titleMedium,
+            modifier = Modifier.padding(bottom = TapTapTheme.spacing.large)
+        )
         Button(onClick = onRetry) {
             AnimatedVisibility(visible = isLoading) {
                 CircularProgressIndicator(
                     color = LocalContentColor.current,
                     modifier = Modifier
-                        .padding(end = 8.dp)
+                        .padding(end = TapTapTheme.spacing.small)
                         .size(14.dp)
                 )
             }
-            Text("Try again")
+            Text("Try again", style = TapTapTheme.typography.bodyLarge)
         }
     }
 }

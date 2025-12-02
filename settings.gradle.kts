@@ -29,5 +29,7 @@ include(":core:domain")
 include(":core:data")
 include(":core:database")
 include(":core:network")
+include(":core:preview")
+
 include(":feature:game")
 include(":feature:search")

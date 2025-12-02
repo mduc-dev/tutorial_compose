@@ -14,15 +14,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.compose.taptap.core.designsystem.R
-import com.compose.taptap.core.designsystem.theme.PPNeu
-import com.compose.taptap.core.designsystem.theme.V3CommonPrimaryRed
+import com.compose.taptap.core.designsystem.theme.TapTapTheme
 
 @Composable
 fun TapTapNotificationBell(
@@ -32,14 +29,14 @@ fun TapTapNotificationBell(
 ) {
     BadgedBox(
         badge = {
-            Badge(
-                modifier = Modifier
-                    .offset(x = -(7).dp)
-                    .height(12.dp)
-                    .width(16.dp),
-                containerColor = V3CommonPrimaryRed,
-                contentColor = White,
-            ) {
+        Badge(
+            modifier = Modifier
+                .offset(x = -(7).dp)
+                .height(12.dp)
+                .width(16.dp),
+            containerColor = TapTapTheme.colors.error,
+            contentColor = TapTapTheme.colors.onError,
+        ) {
 
                 Box(
                     modifier = Modifier
@@ -49,12 +46,11 @@ fun TapTapNotificationBell(
                 ) {
                     Text(
                         text = unreadCount.coerceAtMost(99).toString(),
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Medium,
-                        fontFamily = PPNeu,
+                        modifier = Modifier.offset(x = 0.dp, y = -(1.5).dp),
                         textAlign = TextAlign.Center,
                         maxLines = 1,
-                        modifier = Modifier.offset(x = 0.dp, y = -(1.5).dp)
+                        style = TapTapTheme.typography.labelSmall,
+                        color = TapTapTheme.colors.onError
                     )
                 }
             }
@@ -65,7 +61,7 @@ fun TapTapNotificationBell(
         Icon(
             painter = painterResource(R.drawable.home_notification_ic),
             contentDescription = "Notification",
-            tint = White,
+            tint = TapTapTheme.colors.onSurface,
             modifier = Modifier
                 .size(24.dp)
                 .clickable(onClick = onClick)

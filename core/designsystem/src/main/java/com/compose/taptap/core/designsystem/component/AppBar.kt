@@ -15,16 +15,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.compose.taptap.core.designsystem.theme.BlackF16
-import com.compose.taptap.core.designsystem.theme.PPNeu
-import com.compose.taptap.core.designsystem.theme.WhitePrimary
+import com.compose.taptap.core.designsystem.theme.TapTapTheme
 
 object AppBarDefaults {
     val Height = 56.dp
@@ -36,8 +32,8 @@ fun AppBar(
     title: String,
     modifier: Modifier = Modifier,
     navigationIcon: @Composable (() -> Unit)? = null,
-    backgroundColor: Color = BlackF16,
-    contentColor: Color = WhitePrimary,
+    backgroundColor: Color = TapTapTheme.colors.surface,
+    contentColor: Color = TapTapTheme.colors.onSurface,
     actions: @Composable RowScope.() -> Unit = {}
 ) {
     Surface(
@@ -63,14 +59,13 @@ fun AppBar(
             Box(
                 Modifier
                     .weight(1f)
-                    .padding(horizontal = 16.dp), contentAlignment = Alignment.Center
+                    .padding(horizontal = TapTapTheme.spacing.large),
+                contentAlignment = Alignment.Center
             ) {
                 Text(
                     title,
                     textAlign = TextAlign.Center,
-                    fontFamily = PPNeu,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
+                    style = TapTapTheme.typography.titleLarge,
                     maxLines = 1
                 )
             }

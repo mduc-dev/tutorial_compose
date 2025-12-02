@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -47,17 +48,24 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.compose.taptap.R
-import com.compose.taptap.core.designsystem.component.DDButton
-import com.compose.taptap.core.designsystem.theme.*
-import com.compose.taptap.core.designsystem.component.NoExistData
 import com.compose.taptap.core.designsystem.component.ButtonSize
+import com.compose.taptap.core.designsystem.component.DDButton
+import com.compose.taptap.core.designsystem.component.NoExistData
 import com.compose.taptap.core.designsystem.component.Variant
+import com.compose.taptap.core.designsystem.theme.Black1A
+import com.compose.taptap.core.designsystem.theme.BlackDisable
+import com.compose.taptap.core.designsystem.theme.BlackF3
+import com.compose.taptap.core.designsystem.theme.Green1A
+import com.compose.taptap.core.designsystem.theme.IntlCcGreenPrimary
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.FilterSpacing
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.FilterVerticalPadding
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.TabBottomPadding
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.TabTopPadding
+import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.ui.launcher.welcome.LocalWelcomeViewModel
 import com.compose.taptap.ui.launcher.welcome.WelcomeViewModel
-
 import com.compose.taptap.ui.utils.DisabledInteractionSource
 import com.compose.taptap.ui.utils.isEmpty
 import kotlinx.coroutines.launch
@@ -74,6 +82,7 @@ fun Account(
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val density = LocalDensity.current
+    val spacing = TapTapTheme.spacing
     val tabWidths = remember {
         val tabWidthStateList = mutableStateListOf<Dp>()
         repeat(tabs.size) {
@@ -82,21 +91,23 @@ fun Account(
         tabWidthStateList
     }
 
-    Scaffold(containerColor = BlackF16, topBar = {
+    Scaffold(containerColor = TapTapTheme.colors.background, topBar = {
         TopAppBar(
-            title = { }, colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = BlackF16
-        ), navigationIcon = {
+            title = { },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = TapTapTheme.colors.background
+            ),
+            navigationIcon = {
             Column(
-                modifier = Modifier.padding(horizontal = 8.dp),
+                modifier = Modifier.padding(horizontal = spacing.small),
                 horizontalAlignment = CenterHorizontally
             ) {
                 AsyncImage(
                     model = "https://ui-avatars.com/api/?name=D&bold=true&background=ab47bc&color=ffff&size=128",
                     contentDescription = null,
                     modifier = Modifier
-                        .width(40.dp)
-                        .height(40.dp)
+                        .width(spacing.xxLarge)
+                        .height(spacing.xxLarge)
                         .clip(CircleShape)
                 )
             }
@@ -109,8 +120,7 @@ fun Account(
                         contentDescription = null,
                         tint = Color.White,
                         modifier = Modifier
-                            .width(22.dp)
-                            .height(22.dp)
+                            .size(spacing.large)
                     )
                 }
                 IconButton(onClick = {}) {
@@ -119,8 +129,7 @@ fun Account(
                         contentDescription = null,
                         tint = Color.White,
                         modifier = Modifier
-                            .width(22.dp)
-                            .height(22.dp)
+                            .size(spacing.large)
                     )
                 }
                 IconButton(onClick = {}) {
@@ -129,8 +138,7 @@ fun Account(
                         contentDescription = null,
                         tint = Color.White,
                         modifier = Modifier
-                            .width(22.dp)
-                            .height(22.dp)
+                            .size(spacing.large)
                     )
                 }
             }
@@ -140,7 +148,7 @@ fun Account(
             state = listState,
             modifier = Modifier
                 .fillMaxSize()
-                .background(Black),
+                .background(TapTapTheme.colors.background),
             horizontalAlignment = CenterHorizontally,
         ) {
             item {
@@ -151,7 +159,7 @@ fun Account(
                     selectedTabIndex = pagerState.currentPage,
                     containerColor = Color.Transparent,
                     divider = {},
-                    modifier = Modifier.padding(top = 16.dp),
+                    modifier = Modifier.padding(top = spacing.mediumLarge),
                     indicator = {
                         TabRowDefaults.PrimaryIndicator(
                             modifier = Modifier.tabIndicatorOffset(pagerState.currentPage),
@@ -166,22 +174,20 @@ fun Account(
                             unselectedContentColor = BlackDisable,
                             selected = tabIndex == pagerState.currentPage,
                             interactionSource = DisabledInteractionSource(),
-                            modifier = Modifier.padding(top = 50.dp),
+                            modifier = Modifier.padding(top = TabTopPadding),
                             onClick = {
                                 scope.launch {
                                     pagerState.animateScrollToPage(tabIndex)
                                 }
                             }) {
-                            Text(
-                                text = item,
-                                style = MaterialTheme.typography.titleMedium.copy(
-                                    fontFamily = PPNeu,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 17.sp
-                                ),
-                                modifier = Modifier
-                                    .align(CenterHorizontally)
-                                    .padding(bottom = 10.dp),
+            Text(
+                text = item,
+                style = TapTapTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                ),
+                modifier = Modifier
+                    .align(CenterHorizontally)
+                    .padding(bottom = TabBottomPadding),
                                 onTextLayout = { textLayoutResult ->
                                     tabWidths[tabIndex] =
                                         with(density) { textLayoutResult.size.width.toDp() }
@@ -200,8 +206,9 @@ fun Account(
 fun PageContent(
     pagerState: PagerState, viewModel: WelcomeViewModel
 ) {
+    val spacing = TapTapTheme.spacing
     val styleTextBtn: TextStyle = MaterialTheme.typography.titleMedium.copy(
-        fontFamily = PPNeu, fontWeight = FontWeight.Bold
+        fontWeight = FontWeight.Bold
     )
     var selectedFilter by remember { mutableStateOf(enumValuesChip.first()) }
 
@@ -213,9 +220,9 @@ fun PageContent(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 5.dp),
+                        .padding(vertical = FilterVerticalPadding),
                     horizontalArrangement = Arrangement.spacedBy(
-                        space = 10.dp, alignment = CenterHorizontally
+                        space = FilterSpacing, alignment = CenterHorizontally
                     ),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -252,7 +259,7 @@ fun PageContent(
                 NoExistData(
                     subTextNull = "Write a post to start your profile’s never-ending journey.",
                     painterResourceName = R.drawable.sad_icon_top,
-                    modifier = Modifier.padding(start = 20.dp)
+                    modifier = Modifier.padding(start = spacing.gutter)
                 )
             }
         }
@@ -287,7 +294,7 @@ fun Content(viewModel: WelcomeViewModel) {
         Text(
             "logout",
             modifier = Modifier.clickable(onClick = { viewModel.signOut() }),
-            color = Color.White
+            color = TapTapTheme.colors.primary
         )
     }
 

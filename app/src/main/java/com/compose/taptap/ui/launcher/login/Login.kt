@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -18,11 +18,9 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
@@ -49,18 +47,24 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.compose.taptap.R
-import com.compose.taptap.core.navigation.AppComposeNavigator
-import com.compose.taptap.core.navigation.TapTapScreen
-import com.compose.taptap.core.navigation.currentComposeNavigator
 import com.compose.taptap.core.designsystem.component.AppBar
 import com.compose.taptap.core.designsystem.component.DDButton
 import com.compose.taptap.core.designsystem.component.Input
 import com.compose.taptap.core.designsystem.component.NoExistData
+import com.compose.taptap.core.designsystem.theme.BlackDisable
+import com.compose.taptap.core.designsystem.theme.IntlCcGreenPrimary
+import com.compose.taptap.core.designsystem.theme.IntlV2Grey60
+import com.compose.taptap.core.designsystem.theme.PrimaryTextDisabledMaterialDark
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.FieldMinHeight
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.FieldVerticalSpacing
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.TabBottomPadding
+import com.compose.taptap.core.designsystem.theme.TapTapShape
+import com.compose.taptap.core.designsystem.theme.TapTapTheme
+import com.compose.taptap.core.navigation.AppComposeNavigator
+import com.compose.taptap.core.navigation.TapTapScreen
+import com.compose.taptap.core.navigation.currentComposeNavigator
 import com.compose.taptap.ui.launcher.signup.extraSafeBottomPadding
-import com.compose.taptap.core.designsystem.util.nonScaledSp
-import com.compose.taptap.core.designsystem.theme.*
 import com.compose.taptap.ui.utils.DisabledInteractionSource
 import kotlinx.coroutines.launch
 
@@ -72,6 +76,7 @@ fun Login() {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val density = LocalDensity.current
+    val spacing = TapTapTheme.spacing
     val tabWidths = remember {
         val tabWidthStateList = mutableStateListOf<Dp>()
         repeat(tabs.size) {
@@ -84,7 +89,7 @@ fun Login() {
     Column(
         Modifier
             .fillMaxSize()
-            .background(BlackF16)
+            .background(TapTapTheme.colors.background)
             .statusBarsPadding()
     ) {
         AppBar("Log in", navigationIcon = {
@@ -102,9 +107,9 @@ fun Login() {
 
         PrimaryTabRow(
             selectedTabIndex = pagerState.currentPage,
-            containerColor = BlackF16,
+            containerColor = TapTapTheme.colors.background,
             divider = {},
-            modifier = Modifier.padding(vertical = 16.dp),
+            modifier = Modifier.padding(vertical = spacing.mediumLarge),
             indicator = {
                 TabRowDefaults.PrimaryIndicator(
                     modifier = Modifier.tabIndicatorOffset(pagerState.currentPage),
@@ -125,12 +130,12 @@ fun Login() {
                     }) {
                     Text(
                         text = item,
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontFamily = PPNeu, fontWeight = FontWeight.Bold, fontSize = 17.sp
+                        style = TapTapTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.Bold,
                         ),
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
-                            .padding(bottom = 10.dp),
+                            .padding(bottom = TabBottomPadding),
                         onTextLayout = { textLayoutResult ->
                             tabWidths[tabIndex] =
                                 with(density) { textLayoutResult.size.width.toDp() }
@@ -157,20 +162,21 @@ fun PageContent(
     modifier: Modifier = Modifier,
     composeNavigator: AppComposeNavigator<TapTapScreen>
 ) {
+    val spacing = TapTapTheme.spacing
     HorizontalPager(
         state = pagerState, modifier
     ) { page ->
         Box(
             Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = spacing.mediumLarge),
             contentAlignment = Alignment.TopCenter
         ) {
             when (page) {
                 0 -> Column(
                     Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(18.dp)
+                    verticalArrangement = Arrangement.spacedBy(FieldVerticalSpacing)
                 ) {
                     var email by remember { mutableStateOf("") }
                     var password by remember { mutableStateOf("") }
@@ -182,8 +188,8 @@ fun PageContent(
                         maxLines = 1,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(46.dp),
-                        shape = RoundedCornerShape(16.dp),
+                            .heightIn(min = FieldMinHeight),
+                        shape = TapTapShape.corners.card,
                         keyboardOptions = KeyboardOptions(
                             capitalization = KeyboardCapitalization.Unspecified,
                             autoCorrectEnabled = false,
@@ -219,8 +225,8 @@ fun PageContent(
                         maxLines = 1,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(46.dp),
-                        shape = RoundedCornerShape(16.dp),
+                            .heightIn(min = FieldMinHeight),
+                        shape = TapTapShape.corners.card,
                         keyboardOptions = KeyboardOptions(
                             capitalization = KeyboardCapitalization.None,
                             autoCorrectEnabled = false,
@@ -257,10 +263,10 @@ fun PageContent(
                         })
                     Text(
                         "Forgot password?",
-                        color = GreenPrimary,
-                        fontFamily = PPNeu,
-                        fontSize = 14.sp.nonScaledSp,
-                        fontWeight = FontWeight.Bold,
+                        color = TapTapTheme.colors.primary,
+                        style = TapTapTheme.typography.bodyMedium.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
                         modifier = Modifier
                             .align(Alignment.End)
                             .clickable { composeNavigator.navigate(TapTapScreen.ForgotPassword) })
@@ -270,9 +276,9 @@ fun PageContent(
                     Text(
                         "Log in without password",
                         color = PrimaryTextDisabledMaterialDark,
-                        fontFamily = PPNeu,
-                        fontSize = 13.sp.nonScaledSp,
-                        fontWeight = FontWeight.Normal,
+                        style = TapTapTheme.typography.bodySmall.copy(
+                            fontWeight = FontWeight.Normal
+                        ),
                         modifier = Modifier.clickable { composeNavigator.navigate(TapTapScreen.LoginWithoutPassword) })
                     DDButton(
                         label = "Log in",
@@ -290,7 +296,7 @@ fun PageContent(
                     NoExistData(
                         subTextNull = "Write a post to start your profile’s never-ending journey.",
                         painterResourceName = R.drawable.sad_icon_top,
-                        modifier = Modifier.padding(start = 20.dp)
+                        modifier = Modifier.padding(start = spacing.gutter)
                     )
                 }
             }

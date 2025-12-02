@@ -19,7 +19,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
@@ -39,28 +38,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil3.compose.AsyncImage
 import com.compose.taptap.R
-import com.compose.taptap.core.designsystem.component.CardGame
-import com.compose.taptap.core.designsystem.component.LoadingScreen
-import com.compose.taptap.core.designsystem.theme.BlackF16
+import com.compose.taptap.core.designsystem.theme.GreenPrimary
 import com.compose.taptap.core.designsystem.theme.IntlCcDivider
 import com.compose.taptap.core.designsystem.theme.IntlCcGreenPrimary
-import com.compose.taptap.core.designsystem.theme.IntlV2Grey40
+import com.compose.taptap.core.designsystem.theme.IntlV2Grey20
 import com.compose.taptap.core.designsystem.theme.IntlV2Grey60
-import com.compose.taptap.core.designsystem.theme.IntlV2Grey80
-import com.compose.taptap.core.designsystem.theme.IntlV2Grey90
-import com.compose.taptap.core.designsystem.theme.PPNeu
-import com.compose.taptap.core.designsystem.theme.V3CommonPrimaryRed
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.GridSpacing
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.ScoreIconSize
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.TabBottomPadding
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.TitleTopPadding
+import com.compose.taptap.core.designsystem.theme.TapTapShape
+import com.compose.taptap.core.designsystem.theme.TapTapTheme
+import com.compose.taptap.core.designsystem.theme.WhitePrimary
 import com.compose.taptap.core.model.InstantGameItem
 import com.compose.taptap.core.navigation.currentComposeNavigator
-import com.compose.taptap.core.designsystem.util.nonScaledSp
-import com.compose.taptap.core.designsystem.theme.GreenPrimary
-import com.compose.taptap.core.designsystem.theme.IntlV2Grey20
-import com.compose.taptap.core.designsystem.theme.WhitePrimary
 import com.compose.taptap.ui.utils.DisabledInteractionSource
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -76,6 +71,7 @@ fun Play(
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val density = LocalDensity.current
+    val spacing = TapTapTheme.spacing
 
     val tabWidths = remember {
         val tabWidthStateList = mutableStateListOf<Dp>()
@@ -90,17 +86,19 @@ fun Play(
     val recentlyGames = playViewModel.getHistory()
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(TapTapTheme.colors.background)
     ) {
         PrimaryTabRow(
             selectedTabIndex = pagerState.currentPage,
-            containerColor = BlackF16,
+            containerColor = TapTapTheme.colors.background,
             divider = {
                 HorizontalDivider(
-                    thickness = 1.dp, color = IntlCcDivider
+                    thickness = spacing.xSmall / 2, color = IntlCcDivider
                 )
             },
-            modifier = Modifier.padding(vertical = 16.dp),
+            modifier = Modifier.padding(vertical = spacing.mediumLarge),
             indicator = {
                 TabRowDefaults.PrimaryIndicator(
                     modifier = Modifier.tabIndicatorOffset(pagerState.currentPage),
@@ -122,12 +120,12 @@ fun Play(
                     }) {
                     Text(
                         text = item,
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontFamily = PPNeu, fontWeight = FontWeight.Bold, fontSize = 17.sp
+                        style = TapTapTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.Bold,
                         ),
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
-                            .padding(bottom = 10.dp),
+                            .padding(bottom = TabBottomPadding),
                         onTextLayout = { textLayoutResult ->
                             tabWidths[tabIndex] =
                                 with(density) { textLayoutResult.size.width.toDp() }
@@ -156,6 +154,7 @@ fun PageContent(
     modifier: Modifier = Modifier,
     onPlayGame: (InstantGameItem) -> Unit
 ) {
+    val spacing = TapTapTheme.spacing
 
     HorizontalPager(
         state = pagerState, beyondViewportPageCount = tabs.size, modifier = modifier
@@ -163,15 +162,15 @@ fun PageContent(
         Box(
             Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = TapTapTheme.spacing.mediumLarge),
             contentAlignment = Alignment.TopCenter
         ) {
             when (page) {
                 0 -> LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalArrangement = Arrangement.spacedBy(GridSpacing),
+                    verticalArrangement = Arrangement.spacedBy(GridSpacing)
                 ) {
                     items(
                         count = instantGames.itemCount,
@@ -185,8 +184,8 @@ fun PageContent(
                 1 -> {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        horizontalArrangement = Arrangement.spacedBy(GridSpacing),
+                        verticalArrangement = Arrangement.spacedBy(GridSpacing)
                     ) {
                         items(
                             count = recentlyGames.size,
@@ -204,6 +203,7 @@ fun PageContent(
 
 @Composable
 fun CardGame(item: InstantGameItem, onClick: () -> Unit) {
+    val spacing = TapTapTheme.spacing
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -213,7 +213,8 @@ fun CardGame(item: InstantGameItem, onClick: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(16f / 9f)
-                .clip(RoundedCornerShape(10.dp)), contentAlignment = Alignment.Center
+                .clip(TapTapShape.corners.large),
+            contentAlignment = Alignment.Center
         ) {
             AsyncImage(
                 model = item.cover.mediumUrl.ifBlank { item.cover.url },
@@ -230,28 +231,27 @@ fun CardGame(item: InstantGameItem, onClick: () -> Unit) {
                         .align(Alignment.BottomEnd)
                         .clip(
                             RoundedCornerShape(
-                                topStart = 8.dp, bottomEnd = 8.dp
+                                topStart = spacing.small, bottomEnd = spacing.small
                             )
                         )
                         .background(GreenPrimary)
-                        .padding(horizontal = 3.dp, vertical = 2.dp),
+                        .padding(horizontal = spacing.tiny, vertical = spacing.xSmall),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(3.dp)
+                    horizontalArrangement = Arrangement.spacedBy(spacing.xSmall)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.thi_score_icon),
                         contentDescription = "rating_score",
-                        modifier = Modifier.size(14.dp),
+                        modifier = Modifier.size(ScoreIconSize),
                         tint = WhitePrimary
                     )
 
                     Text(
                         text = score,
                         color = WhitePrimary,
-                        style = MaterialTheme.typography.labelMedium,
-                        fontFamily = PPNeu,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 12.sp.nonScaledSp
+                        style = TapTapTheme.typography.labelSmall.copy(
+                            fontWeight = FontWeight.Bold
+                        )
                     )
                 }
             }
@@ -259,25 +259,23 @@ fun CardGame(item: InstantGameItem, onClick: () -> Unit) {
 
         Text(
             text = item.title,
-            color = WhitePrimary,
-            style = MaterialTheme.typography.titleMedium,
-            fontFamily = PPNeu,
-            fontWeight = FontWeight.Bold,
-            fontSize = 12.sp.nonScaledSp,
+            color = TapTapTheme.colors.onBackground,
+            style = TapTapTheme.typography.titleSmall.copy(
+                fontWeight = FontWeight.Bold
+            ),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.padding(top = 6.dp)
+            modifier = Modifier.padding(top = TitleTopPadding)
         )
 
         Text(
             text = item.subtitle.ifBlank { "Unknown" },
             color = IntlV2Grey20,
-            fontSize = 10.sp.nonScaledSp,
-            fontFamily = PPNeu,
-            fontWeight = FontWeight.Medium,
+            style = TapTapTheme.typography.labelSmall.copy(
+                fontWeight = FontWeight.Medium
+            ),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            lineHeight = 12.sp
         )
     }
 }
