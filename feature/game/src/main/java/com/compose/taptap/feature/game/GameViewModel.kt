@@ -2,18 +2,24 @@ package com.compose.taptap.feature.game
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.compose.taptap.core.domain.usecases.game.GetGameFlowUseCase
+import com.compose.taptap.core.domain.usecases.search.GetSearchPlaceholderFlowUseCase
+import com.compose.taptap.core.designsystem.util.LoadingResult
 import com.compose.taptap.core.model.GameFilterType
 import com.compose.taptap.core.model.GameSortType
 import com.compose.taptap.core.model.GetGamesParams
+import com.compose.taptap.core.model.Search
+import com.compose.taptap.core.viewmodel.BaseViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -69,7 +75,8 @@ sealed interface GameEvent {
 @Stable
 class GameViewModel(
     private val getGameUseCase: GetGameFlowUseCase,
-) : ViewModel() {
+    private val getSearchPlaceholderFlowUseCase: GetSearchPlaceholderFlowUseCase,
+) : BaseViewModel() {
 
     // One-time events channel
     private val _events = Channel<GameEvent>(Channel.BUFFERED)
@@ -86,6 +93,13 @@ class GameViewModel(
             getGameUseCase.execute(params)
         }
         .cachedIn(viewModelScope)
+
+    val searchPlaceholderState =
+        getSearchPlaceholderFlowUseCase.execute(Unit)
+            .map<Search, LoadingResult<Search>> { LoadingResult.Success(it) }
+            .onStart { emit(LoadingResult.Loading) }
+            .catch { emit(LoadingResult.Failure(it)) }
+            .stateInViewModel(initial = LoadingResult.Loading)
 
     /**
      * Update filter parameters and refresh list.

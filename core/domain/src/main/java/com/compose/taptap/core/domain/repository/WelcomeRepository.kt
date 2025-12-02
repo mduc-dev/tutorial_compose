@@ -1,10 +1,10 @@
-package com.compose.taptap.core.data.repository.welcome
+package com.compose.taptap.core.domain.repository
 
 import com.compose.taptap.core.model.User
 import kotlinx.coroutines.flow.Flow
 
 interface WelcomeRepository {
-    fun getAuthState(): Flow<Any> //TODO: replace Any with AuthState
+    fun getAuthState(): Flow<Any> //TODO replace Any with AuthState
 
     suspend fun signInWithGoogle(): Result<Unit> //replace temporary Unit with User
 

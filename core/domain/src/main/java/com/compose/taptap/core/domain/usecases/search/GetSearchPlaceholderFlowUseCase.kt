@@ -1,9 +1,9 @@
 package com.compose.taptap.core.domain.usecases.search
 
-import com.compose.taptap.core.data.repository.search.SearchRepository
+import com.compose.taptap.core.domain.repository.SearchRepository
 import com.compose.taptap.core.domain.usecases.base.BaseFlowUseCase
 import kotlinx.coroutines.flow.Flow
-import com.compose.taptap.core.network.model.SearchResponse
+import com.compose.taptap.core.model.Search
 
 /**
  * Created by duc on 15/10/25
@@ -13,11 +13,11 @@ import com.compose.taptap.core.network.model.SearchResponse
 
 class GetSearchPlaceholderFlowUseCase(
     private val searchRepository: SearchRepository
-) : BaseFlowUseCase<Unit, SearchResponse>() {
+) : BaseFlowUseCase<Unit, Search>() {
 
     override fun execute(
         parameters: Unit
-    ): Flow<SearchResponse> {
+    ): Flow<Search> {
         return searchRepository.fetchSearchPlaceholder()
     }
 }

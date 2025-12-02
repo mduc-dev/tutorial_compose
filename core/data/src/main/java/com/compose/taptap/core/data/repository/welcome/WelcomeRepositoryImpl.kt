@@ -2,6 +2,7 @@ package com.compose.taptap.core.data.repository.welcome
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import com.compose.taptap.core.domain.repository.WelcomeRepository
 import com.compose.taptap.core.model.User
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow

@@ -30,6 +30,7 @@ include(":core:data")
 include(":core:database")
 include(":core:network")
 include(":core:preview")
+include(":core:viewmodel")
 
 include(":feature:game")
 include(":feature:search")

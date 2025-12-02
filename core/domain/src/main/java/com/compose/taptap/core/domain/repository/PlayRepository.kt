@@ -1,4 +1,4 @@
-package com.compose.taptap.core.data.repository.play
+package com.compose.taptap.core.domain.repository
 
 import androidx.paging.PagingData
 import com.compose.taptap.core.model.InstantGameItem

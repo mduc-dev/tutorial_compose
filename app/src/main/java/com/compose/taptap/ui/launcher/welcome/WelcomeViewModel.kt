@@ -3,9 +3,9 @@ package com.compose.taptap.ui.launcher.welcome
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.core.content.edit
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.compose.taptap.core.data.repository.welcome.WelcomeRepository
+import com.compose.taptap.core.domain.repository.WelcomeRepository
+import com.compose.taptap.core.viewmodel.BaseViewModel
 import com.compose.taptap.ui.utils.AuthState
 import com.compose.taptap.ui.utils.Provider
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 
 class WelcomeViewModel(
     private val welcomeRepository: WelcomeRepository, private val prefs: SharedPreferences
-) : ViewModel() {
+) : BaseViewModel() {
 
     companion object {
         private const val KEY_IS_LOGGED_IN = "key_is_logged_in"

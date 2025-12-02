@@ -1,7 +1,7 @@
 package com.compose.taptap.core.domain.usecases.game
 
 import androidx.paging.PagingData
-import com.compose.taptap.core.data.repository.game.GamesRepository
+import com.compose.taptap.core.domain.repository.GamesRepository
 import com.compose.taptap.core.domain.usecases.base.BaseFlowUseCase
 import com.compose.taptap.core.model.GetGamesParams
 import com.compose.taptap.core.model.ListGameItem
