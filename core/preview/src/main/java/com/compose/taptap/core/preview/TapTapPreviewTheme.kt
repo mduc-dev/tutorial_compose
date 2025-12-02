@@ -8,7 +8,7 @@ import com.compose.taptap.core.designsystem.theme.TapTapTheme
 fun TapTapPreviewTheme(
     content: @Composable () -> Unit
 ) {
-    TapTapTheme {
+    TapTapTheme(darkTheme = true, dynamicColor = false) {
         content()
     }
 }
