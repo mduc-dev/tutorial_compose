@@ -46,7 +46,7 @@ import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.core.navigation.currentComposeNavigator
 import com.compose.taptap.core.preview.PreviewUtils
 import com.compose.taptap.core.preview.TapTapPreviewTheme
-import com.compose.taptap.feature.search.SearchViewModel
+import com.compose.taptap.core.model.firstTextOrDefault
 import kotlinx.coroutines.flow.flowOf
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -59,8 +59,9 @@ fun GameRoute(
     gameViewModel: GameViewModel = koinViewModel<GameViewModel>(),
 ) {
     val composeNavigator = currentComposeNavigator
-    val searchViewModel = koinViewModel<SearchViewModel>()
-    val placeholderState by searchViewModel.searchUiState.collectAsStateWithLifecycle()
+    val placeholderState by gameViewModel.searchPlaceholderState.collectAsStateWithLifecycle(
+        initialValue = LoadingResult.Loading
+    )
 
     val gameList = gameViewModel.gameUiStateFlow.collectAsLazyPagingItems()
 
@@ -258,7 +259,7 @@ fun DiscoverPageContent(
                                 )
                             }
                         } else {
-                            item.app?.let { app ->
+                            item.app?.let { _ ->
                                 CardGame(
                                     uiState = item.toCardUiState(),
                                     modifier = Modifier
@@ -314,4 +315,3 @@ private fun GameScreenPreview() {
         }
     }
 }
-

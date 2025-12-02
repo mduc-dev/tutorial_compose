@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import com.compose.taptap.R
-import com.compose.taptap.core.data.model.BottomTab
+import com.compose.taptap.ui.utils.BottomTab
 import com.compose.taptap.core.navigation.TapTapScreen
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow

@@ -2,7 +2,8 @@ package com.compose.taptap.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.compose.taptap.core.data.loader.RefreshTrigger
+import com.compose.taptap.core.viewmodel.loader.RefreshTrigger
+import com.compose.taptap.core.viewmodel.loader.newRefreshTrigger
 import com.compose.taptap.core.domain.usecases.game.GetGameFlowUseCase
 import com.compose.taptap.core.domain.usecases.search.GetSearchPlaceholderFlowUseCase
 import com.compose.taptap.core.navigation.AppComposeNavigator
@@ -22,7 +23,7 @@ fun commonModule() = module {
         androidContext().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
     }
     //presentation
-    factory { RefreshTrigger() }
+    factory { newRefreshTrigger() }
 
     //use-case
     factory<GetGameFlowUseCase> { GetGameFlowUseCase(get()) }

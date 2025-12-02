@@ -18,3 +18,7 @@ data class SearchItem(
     val kw: String,
     val text: String,
 )
+
+fun Search.firstTextOrDefault(default: String = "Discover Superb Games"): String {
+    return list.firstOrNull()?.text ?: default
+}

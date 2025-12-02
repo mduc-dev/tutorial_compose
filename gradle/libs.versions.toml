@@ -5,6 +5,7 @@ ktLint = "13.1.0"
 
 core-ktx = "1.17.0"
 lifecycle-runtime-ktx = "2.9.4"
+androidxLifecycleViewModelCompose = "2.9.4"
 activity-compose = "1.11.0"
 compose-bom = "2025.10.00"
 
@@ -59,6 +60,9 @@ androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", vers
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-ui-tooling-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-paging-common = { group = "androidx.paging", name = "paging-common", version.ref = "pagingCompose" }
+androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidxLifecycleViewModelCompose" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }

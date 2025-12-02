@@ -1,6 +1,5 @@
 plugins {
     id("compose.taptap.android.library")
-    alias(libs.plugins.kotlinx.serialization)
 }
 
 android {
@@ -8,14 +7,7 @@ android {
 }
 
 dependencies {
-    implementation(projects.core.data)
-    implementation(projects.core.model)
-    implementation(projects.core.network)
-    implementation(projects.core.designsystem)
-
-    implementation(libs.androidx.paging.compose)
-
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.kotlinx.coroutines.android)
-
+    api(projects.core.model)
+    api(libs.androidx.paging.common)
+    implementation(libs.kotlinx.coroutines.core)
 }
