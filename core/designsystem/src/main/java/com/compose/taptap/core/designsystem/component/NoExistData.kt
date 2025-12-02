@@ -5,19 +5,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.compose.taptap.core.designsystem.R
-import com.compose.taptap.core.designsystem.theme.PPNeu
+import com.compose.taptap.core.designsystem.theme.TapTapTheme
 
 @Composable
 fun NoExistData(
@@ -39,19 +36,17 @@ fun NoExistData(
             )
             Text(
                 text = textNull,
-                modifier = modifier.padding(vertical = 5.dp),
-                style = MaterialTheme.typography.titleMedium.copy(
-                    color = Color.White,
-                    fontFamily = PPNeu,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
+                modifier = modifier.padding(vertical = TapTapTheme.spacing.small),
+                style = TapTapTheme.typography.titleMedium,
+                color = TapTapTheme.colors.onSurface,
+                textAlign = TextAlign.Center
             )
             if (subTextNull != null) {
                 Text(
-                    text = subTextNull, style = MaterialTheme.typography.bodyMedium.copy(
-                        color = Color.White, fontFamily = PPNeu, textAlign = TextAlign.Center
-                    )
+                    text = subTextNull,
+                    style = TapTapTheme.typography.bodyMedium,
+                    color = TapTapTheme.colors.onSurface,
+                    textAlign = TextAlign.Center
                 )
             }
         }

@@ -48,14 +48,27 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.compose.taptap.R
-import com.compose.taptap.core.navigation.currentComposeNavigator
+import com.compose.taptap.core.designsystem.theme.BlackF16
+import com.compose.taptap.core.designsystem.theme.GreenPrimary
+import com.compose.taptap.core.designsystem.theme.IntlV2AuxiliaryGrey20
+import com.compose.taptap.core.designsystem.theme.IntlV2Black
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.ButtonHeight
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.GradientEndHeight
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.LogoHeight
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.LogoOffsetHeight
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.LogoWidth
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.PostThirdLoginSpacer
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.ProtocolBottomPadding
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.ProtocolTopPadding
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.TextButtonVerticalPadding
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.ThirdLoginSpacing
+import com.compose.taptap.core.designsystem.theme.TapTapTheme
+import com.compose.taptap.core.designsystem.theme.V3LoginHomeThirdLoginButtonTextColor
+import com.compose.taptap.core.designsystem.theme.V3LoginHomeWallpaperMaskEndColor
+import com.compose.taptap.core.designsystem.theme.V3LoginHomeWallpaperMaskStartColor
 import com.compose.taptap.core.navigation.TapTapScreen
-import com.compose.taptap.core.designsystem.util.nonScaledSp
-import com.compose.taptap.core.designsystem.theme.*
+import com.compose.taptap.core.navigation.currentComposeNavigator
 import com.compose.taptap.ui.utils.AuthState
 import com.compose.taptap.ui.utils.Provider
 import kotlinx.coroutines.isActive
@@ -68,6 +81,7 @@ fun Welcome(
     viewModel: WelcomeViewModel = LocalWelcomeViewModel.current,
 ) {
     val composeNavigator = currentComposeNavigator
+    val spacing = TapTapTheme.spacing
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -84,7 +98,9 @@ fun Welcome(
                         colors = listOf(
                             V3LoginHomeWallpaperMaskStartColor,
                             V3LoginHomeWallpaperMaskEndColor,
-                        ), startY = 0f, endY = with(LocalDensity.current) { 450.dp.toPx() })
+                        ),
+                        startY = 0f,
+                        endY = with(LocalDensity.current) { GradientEndHeight.toPx() })
                 )
         )
         // Content
@@ -92,13 +108,13 @@ fun Welcome(
             modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Logo
-            Spacer(Modifier.height(134.dp))
+            Spacer(Modifier.height(LogoOffsetHeight))
             Image(
                 painter = painterResource(id = R.drawable.login_tap_home_logo),
                 contentDescription = "login_tap_tap_logo",
                 modifier = Modifier
-                    .width(95.dp)
-                    .height(26.dp),
+                    .width(LogoWidth)
+                    .height(LogoHeight),
                 contentScale = ContentScale.Fit
             )
 
@@ -107,20 +123,22 @@ fun Welcome(
             // Third-party login section
             ThirdLoginSection(viewModel)
 
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(PostThirdLoginSpacer))
 
             // Login button
             TextButton(
                 onClick = {
                     composeNavigator.navigate(TapTapScreen.Login)
-                }, modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp)
+                }, modifier = Modifier.padding(
+                    horizontal = spacing.gutter, vertical = TextButtonVerticalPadding
+                )
             ) {
                 Text(
                     text = "Log in",
-                    color = GreenPrimary,
-                    fontSize = 14.sp.nonScaledSp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = PPNeu,
+                    color = TapTapTheme.colors.primary,
+                    style = TapTapTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
                 )
             }
 
@@ -137,6 +155,7 @@ fun ProtocolText(
     onTerms: () -> Unit,
     onPrivacy: () -> Unit,
 ) {
+    val spacing = TapTapTheme.spacing
     val protocolText = buildAnnotatedString {
         append("By signing up or continuing, you agree\n")
         append("to our ")
@@ -161,13 +180,11 @@ fun ProtocolText(
     Text(
         text = protocolText,
         color = IntlV2AuxiliaryGrey20,
-        fontSize = 12.sp.nonScaledSp,
-        fontFamily = PPNeu,
+        style = TapTapTheme.typography.labelSmall,
         textAlign = TextAlign.Center,
-        lineHeight = 14.sp,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 40.dp, bottom = 72.dp)
+            .padding(top = ProtocolTopPadding, bottom = ProtocolBottomPadding)
     )
 }
 
@@ -184,10 +201,11 @@ fun ThirdLoginSection(welcomeViewModel: WelcomeViewModel) {
 
     val loadingProvider = (authState as? AuthState.Loading)?.provider
 
+    val spacing = TapTapTheme.spacing
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-        modifier = Modifier.padding(horizontal = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(ThirdLoginSpacing),
+        modifier = Modifier.padding(horizontal = spacing.large),
     ) {
         Button(
             onClick = {
@@ -196,37 +214,35 @@ fun ThirdLoginSection(welcomeViewModel: WelcomeViewModel) {
             enabled = (loadingProvider != Provider.Facebook),
             modifier = Modifier
                 .fillMaxWidth()
-                .widthIn(max = 320.dp)
-                .height(44.dp),
-            elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
+                .widthIn(max = spacing.xxLarge * 8)
+                .height(ButtonHeight),
+            elevation = ButtonDefaults.buttonElevation(defaultElevation = spacing.tiny),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.White, disabledContainerColor = Color.White
             ),
-            shape = RoundedCornerShape(24.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp)
+            shape = RoundedCornerShape(spacing.large),
+            contentPadding = PaddingValues(horizontal = spacing.mediumLarge)
         ) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Image(
                     painter = painterResource(id = R.drawable.icon_v2_facebook),
                     contentDescription = "Facebook",
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(spacing.large)
                 )
 
                 Text(
                     text = "Continue with Facebook",
                     color = V3LoginHomeThirdLoginButtonTextColor,
-                    fontSize = 14.sp.nonScaledSp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = PPNeu,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(start = 0.dp),
+                    style = TapTapTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center
                 )
                 if (loadingProvider == Provider.Facebook) CircularProgressIndicator(
                     modifier = Modifier.size(ButtonDefaults.IconSize),
                     color = BlackF16,
-                    strokeWidth = 1.8.dp
+                    strokeWidth = spacing.xSmall
                 )
             }
         }
@@ -238,37 +254,35 @@ fun ThirdLoginSection(welcomeViewModel: WelcomeViewModel) {
             enabled = (loadingProvider != Provider.Google),
             modifier = Modifier
                 .fillMaxWidth()
-                .widthIn(max = 320.dp)
-                .height(44.dp),
-            elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
+                .widthIn(max = spacing.xxLarge * 8)
+                .height(ButtonHeight),
+            elevation = ButtonDefaults.buttonElevation(defaultElevation = spacing.tiny),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.White, disabledContainerColor = Color.White
             ),
-            shape = RoundedCornerShape(24.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp)
+            shape = RoundedCornerShape(spacing.large),
+            contentPadding = PaddingValues(horizontal = spacing.mediumLarge)
         ) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Image(
                     painter = painterResource(id = R.drawable.icon_v2_google),
                     contentDescription = "Google",
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(spacing.large)
                 )
 
                 Text(
                     text = "Continue with Google",
                     color = V3LoginHomeThirdLoginButtonTextColor,
-                    fontSize = 14.sp.nonScaledSp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = PPNeu,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(start = 0.dp),
+                    style = TapTapTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center
                 )
                 if (loadingProvider == Provider.Google) CircularProgressIndicator(
                     modifier = Modifier.size(ButtonDefaults.IconSize),
                     color = BlackF16,
-                    strokeWidth = 1.8.dp
+                    strokeWidth = spacing.xSmall
                 )
             }
         }
@@ -278,18 +292,18 @@ fun ThirdLoginSection(welcomeViewModel: WelcomeViewModel) {
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .widthIn(max = 320.dp)
-                .height(44.dp),
-            elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
+                .widthIn(max = spacing.xxLarge * 8)
+                .height(ButtonHeight),
+            elevation = ButtonDefaults.buttonElevation(defaultElevation = spacing.tiny),
             colors = ButtonDefaults.buttonColors(containerColor = GreenPrimary),
-            shape = RoundedCornerShape(24.dp),
+            shape = RoundedCornerShape(spacing.large),
         ) {
             Text(
                 text = "Sign up",
                 color = V3LoginHomeThirdLoginButtonTextColor,
-                fontSize = 14.sp.nonScaledSp,
-                fontWeight = FontWeight.Bold,
-                fontFamily = PPNeu,
+                style = TapTapTheme.typography.bodyMedium.copy(
+                    fontWeight = FontWeight.Bold
+                ),
             )
         }
     }
@@ -386,3 +400,4 @@ fun WallPagerImage(
         }
     }
 }
+

@@ -18,14 +18,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color.Companion.White
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.compose.taptap.core.designsystem.theme.BlackF16
-import com.compose.taptap.core.designsystem.theme.IntlCcGreenPrimary
-import com.compose.taptap.core.designsystem.theme.PPNeu
+import com.compose.taptap.core.designsystem.theme.TapTapShape
+import com.compose.taptap.core.designsystem.theme.TapTapTheme
 
 @Composable
 fun PagingErrorState(
@@ -36,28 +32,27 @@ fun PagingErrorState(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(BlackF16)
-            .padding(24.dp),
+            .background(TapTapTheme.colors.background)
+            .padding(TapTapTheme.spacing.large),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = message ?: "Something went wrong.",
-            color = White,
-            fontFamily = PPNeu,
-            fontSize = 16.sp,
+            style = TapTapTheme.typography.bodyLarge,
+            color = TapTapTheme.colors.onSurface,
             textAlign = TextAlign.Center
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(TapTapTheme.spacing.large))
         Text(
             text = "Tap to retry",
-            color = IntlCcGreenPrimary,
-            fontFamily = PPNeu,
-            fontWeight = FontWeight.Bold,
+            style = TapTapTheme.typography.labelLarge,
+            color = TapTapTheme.colors.primary,
             modifier = Modifier
-                .clip(RoundedCornerShape(999.dp))
+                .clip(TapTapShape.corners.pill)
                 .clickable { onRetry() }
-                .padding(horizontal = 24.dp, vertical = 8.dp))
+                .padding(horizontal = TapTapTheme.spacing.xxLarge, vertical = TapTapTheme.spacing.small)
+        )
     }
 }
 
@@ -72,17 +67,19 @@ fun PagingAppendErrorFooter(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "Couldn't load more games.", color = White, fontFamily = PPNeu, fontSize = 14.sp
+            text = "Couldn't load more games.",
+            style = TapTapTheme.typography.bodySmall,
+            color = TapTapTheme.colors.onSurface.copy(alpha = 0.7f)
         )
         Text(
             text = "Retry",
-            color = IntlCcGreenPrimary,
-            fontFamily = PPNeu,
-            fontWeight = FontWeight.Bold,
+            style = TapTapTheme.typography.labelLarge,
+            color = TapTapTheme.colors.primary,
             modifier = Modifier
-                .clip(RoundedCornerShape(999.dp))
+                .clip(TapTapShape.corners.pill)
                 .clickable { onRetry() }
-                .padding(horizontal = 20.dp, vertical = 6.dp))
+                .padding(horizontal = TapTapTheme.spacing.large, vertical = TapTapTheme.spacing.small)
+        )
     }
 }
 
@@ -94,7 +91,9 @@ fun AppendLoadingIndicator(modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         CircularProgressIndicator(
-            color = IntlCcGreenPrimary, strokeWidth = 2.dp, modifier = Modifier.size(24.dp)
+            color = TapTapTheme.colors.primary,
+            strokeWidth = 2.dp,
+            modifier = Modifier.size(24.dp)
         )
     }
 }

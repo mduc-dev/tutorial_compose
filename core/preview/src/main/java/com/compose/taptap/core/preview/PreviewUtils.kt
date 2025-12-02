@@ -1,74 +1,26 @@
-package com.compose.taptap.core.designsystem.component
+package com.compose.taptap.core.preview
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.compose.taptap.core.designsystem.R
-import com.compose.taptap.core.designsystem.theme.TapTapShape
-import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.core.model.App
 import com.compose.taptap.core.model.Icon
-import kotlinx.collections.immutable.persistentListOf
+import com.compose.taptap.core.model.User
 
-@Composable
-fun GamePortraitItem(
-    item: App, onGameClick: (String) -> Unit, modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier
-            .width(84.dp)
-            .clickable { onGameClick(item.id.toString()) },
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(TapTapTheme.spacing.semiSmall)
-    ) {
-        val isPreview = LocalInspectionMode.current
-        val iconUrl = item.icon?.mediumUrl ?: item.icon?.smallUrl
+object PreviewUtils {
+    val mockUser = User(
+        id = 12123123,
+        name = "TapTap Editor",
+        avatar = "",
+        mediumAvatar = "",
+        gender = "",
+        store = "",
+        intro = "",
+        isCertified = true,
+        isAnonymous = true,
+        isBan = false,
+        isDeactivated = false,
+    )
 
-        // Try to parse the URL as a resource ID for preview if we are in preview mode
-        val placeholderPainter = if (isPreview) {
-            val resId = iconUrl?.toIntOrNull()
-            if (resId != null) painterResource(resId) else null
-        } else null
-
-        NetworkImage(
-            imageUrl = iconUrl,
-            contentDescription = item.title,
-            modifier = Modifier
-            .size(72.dp)
-            .clip(TapTapShape.corners.card),
-            placeholder = placeholderPainter,
-            contentScale = ContentScale.Crop
-        )
-        Text(
-            text = item.title,
-            color = TapTapTheme.colors.onSurface,
-            style = TapTapTheme.typography.bodySmall,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
-
-@Composable
-@Preview
-private fun PreviewGamePortraitItem() {
-    val games = persistentListOf(
+    val mockGames = listOf(
         App(
             id = 135082,
             identifier = "com.supercell.brawlstars",
@@ -155,6 +107,4 @@ private fun PreviewGamePortraitItem() {
             videoResource = null
         )
     )
-    GamePortraitItem(
-        item = games[0], onGameClick = {})
 }

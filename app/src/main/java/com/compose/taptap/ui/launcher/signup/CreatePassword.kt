@@ -9,9 +9,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,15 +28,14 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.compose.taptap.R
-import com.compose.taptap.core.designsystem.component.AppBar
-import com.compose.taptap.core.designsystem.component.DDButton
 import com.compose.taptap.core.designsystem.component.Input
 import com.compose.taptap.core.designsystem.theme.IntlV2Grey60
-import com.compose.taptap.core.designsystem.theme.PPNeu
 import com.compose.taptap.core.designsystem.theme.PrimaryTextDisabledMaterialDark
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.FieldMinHeight
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.RequirementIconSize
+import com.compose.taptap.core.designsystem.theme.TapTapShape
+import com.compose.taptap.core.designsystem.theme.TapTapTheme
 
 //TODO: in this screen or in the last screen need to be defined when navigate is
 //    popUpTo("screen_to_go") { inclusive = true }
@@ -53,6 +52,7 @@ fun CreatePassword() {
     val isLengthValid = password.length in 8..20
     val isLettersAndNumbers = password.any { it.isLetter() } && password.any { it.isDigit() }
     var passwordVisible by remember { mutableStateOf(false) }
+    val spacing = TapTapTheme.spacing
 
     Input(
         value = password,
@@ -60,9 +60,9 @@ fun CreatePassword() {
         maxLines = 1,
         modifier = Modifier
             .fillMaxWidth()
-            .height(46.dp)
-            .padding(horizontal = 16.dp),
-        shape = RoundedCornerShape(16.dp),
+            .heightIn(min = FieldMinHeight)
+            .padding(horizontal = spacing.mediumLarge),
+        shape = TapTapShape.corners.card,
         keyboardOptions = KeyboardOptions(
             capitalization = KeyboardCapitalization.None,
             autoCorrectEnabled = false,
@@ -96,8 +96,8 @@ fun CreatePassword() {
             }
         })
     //TODO:helper text
-    Spacer(Modifier.height(30.dp))
-    Column(Modifier.padding(horizontal = 16.dp)) {
+    Spacer(Modifier.height(spacing.sectionSpacing))
+    Column(Modifier.padding(horizontal = spacing.mediumLarge)) {
         RequirementRow(
             iconRes = if (isLengthValid) R.drawable.login_input_text_valid_checked else R.drawable.login_input_text_valid_uncheck,
             text = "8 to 20 characters"
@@ -114,21 +114,21 @@ fun RequirementRow(
     iconRes: Int, text: String
 ) {
     Row(
-        Modifier.padding(vertical = 4.dp),
+        Modifier.padding(vertical = TapTapTheme.spacing.tiny),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(TapTapTheme.spacing.small)
     ) {
         Image(
             painter = painterResource(id = iconRes),
             contentDescription = null,
-            modifier = Modifier.size(18.dp)
+            modifier = Modifier.size(RequirementIconSize)
         )
         Text(
             text,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Normal,
-            fontFamily = PPNeu,
-            color = PrimaryTextDisabledMaterialDark
+            style = TapTapTheme.typography.bodySmall.copy(
+                fontWeight = FontWeight.Normal,
+                color = PrimaryTextDisabledMaterialDark
+            )
         )
     }
 }

@@ -304,7 +304,7 @@ data class Category(
     val cover: Cover,
 )
 
-
+@Immutable
 @Serializable
 data class User(
     val id: Long,
@@ -318,11 +318,11 @@ data class User(
     @SerialName("is_anonymous") val isAnonymous: Boolean,
     @SerialName("is_ban") val isBan: Boolean,
     @SerialName("is_deactivated") val isDeactivated: Boolean,
-    val stat: Stat,
-    val log: Log,
-    @SerialName("event_log") val eventLog: EventLog,
+    val stat: Stat? = null,
+    val log: Log? = null,
+    @SerialName("event_log") val eventLog: EventLog? = null,
     @SerialName("i_wear_badges") val iWearBadges: List<IWearBadge>? = null,
-    @SerialName("is_silent") val isSilent: Boolean,
+    @SerialName("is_silent") val isSilent: Boolean? = null,
 )
 
 @Serializable

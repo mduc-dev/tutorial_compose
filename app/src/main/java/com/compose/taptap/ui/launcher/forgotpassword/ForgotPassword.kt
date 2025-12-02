@@ -9,12 +9,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,32 +28,34 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.compose.taptap.R
-import com.compose.taptap.core.designsystem.component.AppBar
 import com.compose.taptap.core.designsystem.component.DDButton
 import com.compose.taptap.core.designsystem.component.Input
+import com.compose.taptap.core.designsystem.theme.IntlV2Grey40
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.FieldMinHeight
+import com.compose.taptap.core.designsystem.theme.TapTapShape
+import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.ui.launcher.signup.extraSafeBottomPadding
-import com.compose.taptap.core.designsystem.util.nonScaledSp
-import com.compose.taptap.core.designsystem.theme.*
 
 
 @Composable
 fun ForgotPassword() {
+    val spacing = TapTapTheme.spacing
     Column(
         Modifier
             .fillMaxSize()
-            .background(BlackF16)
+            .background(TapTapTheme.colors.background)
             .statusBarsPadding()
-            .padding(horizontal = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+            .padding(horizontal = spacing.gutter),
+        verticalArrangement = Arrangement.spacedBy(spacing.gutter)
     ) {
         var email by remember { mutableStateOf("") }
         Text(
-            "Reset password", fontFamily = PPNeu,
-            fontSize = 22.sp.nonScaledSp,
-            fontWeight = FontWeight.Bold,
+            text = "Reset password",
+            style = TapTapTheme.typography.titleLarge.copy(
+                fontWeight = FontWeight.Bold
+            ),
+            color = TapTapTheme.colors.onBackground,
         )
         Input(
             value = email,
@@ -62,8 +63,8 @@ fun ForgotPassword() {
             maxLines = 1,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(46.dp),
-            shape = RoundedCornerShape(16.dp),
+                .heightIn(min = FieldMinHeight),
+            shape = TapTapShape.corners.card,
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Unspecified,
                 autoCorrectEnabled = false,
@@ -95,10 +96,10 @@ fun ForgotPassword() {
 
         Text(
             "We’ll email you a code to reset your password.",
-            color = PrimaryTextDisabledMaterialDark,
-            fontFamily = PPNeu,
-            fontSize = 14.sp.nonScaledSp,
-            fontWeight = FontWeight.Normal,
+            style = TapTapTheme.typography.bodyMedium.copy(
+                fontWeight = FontWeight.Normal
+            ),
+            color = TapTapTheme.colors.onSurfaceVariant,
         )
 
         Spacer(Modifier.weight(1f))

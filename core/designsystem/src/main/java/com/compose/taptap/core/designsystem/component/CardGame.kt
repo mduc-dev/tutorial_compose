@@ -1,7 +1,6 @@
 package com.compose.taptap.core.designsystem.component
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,12 +15,10 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,25 +33,17 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import coil3.compose.AsyncImage
 import com.compose.taptap.core.designsystem.R
-import com.compose.taptap.core.designsystem.theme.BlackF16
-import com.compose.taptap.core.designsystem.theme.GreenPrimary
-import com.compose.taptap.core.designsystem.theme.IntlV2Grey20
-import com.compose.taptap.core.designsystem.theme.IntlV2Grey40
-import com.compose.taptap.core.designsystem.theme.PPNeu
-import com.compose.taptap.core.designsystem.theme.WhitePrimary
+import com.compose.taptap.core.designsystem.theme.TapTapShape
+import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.core.designsystem.util.DisableParentPagerSwipeConnection
-import com.compose.taptap.core.designsystem.util.nonScaledSp
 import com.compose.taptap.core.model.App
 import com.compose.taptap.core.model.DailiesItem
 import com.compose.taptap.core.model.Icon
 import com.compose.taptap.core.model.ListGameItem
+import com.compose.taptap.core.model.User
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -97,9 +86,7 @@ sealed interface GameCardUiState {
 
     @Immutable
     data class Category(
-        override val id: String,
-        val title: String,
-        val games: ImmutableList<App>
+        override val id: String, val title: String, val games: ImmutableList<App>, val user: User
     ) : GameCardUiState
 }
 
@@ -112,7 +99,8 @@ fun ListGameItem.toCardUiState(): GameCardUiState {
         return GameCardUiState.Category(
             id = category.id.toString(),
             title = category.title,
-            games = category.list.toImmutableList()
+            games = category.list.toImmutableList(),
+            user = category.user
         )
     }
 
@@ -170,22 +158,17 @@ fun TagLine(items: ImmutableList<String>?) {
             if (next != null && !isPlatform(next)) {
                 Text(
                     text = " •",
-                    color = IntlV2Grey40,
-                    fontSize = 12.sp.nonScaledSp,
-                    fontFamily = PPNeu,
-                    fontWeight = FontWeight.Medium
+                    color = TapTapTheme.colors.onSurface.copy(alpha = 0.6f),
+                    style = TapTapTheme.typography.labelSmall
                 )
             }
         } else {
             Text(
                 text = if (!isLast) "$item •" else item,
-                color = IntlV2Grey40,
-                fontSize = 12.sp.nonScaledSp,
-                fontFamily = PPNeu,
-                fontWeight = FontWeight.Medium,
+                color = TapTapTheme.colors.onSurface.copy(alpha = 0.6f),
+                style = TapTapTheme.typography.labelSmall,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                lineHeight = 12.sp
+                overflow = TextOverflow.Ellipsis
             )
         }
     }
@@ -193,46 +176,47 @@ fun TagLine(items: ImmutableList<String>?) {
 
 @Composable
 fun PlatformIcon(platform: String) {
+    val iconSize = TapTapTheme.spacing.iconButton
     when (platform.lowercase()) {
         "android" -> Icon(
             painterResource(R.drawable.ico_12_platform_android),
             "Android",
-            Modifier.size(12.dp),
+            Modifier.size(iconSize),
             tint = Color.Unspecified
         )
 
         "ios" -> Icon(
             painterResource(R.drawable.ico_12_platform_ios),
             "iOS",
-            Modifier.size(12.dp),
+            Modifier.size(iconSize),
             tint = Color.Unspecified
         )
 
         "pc" -> Icon(
             painterResource(R.drawable.ico_12_platform_pc),
             "Pc",
-            Modifier.size(12.dp),
+            Modifier.size(iconSize),
             tint = Color.Unspecified
         )
 
         "playstation" -> Icon(
             painterResource(R.drawable.ico_12_platform_ps),
             "Ps",
-            Modifier.size(12.dp),
+            Modifier.size(iconSize),
             tint = Color.Unspecified
         )
 
         "ns" -> Icon(
             painterResource(R.drawable.ico_12_platform_switch),
             "Ns",
-            Modifier.size(12.dp),
+            Modifier.size(iconSize),
             tint = Color.Unspecified
         )
 
         "xbox" -> Icon(
             painterResource(R.drawable.ico_12_platform_xbox),
             "Xbox",
-            Modifier.size(12.dp),
+            Modifier.size(iconSize),
             tint = Color.Unspecified
         )
     }
@@ -255,15 +239,11 @@ fun CardGame(
 ) {
     when (uiState) {
         is GameCardUiState.Standard -> StandardGameCard(
-            uiState = uiState,
-            modifier = modifier,
-            onClick = onClick
+            uiState = uiState, modifier = modifier, onClick = onClick
         )
 
         is GameCardUiState.Featured -> FeaturedGameCard(
-            uiState = uiState,
-            modifier = modifier,
-            onClick = onClick
+            uiState = uiState, modifier = modifier, onClick = onClick
         )
 
         is GameCardUiState.Category -> CategoryGameCard(
@@ -296,64 +276,49 @@ private fun StandardGameCard(
             Row(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(horizontal = 14.dp),
+                    .padding(horizontal = TapTapTheme.spacing.mediumLarge),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(TapTapTheme.spacing.mediumLarge)
             ) {
                 Box(
                     modifier = Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(10.dp)),
-                    contentAlignment = Alignment.Center
+                        .size(TapTapTheme.spacing.xxLarge)
+                        .clip(TapTapShape.corners.medium), contentAlignment = Alignment.Center
                 ) {
-                    if (isPreview) {
-                        Image(
-                            painter = painterResource(R.drawable.justice_app_icon),
-                            contentDescription = uiState.title,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    } else {
-                        AsyncImage(
-                            model = uiState.iconUrl,
-                            contentDescription = uiState.title,
-                            modifier = Modifier.fillMaxSize(),
-                            placeholder = placeholder
-                        )
-                    }
+                    NetworkImage(
+                        imageUrl = uiState.iconUrl,
+                        contentDescription = uiState.title,
+                        modifier = Modifier.fillMaxSize(),
+                        placeholder = if (isPreview) painterResource(R.drawable.justice_app_icon) else placeholder
+                    )
                 }
 
                 Column {
                     Text(
                         text = uiState.title,
-                        color = Color.White,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontFamily = PPNeu,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp.nonScaledSp,
+                        style = TapTapTheme.typography.titleMedium,
+                        color = TapTapTheme.colors.onSurface,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        horizontalArrangement = Arrangement.spacedBy(TapTapTheme.spacing.xSmall)
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.review_star_selected_gray),
                             contentDescription = "review_star",
-                            tint = IntlV2Grey40,
+                            tint = TapTapTheme.colors.onSurface.copy(alpha = 0.6f),
                             modifier = Modifier
-                                .size(10.dp)
-                                .offset(y = (-1).dp)
+                                .size(TapTapTheme.spacing.iconButton)
+                                .offset(y = (-TapTapTheme.spacing.xSmall / 2))
                         )
                         Text(
                             text = uiState.rating ?: "--",
-                            color = IntlV2Grey40,
-                            fontSize = 12.sp.nonScaledSp,
-                            fontFamily = PPNeu,
-                            fontWeight = FontWeight.Normal,
-                            lineHeight = 12.sp
+                            color = TapTapTheme.colors.onSurface.copy(alpha = 0.6f),
+                            style = TapTapTheme.typography.bodySmall,
+                            lineHeight = TapTapTheme.typography.bodySmall.lineHeight
                         )
                         TagLine(uiState.tagLineItems)
                     }
@@ -362,57 +327,56 @@ private fun StandardGameCard(
 
             OutlinedButton(
                 onClick = clickAction,
-                border = BorderStroke(1.5.dp, GreenPrimary),
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                border = BorderStroke(
+                    width = TapTapTheme.spacing.xSmall, color = TapTapTheme.colors.primary
+                ),
+                contentPadding = PaddingValues(
+                    horizontal = TapTapTheme.spacing.mediumLarge,
+                    vertical = TapTapTheme.spacing.xSmall
+                ),
                 modifier = Modifier
-                    .height(32.dp)
-                    .padding(end = 14.dp)
+                    .height(TapTapTheme.spacing.xLarge)
+                    .padding(end = TapTapTheme.spacing.mediumLarge)
             ) {
                 Text(
                     "Get",
-                    color = GreenPrimary,
-                    fontSize = 14.sp.nonScaledSp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = PPNeu
+                    color = TapTapTheme.colors.primary,
+                    style = TapTapTheme.typography.labelLarge
                 )
             }
         }
         val imageModifier = Modifier
-            .padding(top = 10.dp, start = 14.dp, end = 14.dp)
+            .padding(
+                top = TapTapTheme.spacing.small,
+                start = TapTapTheme.spacing.mediumLarge,
+                end = TapTapTheme.spacing.mediumLarge
+            )
             .fillMaxWidth()
             .aspectRatio(16f / 9f)
 
-        if (isPreview) {
-            Image(
-                painter = painterResource(R.drawable.justice_cover),
-                contentDescription = uiState.bannerUrl,
-                contentScale = ContentScale.Crop,
-                modifier = imageModifier
-            )
-        } else {
-            AsyncImage(
-                model = uiState.bannerUrl,
-                contentDescription = uiState.bannerUrl,
-                modifier = imageModifier,
-                placeholder = placeholder,
-                contentScale = ContentScale.Crop
-            )
-        }
+        NetworkImage(
+            imageUrl = uiState.bannerUrl,
+            contentDescription = uiState.bannerUrl,
+            modifier = imageModifier,
+            placeholder = if (isPreview) painterResource(R.drawable.justice_cover) else placeholder,
+            contentScale = ContentScale.Crop
+        )
 
         if (!uiState.recReason.isNullOrBlank()) {
             Text(
                 text = uiState.recReason,
-                color = IntlV2Grey40,
-                fontFamily = PPNeu,
-                fontWeight = FontWeight.Medium,
-                fontSize = 14.sp.nonScaledSp,
-                lineHeight = 14.sp,
-                modifier = Modifier.padding(top = 12.dp, start = 14.dp)
+                style = TapTapTheme.typography.bodyMedium,
+                color = TapTapTheme.colors.onSurface.copy(alpha = 0.7f),
+                modifier = Modifier.padding(
+                    top = TapTapTheme.spacing.small, start = TapTapTheme.spacing.mediumLarge
+                )
             )
         }
 
         HorizontalDivider(
-            modifier = Modifier.padding(vertical = 10.dp), thickness = 0.2.dp, color = IntlV2Grey20
+            modifier = Modifier.padding(vertical = TapTapTheme.spacing.small),
+            thickness = TapTapTheme.spacing.xSmall / 4,
+            color = TapTapTheme.colors.onSurface.copy(alpha = 0.12f)
         )
     }
 }
@@ -430,54 +394,41 @@ private fun FeaturedGameCard(
     Card(
         modifier = modifier.clickable(onClick = clickAction),
         colors = CardDefaults.cardColors(
-            containerColor = BlackF16, contentColor = WhitePrimary
+            containerColor = TapTapTheme.colors.surface, contentColor = TapTapTheme.colors.onSurface
         ),
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
-            if (isPreview) {
-                Image(
-                    painter = painterResource(R.drawable.horizon_cover),
-                    contentDescription = uiState.coverUrl,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(180.dp)
-                )
-            } else {
-                AsyncImage(
-                    model = uiState.coverUrl,
-                    contentDescription = uiState.coverUrl,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(180.dp),
-                    placeholder = placeholder
-                )
-            }
+            NetworkImage(
+                imageUrl = uiState.coverUrl,
+                contentDescription = uiState.coverUrl,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(TapTapTheme.spacing.xxLarge * 4 + TapTapTheme.spacing.mediumLarge),
+                placeholder = if (isPreview) painterResource(R.drawable.horizon_cover) else placeholder
+            )
             Row {
                 Text(
                     text = uiState.title,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontFamily = PPNeu,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp.nonScaledSp,
+                    style = TapTapTheme.typography.titleMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f)
                 )
-                Text(text = uiState.rating)
+                Text(
+                    text = uiState.rating, style = TapTapTheme.typography.bodyMedium
+                )
             }
             Text(
                 text = uiState.description,
-                fontFamily = PPNeu,
-                fontWeight = FontWeight.Medium,
-                fontSize = 14.sp.nonScaledSp,
-                lineHeight = 14.sp,
+                style = TapTapTheme.typography.bodyMedium,
+                color = TapTapTheme.colors.onSurface.copy(alpha = 0.7f),
             )
             HorizontalDivider(
-                modifier = Modifier.padding(vertical = 10.dp),
-                thickness = 0.2.dp,
+                modifier = Modifier.padding(vertical = TapTapTheme.spacing.small),
+                thickness = TapTapTheme.spacing.xSmall / 4,
+                color = TapTapTheme.colors.onSurface.copy(alpha = 0.12f)
             )
         }
     }
@@ -493,24 +444,24 @@ private fun CategoryGameCard(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp)
+            .padding(vertical = TapTapTheme.spacing.mediumLarge),
+        verticalArrangement = Arrangement.spacedBy(TapTapTheme.spacing.large)
     ) {
         SectionHeader(
             title = uiState.title,
-            onMoreClick = { onCategoryClick(uiState.id) }
-        )
+            publishingUser = uiState.user,
+            onMoreClick = { onCategoryClick(uiState.id) })
 
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .nestedScroll(DisableParentPagerSwipeConnection),
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            contentPadding = PaddingValues(horizontal = TapTapTheme.spacing.mediumLarge),
+            horizontalArrangement = Arrangement.spacedBy(TapTapTheme.spacing.medium)
         ) {
             items(uiState.games.size) { index ->
                 GamePortraitItem(
-                    item = uiState.games[index],
-                    onGameClick = onGameClick
+                    item = uiState.games[index], onGameClick = onGameClick
                 )
             }
         }
@@ -549,8 +500,7 @@ private fun PreviewCategoryGameCard() {
             itunesId = "1229016807",
             recText = "Brawliday Opening, new game modes and skins await you!",
             videoResource = null
-        ),
-        App(
+        ), App(
             id = 214547,
             identifier = "com.nebulajoy.act.dmcpoc",
             title = "Devil May Cry: Peak of Combat",
@@ -578,8 +528,7 @@ private fun PreviewCategoryGameCard() {
             itunesId = "6449589065",
             recText = "Only DMC Licensed on Mobile",
             videoResource = null
-        ),
-        App(
+        ), App(
             id = 178546,
             identifier = "air.com.ubisoft.brawl.halla.platform.fighting.action.pvp",
             title = "Brawlhalla",
@@ -609,22 +558,33 @@ private fun PreviewCategoryGameCard() {
             videoResource = null
         )
     )
-    MaterialTheme {
+    TapTapTheme(darkTheme = true, dynamicColor = false) {
         CardGame(
             uiState = GameCardUiState.Category(
                 id = "33854088",
                 title = "Top 15 best hack and slash games for phones and tablets",
-                games = games
-            ),
-            onClick = {}
-        )
+                games = games,
+                user = User(
+                    id = 123,
+                    name = "TapTap Editor",
+                    avatar = "",
+                    mediumAvatar = "",
+                    gender = "",
+                    store = "",
+                    intro = "",
+                    isCertified = true,
+                    isAnonymous = false,
+                    isBan = false,
+                    isDeactivated = false
+                )
+            ), onClick = {})
     }
 }
 
 @Preview
 @Composable
 private fun PreviewStandardGameCard() {
-    MaterialTheme {
+    TapTapTheme(darkTheme = true, dynamicColor = false) {
         CardGame(
             uiState = GameCardUiState.Standard(
                 id = "33854088",
@@ -634,16 +594,14 @@ private fun PreviewStandardGameCard() {
                 rating = "7.6",
                 recReason = "Sword of Justice champions true fair play by eliminating all pay-to-win mechanics—victory comes from skill, not spending.",
                 tagLineItems = persistentListOf("RPG", "Action", "Editors' Choice")
-            ),
-            onClick = {}
-        )
+            ), onClick = {})
     }
 }
 
 @Preview
 @Composable
 private fun PreviewFeaturedGameCard() {
-    MaterialTheme {
+    TapTapTheme(darkTheme = true, dynamicColor = false) {
         CardGame(
             uiState = GameCardUiState.Featured(
                 id = "app:33910299",
@@ -651,8 +609,6 @@ private fun PreviewFeaturedGameCard() {
                 coverUrl = "https://img.tapimg.net/market/images/9b5afd71100f824d8f118f1bb1ef78e7.png?imageView2/0/w/720/h/405/format/jpg/interlace/1/ignore-error/1&t=1",
                 description = "An Open-world MMORPG set in the world of the Horizon series! Pre-register now!",
                 rating = "9.6"
-            ),
-            onClick = {}
-        )
+            ), onClick = {})
     }
 }
