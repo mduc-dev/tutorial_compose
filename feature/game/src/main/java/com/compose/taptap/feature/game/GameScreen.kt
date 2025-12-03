@@ -40,6 +40,7 @@ import com.compose.taptap.core.designsystem.component.TapTapTabRow
 import com.compose.taptap.core.designsystem.component.toCardUiState
 import com.compose.taptap.core.designsystem.theme.BlackF16
 import com.compose.taptap.core.designsystem.theme.IntlCcDivider
+import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.core.designsystem.util.LoadingResult
 import com.compose.taptap.core.model.ListGameItem
 import com.compose.taptap.core.navigation.TapTapScreen
@@ -47,6 +48,7 @@ import com.compose.taptap.core.navigation.currentComposeNavigator
 import com.compose.taptap.core.preview.PreviewUtils
 import com.compose.taptap.core.preview.TapTapPreviewTheme
 import com.compose.taptap.core.model.firstTextOrDefault
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.flowOf
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -70,8 +72,7 @@ fun GameRoute(
 
     val placeholder = when (val state = placeholderState) {
         is LoadingResult.Success -> state.value.firstTextOrDefault()
-        is LoadingResult.Loading -> "Loading..."
-        is LoadingResult.Failure -> "Discover Superb Games"
+        else -> "Loading..."
     }
 
     val uiState = remember(placeholder, selectedTopTab, selectedSubTab) {
@@ -234,6 +235,28 @@ fun DiscoverPageContent(
             )
         }
 
+        // Collect all featured games (dailies) to display in pager
+        val featuredGames = mutableListOf<com.compose.taptap.core.designsystem.component.GameCardUiState.Featured>()
+        for (i in 0 until games.itemCount) {
+            games[i]?.dailies?.list?.forEach { dailyItem ->
+                featuredGames.add(dailyItem.toCardUiState())
+            }
+        }
+
+        // Display featured games pager if any exist
+        if (featuredGames.isNotEmpty()) {
+            item {
+                com.compose.taptap.core.designsystem.component.FeaturedGamesPager(
+                    featuredGames = featuredGames.toImmutableList(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = TapTapTheme.spacing.medium),
+                    onClick = onGameClick
+                )
+            }
+        }
+
+        // Display other items (categories and regular games)
         items(games.itemCount) { index ->
             games[index]?.let { item ->
                 when {
@@ -246,29 +269,14 @@ fun DiscoverPageContent(
                         )
                     }
 
-                    else -> {
-                        val dailies = item.dailies
-                        if (dailies != null) {
-                            dailies.list.forEach { dailyItem ->
-                                CardGame(
-                                    uiState = dailyItem.toCardUiState(),
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 8.dp),
-                                    onClick = onGameClick
-                                )
-                            }
-                        } else {
-                            item.app?.let { _ ->
-                                CardGame(
-                                    uiState = item.toCardUiState(),
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 8.dp),
-                                    onClick = onGameClick
-                                )
-                            }
-                        }
+                    item.dailies == null && item.app != null -> {
+                        CardGame(
+                            uiState = item.toCardUiState(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            onClick = onGameClick
+                        )
                     }
                 }
             }
