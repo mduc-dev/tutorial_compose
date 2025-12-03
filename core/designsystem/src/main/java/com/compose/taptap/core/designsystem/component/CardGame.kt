@@ -1,6 +1,7 @@
 package com.compose.taptap.core.designsystem.component
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,8 +34,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.compose.taptap.core.designsystem.R
 import com.compose.taptap.core.designsystem.theme.TapTapShape
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
@@ -227,6 +230,75 @@ fun isPlatform(item: String): Boolean {
 }
 
 /**
+ * Displays multiple featured games in a horizontal pager with pagination dots.
+ * This is used for "Game of the Day" section when there are multiple featured games.
+ */
+@Composable
+fun FeaturedGamesPager(
+    featuredGames: ImmutableList<GameCardUiState.Featured>,
+    modifier: Modifier = Modifier,
+    onClick: (String) -> Unit
+) {
+    if (featuredGames.isEmpty()) return
+
+    if (featuredGames.size == 1) {
+        // If only one game, show it directly without pager
+        FeaturedGameCard(
+            uiState = featuredGames[0],
+            modifier = modifier.padding(horizontal = TapTapTheme.spacing.mediumLarge),
+            onClick = onClick
+        )
+        return
+    }
+
+    val pagerState = androidx.compose.foundation.pager.rememberPagerState(
+        pageCount = { featuredGames.size }
+    )
+
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        androidx.compose.foundation.pager.HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxWidth(),
+            // Remove contentPadding to show only one item per frame
+            contentPadding = PaddingValues(0.dp), 
+            pageSpacing = 0.dp // No spacing needed as cards have internal padding
+        ) { page ->
+            FeaturedGameCard(
+                uiState = featuredGames[page],
+                // Add padding to the card itself so it doesn't touch screen edges
+                modifier = Modifier.padding(horizontal = TapTapTheme.spacing.mediumLarge),
+                onClick = onClick
+            )
+        }
+
+        // Pagination dots
+        if (featuredGames.size > 1) {
+            Row(
+                modifier = Modifier.padding(top = TapTapTheme.spacing.small),
+                horizontalArrangement = Arrangement.spacedBy(TapTapTheme.spacing.xSmall)
+            ) {
+                repeat(featuredGames.size) { index ->
+                    Box(
+                        modifier = Modifier
+                            .size(TapTapTheme.spacing.small) // Same size for all dots
+                            .background(
+                                color = if (index == pagerState.currentPage)
+                                    TapTapTheme.colors.onSurface // Active: Full opacity
+                                else
+                                    TapTapTheme.colors.onSurface.copy(alpha = 0.2f), // Inactive: Darker (lower opacity)
+                                shape = androidx.compose.foundation.shape.CircleShape
+                            )
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
  * Unified CardGame composable that handles both standard and featured game cards.
  * Uses sealed interface GameCardUiState for type-safe rendering.
  */
@@ -391,45 +463,104 @@ private fun FeaturedGameCard(
     val clickAction = remember(uiState.id, onClick) { { onClick(uiState.id) } }
     val isPreview = LocalInspectionMode.current
 
-    Card(
-        modifier = modifier.clickable(onClick = clickAction),
-        colors = CardDefaults.cardColors(
-            containerColor = TapTapTheme.colors.surface, contentColor = TapTapTheme.colors.onSurface
-        ),
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = clickAction)
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth()
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = TapTapTheme.colors.surface
+            ),
+            shape = TapTapShape.corners.medium
         ) {
-            NetworkImage(
-                imageUrl = uiState.coverUrl,
-                contentDescription = uiState.coverUrl,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(TapTapTheme.spacing.xxLarge * 4 + TapTapTheme.spacing.mediumLarge),
-                placeholder = if (isPreview) painterResource(R.drawable.horizon_cover) else placeholder
-            )
-            Row {
+            Column {
+                // Image with badge
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(16f / 9f)
+                ) {
+                    // Background image
+                    NetworkImage(
+                        imageUrl = uiState.coverUrl,
+                        contentDescription = uiState.title,
+                        modifier = Modifier.fillMaxSize(),
+//                        placeholder = if (isPreview) painterResource(R.drawable.logo) else placeholder,
+                    )
+
+                    // "Game of the Day" badge at top left
+                    Text(
+                        text = "Game of the Day",
+                        style = TapTapTheme.typography.labelLarge,
+                        color = TapTapTheme.colors.onBackground,
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .padding(TapTapTheme.spacing.mediumLarge)
+                            .background(
+                                color = Color.Black.copy(alpha = 0.6f),
+                                shape = TapTapShape.corners.small
+                            )
+                            .padding(
+                                horizontal = TapTapTheme.spacing.medium,
+                                vertical = TapTapTheme.spacing.tiny
+                            )
+                    )
+                }
+
+                // Title and rating row below the image
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(TapTapTheme.spacing.medium),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = uiState.title,
+                        style = TapTapTheme.typography.titleMedium,
+                        color = TapTapTheme.colors.onSurface,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    // Rating with TapTap logo (vertical layout)
+                    Column(
+                        horizontalAlignment = Alignment.End,
+                        verticalArrangement = Arrangement.spacedBy(TapTapTheme.spacing.xSmall / 4)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.logo),
+                            contentDescription = "TapTap",
+                            modifier = Modifier.height(TapTapTheme.spacing.medium),
+                            tint = TapTapTheme.colors.primary
+                        )
+                        Text(
+                            text = uiState.rating,
+                            style = TapTapTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                            color = TapTapTheme.colors.primary
+                        )
+                    }
+                }
+            }
+            
+            // Description below the card
+            if (uiState.description.isNotBlank()) {
                 Text(
-                    text = uiState.title,
-                    style = TapTapTheme.typography.titleMedium,
-                    maxLines = 1,
+                    text = uiState.description,
+                    style = TapTapTheme.typography.bodyLarge,
+                    color = TapTapTheme.colors.onSurface.copy(alpha = 0.7f),
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f)
-                )
-                Text(
-                    text = uiState.rating, style = TapTapTheme.typography.bodyMedium
+                    modifier = Modifier.padding(
+                        start = TapTapTheme.spacing.medium,
+                        end = TapTapTheme.spacing.medium,
+                        bottom = TapTapTheme.spacing.small
+                    )
                 )
             }
-            Text(
-                text = uiState.description,
-                style = TapTapTheme.typography.bodyMedium,
-                color = TapTapTheme.colors.onSurface.copy(alpha = 0.7f),
-            )
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = TapTapTheme.spacing.small),
-                thickness = TapTapTheme.spacing.xSmall / 4,
-                color = TapTapTheme.colors.onSurface.copy(alpha = 0.12f)
-            )
         }
     }
 }
@@ -610,5 +741,31 @@ private fun PreviewFeaturedGameCard() {
                 description = "An Open-world MMORPG set in the world of the Horizon series! Pre-register now!",
                 rating = "9.6"
             ), onClick = {})
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewFeaturedGamesPager() {
+    TapTapTheme(darkTheme = true, dynamicColor = false) {
+        FeaturedGamesPager(
+            featuredGames = persistentListOf(
+                GameCardUiState.Featured(
+                    id = "app:1",
+                    title = "Red Dead Redemption NETFLIX",
+                    coverUrl = "https://img.tapimg.net/market/images/9b5afd71100f824d8f118f1bb1ef78e7.png?imageView2/0/w/720/h/405/format/jpg/interlace/1/ignore-error/1&t=1",
+                    description = "The epic Western adventures Red Dead Redemption Netflix officially released for m...",
+                    rating = "8.1"
+                ),
+                GameCardUiState.Featured(
+                    id = "app:2",
+                    title = "Horizon Steel Frontiers",
+                    coverUrl = "https://img.tapimg.net/market/images/9b5afd71100f824d8f118f1bb1ef78e7.png?imageView2/0/w/720/h/405/format/jpg/interlace/1/ignore-error/1&t=1",
+                    description = "An Open-world MMORPG set in the world of the Horizon series! Pre-register now!",
+                    rating = "9.6"
+                )
+            ),
+            onClick = {}
+        )
     }
 }

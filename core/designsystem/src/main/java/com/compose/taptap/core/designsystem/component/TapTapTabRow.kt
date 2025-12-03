@@ -55,7 +55,7 @@ fun TapTapTabRow(
                     Text(
                         text = title,
                         style = TapTapTheme.typography.labelLarge,
-                        color = if (pagerState.currentPage == index) TapTapTheme.colors.primary else TapTapTheme.colors.onSurface.copy(alpha = 0.6f)
+                        color = if (pagerState.currentPage == index) TapTapTheme.colors.onBackground else TapTapTheme.colors.onSurface.copy(alpha = 0.6f)
                     )
                 },
                 interactionSource = DisabledInteractionSource()
