@@ -49,7 +49,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.compose.taptap.R
+import com.compose.taptap.core.designsystem.R
 import com.compose.taptap.core.designsystem.component.ButtonSize
 import com.compose.taptap.core.designsystem.component.DDButton
 import com.compose.taptap.core.designsystem.component.NoExistData

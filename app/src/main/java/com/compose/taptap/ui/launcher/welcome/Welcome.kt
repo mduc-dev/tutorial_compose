@@ -48,7 +48,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import com.compose.taptap.R
+import com.compose.taptap.core.designsystem.R
 import com.compose.taptap.core.designsystem.theme.BlackF16
 import com.compose.taptap.core.designsystem.theme.GreenPrimary
 import com.compose.taptap.core.designsystem.theme.IntlV2AuxiliaryGrey20

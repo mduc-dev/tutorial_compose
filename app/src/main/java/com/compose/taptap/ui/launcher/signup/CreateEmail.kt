@@ -21,11 +21,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.compose.taptap.R
-import com.compose.taptap.core.designsystem.component.AppBar
-import com.compose.taptap.core.designsystem.component.DDButton
+import com.compose.taptap.core.designsystem.R
 import com.compose.taptap.core.designsystem.component.Input
-import com.compose.taptap.core.designsystem.theme.*
+import com.compose.taptap.core.designsystem.theme.IntlV2Grey60
 
 @Composable
 fun CreateEmail() {

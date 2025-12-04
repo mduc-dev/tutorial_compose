@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil3.compose.AsyncImage
-import com.compose.taptap.R
+import com.compose.taptap.core.designsystem.R
 import com.compose.taptap.core.designsystem.theme.GreenPrimary
 import com.compose.taptap.core.designsystem.theme.IntlCcDivider
 import com.compose.taptap.core.designsystem.theme.IntlCcGreenPrimary
