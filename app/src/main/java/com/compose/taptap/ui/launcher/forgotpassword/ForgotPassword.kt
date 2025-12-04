@@ -28,7 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
-import com.compose.taptap.R
+import com.compose.taptap.core.designsystem.R
 import com.compose.taptap.core.designsystem.component.DDButton
 import com.compose.taptap.core.designsystem.component.Input
 import com.compose.taptap.core.designsystem.theme.IntlV2Grey40

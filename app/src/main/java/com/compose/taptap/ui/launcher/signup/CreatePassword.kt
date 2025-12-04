@@ -28,7 +28,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import com.compose.taptap.R
+import com.compose.taptap.core.designsystem.R
 import com.compose.taptap.core.designsystem.component.Input
 import com.compose.taptap.core.designsystem.theme.IntlV2Grey60
 import com.compose.taptap.core.designsystem.theme.PrimaryTextDisabledMaterialDark
