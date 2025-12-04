@@ -22,5 +22,6 @@ dependencies {
     implementation(libs.bundles.coil)
     api(libs.androidx.material.icons.extended)
     implementation(libs.kotlinx.collections.immutable)
+    implementation(libs.androidx.appcompat)
     debugImplementation(libs.androidx.compose.ui.tooling)
 }
