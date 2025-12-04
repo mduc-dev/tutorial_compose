@@ -16,9 +16,12 @@ android {
     namespace = "com.compose.taptap"
 
     defaultConfig {
+        val buildNumber = System.getProperty("BUILD_NUMBER")?.toIntOrNull() ?: Configuration.versionCode
+        val buildVersion = System.getProperty("BUILD_VERSION") ?: Configuration.versionName
+
         applicationId = "com.compose.taptap"
-        versionCode = Configuration.versionCode
-        versionName = Configuration.versionName
+        versionCode = buildNumber
+        versionName = buildVersion
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -28,8 +31,19 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+            val keystorePath = System.getenv("KEYSTORE_PATH") ?: "../keystore_release.jks"
+            storeFile = file(keystorePath)
+            storePassword = System.getenv("KEYSTORE_PASSWORD")
+            keyAlias = System.getenv("KEY_ALIAS")
+            keyPassword = System.getenv("KEY_PASSWORD")
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
