@@ -76,3 +76,24 @@ flowchart LR
 - Apply module plugins (`compose.taptap.android.*`) from `build-logic/`.
 - Feature plugin auto-adds core deps (designsystem, navigation, viewmodel, domain) – add extra deps locally only when needed.
 - Keep domain free of Android/Compose; map DTOs to domain models in data layer.
+
+## F-Droid Deployment
+
+This project is configured for F-Droid deployment.
+
+### Metadata
+The app metadata for F-Droid is located in `fastlane/metadata/android/en-US/`. You can update the following files:
+- `title.txt`: The name of the app.
+- `short_description.txt`: A short summary of the app.
+- `full_description.txt`: The full description of the app.
+- `images/`: (Optional) Add screenshots here (phoneScreenshots, sevenInchScreenshots, etc.) if you want to include them.
+
+### License
+This project is licensed under the Apache 2.0 License. See `LICENSE` for details.
+
+### Building for F-Droid
+F-Droid builds the app from source. Ensure all dependencies are open source and available in public repositories (Maven Central, Google Maven, etc.).
+To verify the build locally:
+```bash
+./gradlew assembleRelease
+```

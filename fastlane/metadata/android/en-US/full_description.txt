@@ -1,0 +1,15 @@
+DISCLAIMER: This is a non-commercial, educational project created for learning purposes only. It is NOT affiliated with, endorsed by, or connected to TapTap. All design elements and features are recreated to demonstrate modern Android development practices.
+
+A tutorial application demonstrating Jetpack Compose best practices and features by mimicking the TapTap app interface.
+
+Features:
+- Modern UI with Material 3 (Cloned from TapTap)
+- Navigation with Compose
+- Network requests with Ktor/Retrofit
+- Dependency Injection with Koin
+- Media playback with ExoPlayer
+
+This project serves as a practical example for developers learning:
+- Multi-module architecture
+- Clean Architecture
+- Jetpack Compose complex UIs

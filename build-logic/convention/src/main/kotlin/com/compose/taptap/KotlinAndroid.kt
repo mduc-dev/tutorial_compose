@@ -20,12 +20,8 @@ internal fun Project.configureKotlinAndroid(
     }
 
     compileOptions {
-      sourceCompatibility = JavaVersion.VERSION_21
-      targetCompatibility = JavaVersion.VERSION_21
-    }
-
-    lint {
-      abortOnError = false
+      sourceCompatibility = JavaVersion.VERSION_17
+      targetCompatibility = JavaVersion.VERSION_17
     }
   }
 }
@@ -35,12 +31,10 @@ internal fun Project.configureKotlinAndroid(
 ) {
   extension.apply {
     compilerOptions {
-      // Treat all Kotlin warnings as errors (disabled by default)
-      allWarningsAsErrors.set(
-        properties["warningsAsErrors"] as? Boolean ?: false
-      )
-
-      jvmTarget.set(JvmTarget.JVM_21)
+      jvmTarget.set(JvmTarget.JVM_17)
+      freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
+      freeCompilerArgs.add("-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi")
+      freeCompilerArgs.add("-opt-in=kotlinx.coroutines.FlowPreview")
     }
   }
 }

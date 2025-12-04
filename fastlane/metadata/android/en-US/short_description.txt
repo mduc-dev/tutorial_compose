@@ -1,0 +1,1 @@
+An educational Jetpack Compose project cloning TapTap features for learning purposes.
