@@ -31,6 +31,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.compose.taptap.core.designsystem.component.AppendLoadingIndicator
 import com.compose.taptap.core.designsystem.component.CardGame
 import com.compose.taptap.core.designsystem.component.FeaturedGamesPager
+import com.compose.taptap.core.designsystem.component.GameCardUiState
 import com.compose.taptap.core.designsystem.component.LoadingScreen
 import com.compose.taptap.core.designsystem.component.PagingAppendErrorFooter
 import com.compose.taptap.core.designsystem.component.PagingErrorState
@@ -44,12 +45,13 @@ import com.compose.taptap.core.designsystem.theme.IntlCcDivider
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.core.designsystem.util.LoadingResult
 import com.compose.taptap.core.model.ListGameItem
+import com.compose.taptap.core.model.firstTextOrDefault
 import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.core.navigation.currentComposeNavigator
 import com.compose.taptap.core.preview.PreviewUtils
 import com.compose.taptap.core.preview.TapTapPreviewTheme
-import com.compose.taptap.core.model.firstTextOrDefault
-import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.flowOf
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -67,6 +69,7 @@ fun GameRoute(
     )
 
     val gameList = gameViewModel.gameUiStateFlow.collectAsLazyPagingItems()
+    val featuredGames by gameViewModel.featuredGames.collectAsStateWithLifecycle()
 
     var selectedTopTab by remember { mutableIntStateOf(0) }
     var selectedSubTab by remember { mutableIntStateOf(0) }
@@ -87,7 +90,9 @@ fun GameRoute(
 
     CompositionLocalProvider(LocalGameList provides gameList) {
         GameScreen(
-            uiState = uiState, onEvent = { event ->
+            uiState = uiState,
+            featuredGames = featuredGames,
+            onEvent = { event ->
                 when (event) {
                     GameUiEvent.OnSearchClick -> composeNavigator.navigate(TapTapScreen.Search)
                     GameUiEvent.OnNotificationClick -> composeNavigator.navigate(TapTapScreen.Notifications)
@@ -103,7 +108,10 @@ fun GameRoute(
 
 @Composable
 fun GameScreen(
-    uiState: GameUiState, onEvent: (GameUiEvent) -> Unit, modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    uiState: GameUiState,
+    featuredGames: ImmutableList<GameCardUiState.Featured> = persistentListOf(),
+    onEvent: (GameUiEvent) -> Unit,
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
@@ -121,6 +129,7 @@ fun GameScreen(
 
         GameContent(
             selectedSubTab = uiState.selectedSubTab,
+            featuredGames = featuredGames,
             onTopTabClick = { index -> onEvent(GameUiEvent.OnTopTabClick(index)) },
             onSubTabClick = { index -> onEvent(GameUiEvent.OnSubTabClick(index)) },
             onGameClick = { gameId -> onEvent(GameUiEvent.OnGameClick(gameId)) },
@@ -160,6 +169,7 @@ private fun TopBar(
 @Composable
 fun GameContent(
     selectedSubTab: Int,
+    featuredGames: ImmutableList<GameCardUiState.Featured>,
     onTopTabClick: (Int) -> Unit,
     onSubTabClick: (Int) -> Unit,
     onGameClick: (String) -> Unit,
@@ -182,6 +192,7 @@ fun GameContent(
             when (page) {
                 0 -> DiscoverPageContent(
                     selectedSubTab = selectedSubTab,
+                    featuredGames = featuredGames,
                     onSubTabSelected = onSubTabClick,
                     onGameClick = onGameClick,
                     onCategoryClick = onCategoryClick,
@@ -201,6 +212,7 @@ fun GameContent(
 @Composable
 fun DiscoverPageContent(
     selectedSubTab: Int,
+    featuredGames: ImmutableList<GameCardUiState.Featured>,
     onSubTabSelected: (Int) -> Unit,
     onGameClick: (String) -> Unit,
     onCategoryClick: (String) -> Unit,
@@ -236,19 +248,11 @@ fun DiscoverPageContent(
             )
         }
 
-        // Collect all featured games (dailies) to display in pager
-        val featuredGames = mutableListOf<com.compose.taptap.core.designsystem.component.GameCardUiState.Featured>()
-        for (i in 0 until games.itemCount) {
-            games[i]?.dailies?.list?.forEach { dailyItem ->
-                featuredGames.add(dailyItem.toCardUiState())
-            }
-        }
-
         // Display featured games pager if any exist
         if (featuredGames.isNotEmpty()) {
             item {
                 FeaturedGamesPager(
-                    featuredGames = featuredGames.toImmutableList(),
+                    featuredGames = featuredGames,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = TapTapTheme.spacing.medium),
@@ -270,7 +274,7 @@ fun DiscoverPageContent(
                         )
                     }
 
-                    item.dailies == null && item.app != null -> {
+                    item.app != null -> {
                         CardGame(
                             uiState = item.toCardUiState(),
                             modifier = Modifier
@@ -319,7 +323,9 @@ private fun GameScreenPreview() {
                 unreadNotifications = 5,
                 selectedTopTab = 0,
                 selectedSubTab = 0,
-            ), onEvent = {} // No-op for preview
+            ),
+            featuredGames = persistentListOf(),
+            onEvent = {} // No-op for preview
             )
         }
     }

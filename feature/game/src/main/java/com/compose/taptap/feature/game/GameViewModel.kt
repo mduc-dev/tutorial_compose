@@ -4,22 +4,29 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import androidx.paging.filter
+import androidx.paging.map
+import com.compose.taptap.core.designsystem.component.GameCardUiState
+import com.compose.taptap.core.designsystem.component.toCardUiState
+import com.compose.taptap.core.designsystem.util.LoadingResult
 import com.compose.taptap.core.domain.usecases.game.GetGameFlowUseCase
 import com.compose.taptap.core.domain.usecases.search.GetSearchPlaceholderFlowUseCase
-import com.compose.taptap.core.designsystem.util.LoadingResult
 import com.compose.taptap.core.model.GameFilterType
 import com.compose.taptap.core.model.GameSortType
 import com.compose.taptap.core.model.GetGamesParams
 import com.compose.taptap.core.model.Search
 import com.compose.taptap.core.viewmodel.BaseViewModel
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -86,11 +93,28 @@ class GameViewModel(
     private val _filterState = MutableStateFlow(GetGamesParams())
     val filterState = _filterState.asStateFlow()
 
+    // Featured games state
+    private val _featuredGames = MutableStateFlow<ImmutableList<GameCardUiState.Featured>>(persistentListOf())
+    val featuredGames = _featuredGames.asStateFlow()
+
     // Games flow - automatically updates when filter changes
     @OptIn(ExperimentalCoroutinesApi::class)
     val gameUiStateFlow = _filterState
         .flatMapLatest { params ->
             getGameUseCase.execute(params)
+                .map { pagingData ->
+                    pagingData.map { item ->
+                        item.dailies?.list?.forEach { dailyItem ->
+                            val featured = dailyItem.toCardUiState()
+                            _featuredGames.update { current ->
+                                if (current.any { it.id == featured.id }) current else (current + featured).toPersistentList()
+                            }
+                        }
+                        item
+                    }.filter { item ->
+                        item.dailies == null
+                    }
+                }
         }
         .cachedIn(viewModelScope)
 

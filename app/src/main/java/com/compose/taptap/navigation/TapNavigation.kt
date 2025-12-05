@@ -7,17 +7,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.feature.account.Account
+import com.compose.taptap.feature.auth.forgotpassword.ForgotPasswordScreen
+import com.compose.taptap.feature.auth.login.LoginScreen
+import com.compose.taptap.feature.auth.loginwithoutpassword.LoginWithoutPasswordScreen
+import com.compose.taptap.feature.auth.signup.SignupScreen
+import com.compose.taptap.feature.auth.welcome.WelcomeScreen
 import com.compose.taptap.feature.game.GameRoute
 import com.compose.taptap.feature.game_detail.GameDetail
 import com.compose.taptap.feature.notifications.Notifications
 import com.compose.taptap.feature.play.Play
 import com.compose.taptap.feature.search.SearchRoute
 import com.compose.taptap.feature.tavern.Tavern
-import com.compose.taptap.feature.auth.welcome.WelcomeScreen
-import com.compose.taptap.feature.auth.login.LoginScreen
-import com.compose.taptap.feature.auth.signup.SignupScreen
-import com.compose.taptap.feature.auth.forgotpassword.ForgotPasswordScreen
-import com.compose.taptap.feature.auth.loginwithoutpassword.LoginWithoutPasswordScreen
 
 fun NavGraphBuilder.tapAuthNavigation(
 ) {
@@ -30,12 +30,22 @@ fun NavGraphBuilder.tapAuthNavigation(
         composable<TapTapScreen.Login>(enterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(700)
+                animationSpec = tween(350)
             )
         }, exitTransition = {
             slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left,
+                animationSpec = tween(350)
+            )
+        }, popEnterTransition = {
+            slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(700)
+                animationSpec = tween(350)
+            )
+        }, popExitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right,
+                animationSpec = tween(350)
             )
         }) {
             LoginScreen()
@@ -43,12 +53,22 @@ fun NavGraphBuilder.tapAuthNavigation(
         composable<TapTapScreen.SignUp>(enterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(700)
+                animationSpec = tween(350)
             )
         }, exitTransition = {
             slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left,
+                animationSpec = tween(350)
+            )
+        }, popEnterTransition = {
+            slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(700)
+                animationSpec = tween(350)
+            )
+        }, popExitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right,
+                animationSpec = tween(350)
             )
         }) {
             SignupScreen()
