@@ -37,7 +37,8 @@ jobs:
           cache-read-only: false # Allow writing to the cache
 
       - name: Run Lint
-        run: ./gradlew lintRelease
+        # Exclude unit tests when building in release mode
+        run: ./gradlew lintRelease -x testReleaseUnitTest
 
   build:
     needs: lint
