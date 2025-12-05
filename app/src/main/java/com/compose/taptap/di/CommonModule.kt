@@ -10,9 +10,12 @@ import com.compose.taptap.core.navigation.AppComposeNavigator
 import com.compose.taptap.core.navigation.TapComposeNavigator
 import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.feature.game.GameViewModel
-import com.compose.taptap.ui.launcher.play.PlayViewModel
+import com.compose.taptap.feature.play.PlayViewModel
 import com.compose.taptap.feature.search.SearchViewModel
-import com.compose.taptap.ui.launcher.welcome.WelcomeViewModel
+import com.compose.taptap.feature.auth.welcome.WelcomeViewModel
+import com.compose.taptap.feature.account.AccountViewModel
+import com.compose.taptap.feature.notifications.NotificationViewModel
+import com.compose.taptap.feature.tavern.TavernViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -33,7 +36,7 @@ fun commonModule() = module {
 
     viewModel {
         WelcomeViewModel(
-            welcomeRepository = get(), prefs = get()
+            welcomeRepository = get()
         )
     }
 
@@ -42,4 +45,8 @@ fun commonModule() = module {
     viewModelOf(::GameViewModel)
 
     viewModelOf(::PlayViewModel)
+
+    viewModelOf(::AccountViewModel)
+    viewModelOf(::NotificationViewModel)
+    viewModelOf(::TavernViewModel)
 }

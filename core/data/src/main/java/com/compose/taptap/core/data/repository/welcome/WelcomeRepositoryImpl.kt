@@ -62,4 +62,12 @@ class WelcomeRepositoryImpl(private val prefs: SharedPreferences) : WelcomeRepos
         }
     }
 
+    override fun isUserLoggedIn(): Boolean {
+        return prefs.getBoolean(KEY_IS_LOGGED_IN, false)
+    }
+
+    override fun setUserLoggedIn(isLoggedIn: Boolean) {
+        prefs.edit { putBoolean(KEY_IS_LOGGED_IN, isLoggedIn) }
+    }
+
 }

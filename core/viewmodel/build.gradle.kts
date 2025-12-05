@@ -9,4 +9,6 @@ android {
 dependencies {
     api(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.kotlinx.coroutines.android)
+    api(libs.androidx.paging.compose)
+    implementation(projects.core.model)
 }

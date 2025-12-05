@@ -15,8 +15,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.core.designsystem.theme.*
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
-import com.compose.taptap.ui.utils.BOTTOM_TAB
-import com.compose.taptap.ui.utils.DisabledInteractionSource
+import com.compose.taptap.core.designsystem.util.BOTTOM_TAB
+import com.compose.taptap.core.designsystem.util.DisabledInteractionSource
 
 @Composable
 fun TapBottomTab(

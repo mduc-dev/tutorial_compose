@@ -9,6 +9,7 @@ android {
 
 dependencies {
     implementation(projects.core.model)
+    implementation(projects.core.navigation)
 
     api(libs.androidx.core.ktx)
     api(libs.androidx.lifecycle.runtime.ktx)

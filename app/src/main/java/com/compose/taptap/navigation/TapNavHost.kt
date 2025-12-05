@@ -19,10 +19,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.compose.taptap.core.navigation.TapTapScreen
-import com.compose.taptap.ui.launcher.welcome.LocalWelcomeViewModel
-import com.compose.taptap.ui.launcher.welcome.WelcomeViewModel
+import com.compose.taptap.feature.auth.welcome.LocalWelcomeViewModel
+import com.compose.taptap.feature.auth.welcome.WelcomeViewModel
 import com.compose.taptap.core.designsystem.theme.*
-import com.compose.taptap.ui.utils.AuthState
+import com.compose.taptap.feature.auth.AuthState
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -30,7 +30,7 @@ fun TapNavHost(
     navHostController: NavHostController
 ) {
     val welcomeViewModel: WelcomeViewModel = koinViewModel()
-    val authState = welcomeViewModel.welcomeUiState.collectAsStateWithLifecycle().value
+    val authState = welcomeViewModel.uiState.collectAsStateWithLifecycle().value
 
     CompositionLocalProvider(LocalWelcomeViewModel provides welcomeViewModel) {
         when (authState) {

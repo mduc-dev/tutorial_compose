@@ -83,6 +83,12 @@ dependencies {
     // Feature modules
     implementation(project(":feature:game"))
     implementation(project(":feature:search"))
+    implementation(project(":feature:auth"))
+    implementation(project(":feature:play"))
+    implementation(project(":feature:account"))
+    implementation(project(":feature:game_detail"))
+    implementation(project(":feature:notifications"))
+    implementation(project(":feature:tavern"))
     
     // Core modules
     implementation(projects.core.navigation)
