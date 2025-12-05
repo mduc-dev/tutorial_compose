@@ -30,6 +30,7 @@ import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.compose.taptap.core.designsystem.component.AppendLoadingIndicator
 import com.compose.taptap.core.designsystem.component.CardGame
+import com.compose.taptap.core.designsystem.component.FeaturedGamesPager
 import com.compose.taptap.core.designsystem.component.LoadingScreen
 import com.compose.taptap.core.designsystem.component.PagingAppendErrorFooter
 import com.compose.taptap.core.designsystem.component.PagingErrorState
@@ -246,7 +247,7 @@ fun DiscoverPageContent(
         // Display featured games pager if any exist
         if (featuredGames.isNotEmpty()) {
             item {
-                com.compose.taptap.core.designsystem.component.FeaturedGamesPager(
+                FeaturedGamesPager(
                     featuredGames = featuredGames.toImmutableList(),
                     modifier = Modifier
                         .fillMaxWidth()

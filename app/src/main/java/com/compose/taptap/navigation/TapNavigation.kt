@@ -6,18 +6,18 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.compose.taptap.core.navigation.TapTapScreen
-import com.compose.taptap.ui.launcher.account.Account
-import com.compose.taptap.ui.launcher.forgotpassword.ForgotPassword
+import com.compose.taptap.feature.account.Account
 import com.compose.taptap.feature.game.GameRoute
-import com.compose.taptap.ui.launcher.game_detail.GameDetail
-import com.compose.taptap.ui.launcher.login.Login
-import com.compose.taptap.ui.launcher.login_without_password.LoginWithoutPassword
-import com.compose.taptap.ui.launcher.notifications.Notifications
-import com.compose.taptap.ui.launcher.play.Play
+import com.compose.taptap.feature.game_detail.GameDetail
+import com.compose.taptap.feature.notifications.Notifications
+import com.compose.taptap.feature.play.Play
 import com.compose.taptap.feature.search.SearchRoute
-import com.compose.taptap.ui.launcher.signup.Signup
-import com.compose.taptap.ui.launcher.tavern.Tavern
-import com.compose.taptap.ui.launcher.welcome.Welcome
+import com.compose.taptap.feature.tavern.Tavern
+import com.compose.taptap.feature.auth.welcome.WelcomeScreen
+import com.compose.taptap.feature.auth.login.LoginScreen
+import com.compose.taptap.feature.auth.signup.SignupScreen
+import com.compose.taptap.feature.auth.forgotpassword.ForgotPasswordScreen
+import com.compose.taptap.feature.auth.loginwithoutpassword.LoginWithoutPasswordScreen
 
 fun NavGraphBuilder.tapAuthNavigation(
 ) {
@@ -25,39 +25,39 @@ fun NavGraphBuilder.tapAuthNavigation(
         startDestination = TapTapScreen.Welcome
     ) {
         composable<TapTapScreen.Welcome> {
-            Welcome()
+            WelcomeScreen()
         }
         composable<TapTapScreen.Login>(enterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(durationMillis = 300, delayMillis = 50)
+                animationSpec = tween(700)
             )
         }, exitTransition = {
             slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(durationMillis = 300, delayMillis = 50)
-            )
-        }, popEnterTransition = {
-            slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(durationMillis = 300, delayMillis = 50)
-            )
-        }, popExitTransition = {
-            slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(durationMillis = 300, delayMillis = 50)
+                animationSpec = tween(700)
             )
         }) {
-            Login()
+            LoginScreen()
         }
-        composable<TapTapScreen.SignUp> {
-            Signup()
+        composable<TapTapScreen.SignUp>(enterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left,
+                animationSpec = tween(700)
+            )
+        }, exitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right,
+                animationSpec = tween(700)
+            )
+        }) {
+            SignupScreen()
         }
         composable<TapTapScreen.ForgotPassword> {
-            ForgotPassword()
+            ForgotPasswordScreen()
         }
         composable<TapTapScreen.LoginWithoutPassword> {
-            LoginWithoutPassword()
+            LoginWithoutPasswordScreen()
         }
     }
 }
