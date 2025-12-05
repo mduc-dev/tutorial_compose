@@ -50,9 +50,13 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version_name: ${{ steps.extract_version.outputs.version_name }}
+      is_tagged: ${{ steps.extract_version.outputs.is_tagged }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -92,17 +96,36 @@ jobs:
       - name: Extract Version
         id: extract_version
         run: |
+          IS_TAGGED="false"
+          VERSION_NAME="0.0.1-snapshot"
+
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             VERSION_NAME="${{ inputs.version_name }}"
             if [ -z "$VERSION_NAME" ]; then
-              VERSION_NAME="0.0.1-snapshot"
+               VERSION_NAME="0.0.1-snapshot"
             fi
+            # Treat manual trigger as a "tagged" release if user wants (optional)
+            # but usually manual is for specific testing. 
+            # We will rely on user input version.
+          elif [[ "${{ github.ref }}" == "refs/tags/"* ]]; then
+             # Triggered by tag push
+             VERSION_NAME=${GITHUB_REF#refs/tags/v}
+             IS_TAGGED="true"
           else
-            # Extract version from tag (e.g., v1.0.0 -> 1.0.0)
-            VERSION_NAME=${GITHUB_REF#refs/tags/v}
+             # Triggered by branch push, check if current HEAD has a tag
+             if git describe --tags --exact-match HEAD >/dev/null 2>&1; then
+               TAG=$(git describe --tags --exact-match HEAD)
+               VERSION_NAME=${TAG#v}
+               IS_TAGGED="true"
+               echo "Found tag on HEAD: $TAG"
+             else
+               echo "No tag found on HEAD"
+             fi
           fi
+
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
           echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
+          echo "is_tagged=$IS_TAGGED" >> $GITHUB_OUTPUT
           echo "BUILD_NUMBER=${{ github.run_number }}" >> $GITHUB_ENV
 
       - name: Build Release
@@ -131,7 +154,7 @@ jobs:
 
   release:
     needs: build
-    if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+    if: needs.build.outputs.is_tagged == 'true' || startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       contents: write

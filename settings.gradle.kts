@@ -1,12 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-include(":feature:auth")
-
-
-
-include(":core:designsystem")
-
-
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 pluginManagement {
     includeBuild("build-logic")
@@ -39,7 +32,7 @@ include(":core:network")
 include(":core:preview")
 include(":core:viewmodel")
 
-include("feature:auth")
+include(":feature:auth")
 include(":feature:game")
 include(":feature:play")
 include(":feature:search")
