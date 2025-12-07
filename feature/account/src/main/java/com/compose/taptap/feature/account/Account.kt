@@ -50,10 +50,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.compose.taptap.core.designsystem.R
-import com.compose.taptap.core.designsystem.component.ButtonSize
-import com.compose.taptap.core.designsystem.component.DDButton
-import com.compose.taptap.core.designsystem.component.NoExistData
-import com.compose.taptap.core.designsystem.component.Variant
+import com.compose.taptap.core.designsystem.component.atoms.button.ButtonSize
+import com.compose.taptap.core.designsystem.component.atoms.button.DDButton
+import com.compose.taptap.core.designsystem.component.atoms.button.Variant
+import com.compose.taptap.core.designsystem.component.molecules.state.EmptyStateView
 import com.compose.taptap.core.designsystem.theme.Black1A
 import com.compose.taptap.core.designsystem.theme.BlackDisable
 import com.compose.taptap.core.designsystem.theme.BlackF3
@@ -66,6 +66,8 @@ import com.compose.taptap.core.designsystem.theme.TapTapDimens.TabTopPadding
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.core.designsystem.util.DisabledInteractionSource
 import com.compose.taptap.core.designsystem.util.isEmpty
+import com.compose.taptap.core.navigation.TapTapScreen
+import com.compose.taptap.core.navigation.currentComposeNavigator
 import com.compose.taptap.feature.auth.welcome.LocalWelcomeViewModel
 import com.compose.taptap.feature.auth.welcome.WelcomeEvent
 import kotlinx.coroutines.launch
@@ -76,6 +78,7 @@ val enumValuesChip = listOf("All", "Gamelists", "Articles", "Videos")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Account() {
+    val composeNavigator = currentComposeNavigator
     val viewModel = LocalWelcomeViewModel.current
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
@@ -127,7 +130,7 @@ fun Account() {
                         modifier = Modifier.size(spacing.large)
                     )
                 }
-                IconButton(onClick = {}) {
+                IconButton(onClick = { composeNavigator.navigate(TapTapScreen.Settings) }) {
                     Icon(
                         painter = painterResource(id = R.drawable.settings),
                         contentDescription = null,
@@ -251,7 +254,7 @@ fun PageContent(
             }
 
             2 -> {
-                NoExistData(
+                EmptyStateView(
                     subTextNull = "Write a post to start your profile’s never-ending journey.",
                     painterResourceName = R.drawable.sad_icon_top,
                     modifier = Modifier.padding(start = spacing.gutter)
@@ -273,7 +276,7 @@ fun HeaderAccount() {
 @Composable
 fun Content(onSignOut: () -> Unit) {
     if (isEmpty("null")) {
-        NoExistData(
+        EmptyStateView(
             subTextNull = "Write a post to start your profile’s never-ending journey.",
             painterResourceName = R.drawable.sad_icon_top,
             modifier = Modifier

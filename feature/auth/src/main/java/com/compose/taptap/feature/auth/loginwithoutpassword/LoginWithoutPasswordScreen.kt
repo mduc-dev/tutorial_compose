@@ -28,8 +28,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import com.compose.taptap.core.designsystem.R
-import com.compose.taptap.core.designsystem.component.DDButton
-import com.compose.taptap.core.designsystem.component.Input
+import com.compose.taptap.core.designsystem.component.atoms.button.DDButton
+import com.compose.taptap.core.designsystem.component.atoms.textfield.TapTapTextField
 import com.compose.taptap.core.designsystem.theme.IntlV2Grey40
 import com.compose.taptap.core.designsystem.theme.PrimaryTextDisabledMaterialDark
 import com.compose.taptap.core.designsystem.theme.TapTapDimens.FieldMinHeight
@@ -55,7 +55,7 @@ fun LoginWithoutPasswordScreen() {
             ),
             color = TapTapTheme.colors.onBackground,
         )
-        Input(
+        TapTapTextField(
             value = email,
             onValueChange = { email = it },
             maxLines = 1,

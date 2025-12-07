@@ -89,6 +89,7 @@ dependencies {
     implementation(project(":feature:game_detail"))
     implementation(project(":feature:notifications"))
     implementation(project(":feature:tavern"))
+    implementation(project(":feature:settings"))
     
     // Core modules
     implementation(projects.core.navigation)

@@ -28,18 +28,18 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.compose.taptap.core.designsystem.component.AppendLoadingIndicator
-import com.compose.taptap.core.designsystem.component.CardGame
-import com.compose.taptap.core.designsystem.component.FeaturedGamesPager
-import com.compose.taptap.core.designsystem.component.GameCardUiState
-import com.compose.taptap.core.designsystem.component.LoadingScreen
-import com.compose.taptap.core.designsystem.component.PagingAppendErrorFooter
-import com.compose.taptap.core.designsystem.component.PagingErrorState
-import com.compose.taptap.core.designsystem.component.TapTapChipGroup
-import com.compose.taptap.core.designsystem.component.TapTapNotificationBell
-import com.compose.taptap.core.designsystem.component.TapTapSearchBar
-import com.compose.taptap.core.designsystem.component.TapTapTabRow
-import com.compose.taptap.core.designsystem.component.toCardUiState
+import com.compose.taptap.core.designsystem.component.organisms.paging.AppendLoadingIndicator
+import com.compose.taptap.core.designsystem.component.organisms.game.CardGame
+import com.compose.taptap.core.designsystem.component.organisms.game.FeaturedGamesPager
+import com.compose.taptap.core.designsystem.component.organisms.game.GameCardUiState
+import com.compose.taptap.core.designsystem.component.molecules.state.LoadingView
+import com.compose.taptap.core.designsystem.component.organisms.paging.PagingAppendErrorFooter
+import com.compose.taptap.core.designsystem.component.organisms.paging.PagingErrorState
+import com.compose.taptap.core.designsystem.component.molecules.chips.TapTapChipGroup
+import com.compose.taptap.core.designsystem.component.molecules.notifications.TapTapNotificationBell
+import com.compose.taptap.core.designsystem.component.molecules.search.TapTapSearchBar
+import com.compose.taptap.core.designsystem.component.molecules.tabs.TapTapTabRow
+import com.compose.taptap.core.designsystem.component.organisms.game.toCardUiState
 import com.compose.taptap.core.designsystem.theme.BlackF16
 import com.compose.taptap.core.designsystem.theme.IntlCcDivider
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
@@ -224,7 +224,7 @@ fun DiscoverPageContent(
     val isInitialLoad = loadState.refresh is LoadState.Loading && games.itemCount == 0
 
     if (isInitialLoad) {
-        LoadingScreen(modifier = Modifier.background(BlackF16))
+        LoadingView(modifier = Modifier.background(BlackF16))
         return
     }
 

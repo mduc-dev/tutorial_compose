@@ -25,6 +25,7 @@ data class ShapeTokens(
     val pill: CornerBasedShape = RoundedCornerShape(50.dp),
     val card: CornerBasedShape = RoundedCornerShape(16.dp),
     val dialog: CornerBasedShape = RoundedCornerShape(20.dp),
+    val circle: CornerBasedShape = RoundedCornerShape(50)
 )
 
 internal val LocalShapeTokens = staticCompositionLocalOf { DefaultShapeTokens }
