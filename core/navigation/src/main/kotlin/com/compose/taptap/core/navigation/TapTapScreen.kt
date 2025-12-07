@@ -45,4 +45,10 @@ sealed interface TapTapScreen {
 
     @Serializable
     data object Notifications : TapTapScreen
+
+    @Serializable
+    data object Settings : TapTapScreen
+
+    @Serializable
+    data object InAppUpdate : TapTapScreen
 }

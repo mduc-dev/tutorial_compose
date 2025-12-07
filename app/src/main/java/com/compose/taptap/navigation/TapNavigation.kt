@@ -17,6 +17,8 @@ import com.compose.taptap.feature.game_detail.GameDetail
 import com.compose.taptap.feature.notifications.Notifications
 import com.compose.taptap.feature.play.Play
 import com.compose.taptap.feature.search.SearchRoute
+import com.compose.taptap.feature.settings.InAppUpdateScreen
+import com.compose.taptap.feature.settings.SettingsScreen
 import com.compose.taptap.feature.tavern.Tavern
 
 fun NavGraphBuilder.tapAuthNavigation(
@@ -101,6 +103,17 @@ fun NavGraphBuilder.tapMainNavigation() {
         }
         composable<TapTapScreen.GameDetail> {
             GameDetail()
+        }
+        composable<TapTapScreen.You> {
+            Account()
+        }
+        composable<TapTapScreen.Settings> {
+            SettingsScreen(
+                onLogout = {} // Placeholder for logout logic
+            )
+        }
+        composable<TapTapScreen.InAppUpdate> {
+            InAppUpdateScreen()
         }
     }
 }

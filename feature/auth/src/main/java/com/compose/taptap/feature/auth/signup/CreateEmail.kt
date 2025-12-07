@@ -22,13 +22,13 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.compose.taptap.core.designsystem.R
-import com.compose.taptap.core.designsystem.component.Input
+import com.compose.taptap.core.designsystem.component.atoms.textfield.TapTapTextField
 import com.compose.taptap.core.designsystem.theme.IntlV2Grey60
 
 @Composable
 fun CreateEmail() {
     var email by remember { mutableStateOf("") }
-    Input(
+    TapTapTextField(
         value = email,
         onValueChange = { email = it },
         maxLines = 1,

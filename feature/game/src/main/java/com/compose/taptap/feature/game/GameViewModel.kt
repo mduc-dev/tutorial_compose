@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import androidx.paging.filter
 import androidx.paging.map
-import com.compose.taptap.core.designsystem.component.GameCardUiState
-import com.compose.taptap.core.designsystem.component.toCardUiState
+import com.compose.taptap.core.designsystem.component.organisms.game.GameCardUiState
+import com.compose.taptap.core.designsystem.component.organisms.game.toCardUiState
 import com.compose.taptap.core.designsystem.util.LoadingResult
 import com.compose.taptap.core.domain.usecases.game.GetGameFlowUseCase
 import com.compose.taptap.core.domain.usecases.search.GetSearchPlaceholderFlowUseCase

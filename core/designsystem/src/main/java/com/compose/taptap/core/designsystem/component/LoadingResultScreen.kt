@@ -2,6 +2,8 @@ package com.compose.taptap.core.designsystem.component
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.compose.taptap.core.designsystem.component.molecules.state.ErrorView
+import com.compose.taptap.core.designsystem.component.molecules.state.LoadingView
 import com.compose.taptap.core.designsystem.util.LoadingResult
 
 @Composable
@@ -9,9 +11,9 @@ fun <T> LoadingResultScreen(
     modifier: Modifier = Modifier,
     loadingResult: LoadingResult<T>,
     onRefresh: () -> Unit,
-    loadingScreen: @Composable () -> Unit = { LoadingScreen() },
+    loadingScreen: @Composable () -> Unit = { LoadingView() },
     failureScreen: @Composable (Throwable, Boolean) -> Unit = { _, isLoading ->
-        FailureScreen(isLoading, onRefresh)
+        ErrorView(isLoading, onRefresh)
     },
     content: @Composable (T, Boolean) -> Unit,
 ) {

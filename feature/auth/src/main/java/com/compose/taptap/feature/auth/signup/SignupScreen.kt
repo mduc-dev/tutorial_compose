@@ -25,8 +25,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.compose.taptap.core.designsystem.R
-import com.compose.taptap.core.designsystem.component.AppBar
-import com.compose.taptap.core.designsystem.component.DDButton
+import com.compose.taptap.core.designsystem.component.molecules.appbar.TapTapAppBar
+import com.compose.taptap.core.designsystem.component.atoms.button.DDButton
 import com.compose.taptap.core.designsystem.theme.BlackF16
 import com.compose.taptap.core.designsystem.theme.IntlV2Grey40
 import com.compose.taptap.core.navigation.currentComposeNavigator
@@ -51,7 +51,7 @@ fun SignupScreen() {
                     focusManager.clearFocus()
                 })
             }) {
-        AppBar("Sign up", contentColor = IntlV2Grey40, navigationIcon = {
+        TapTapAppBar("Sign up", contentColor = IntlV2Grey40, navigationIcon = {
             IconButton(
                 onClick = {
                     composeNavigator.navigateUp()

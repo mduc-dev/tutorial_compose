@@ -17,6 +17,7 @@ data class Spacing(
     val large: Dp = 24.dp,
     val xLarge: Dp = 32.dp,
     val xxLarge: Dp = 40.dp,
+    val xxxxLarge: Dp = 72.dp,
     val gutter: Dp = 20.dp,
     val iconButton: Dp = 12.dp,
     val cardPadding: Dp = 20.dp,

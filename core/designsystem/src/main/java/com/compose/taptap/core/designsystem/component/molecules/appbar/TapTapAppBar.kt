@@ -1,0 +1,97 @@
+package com.compose.taptap.core.designsystem.component.molecules.appbar
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.unit.dp
+import com.compose.taptap.core.designsystem.theme.TapTapTheme
+
+object AppBarDefaults {
+    val Height = 56.dp
+}
+
+
+@Composable
+fun TapTapAppBar(
+    title: String,
+    modifier: Modifier = Modifier,
+    navigationIcon: @Composable (() -> Unit)? = null,
+    backgroundColor: Color = TapTapTheme.colors.surface,
+    contentColor: Color = TapTapTheme.colors.onSurface,
+    actions: @Composable RowScope.() -> Unit = {}
+) {
+    Surface(
+        modifier.fillMaxWidth(), color = backgroundColor, contentColor = contentColor
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(AppBarDefaults.Height),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Box(
+                Modifier
+                    .width(AppBarDefaults.Height)
+                    .fillMaxHeight(),
+                contentAlignment = Alignment.Center
+            ) {
+                navigationIcon?.invoke()
+            }
+
+
+            Box(
+                Modifier
+                    .weight(1f)
+                    .padding(horizontal = TapTapTheme.spacing.large),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    title,
+                    textAlign = TextAlign.Center,
+                    style = TapTapTheme.typography.titleLarge,
+                    maxLines = 1
+                )
+            }
+            Row(
+                Modifier
+                    .padding(end = 4.dp)
+                    .width(AppBarDefaults.Height)
+                    .fillMaxHeight(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
+                actions
+            )
+        }
+    }
+}
+
+class AppBarPreviewParameterProvider : PreviewParameterProvider<String> {
+    override val values: Sequence<String> = sequenceOf(
+        "Hello", "Jetpack Compose", "Test Title"
+    )
+}
+
+@Preview
+@Composable
+fun AppBarPreview(
+    @PreviewParameter(AppBarPreviewParameterProvider::class) title: String
+) {
+    TapTapAppBar(title = title, contentColor = Color.White)
+}

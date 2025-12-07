@@ -48,10 +48,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.compose.taptap.core.designsystem.R
-import com.compose.taptap.core.designsystem.component.AppBar
-import com.compose.taptap.core.designsystem.component.DDButton
-import com.compose.taptap.core.designsystem.component.Input
-import com.compose.taptap.core.designsystem.component.NoExistData
+import com.compose.taptap.core.designsystem.component.molecules.appbar.TapTapAppBar
+import com.compose.taptap.core.designsystem.component.atoms.button.DDButton
+import com.compose.taptap.core.designsystem.component.atoms.textfield.TapTapTextField
+import com.compose.taptap.core.designsystem.component.molecules.state.EmptyStateView
 import com.compose.taptap.core.designsystem.theme.BlackDisable
 import com.compose.taptap.core.designsystem.theme.IntlCcGreenPrimary
 import com.compose.taptap.core.designsystem.theme.IntlV2Grey60
@@ -92,7 +92,7 @@ fun LoginScreen() {
             .background(TapTapTheme.colors.background)
             .statusBarsPadding()
     ) {
-        AppBar("Log in", navigationIcon = {
+        TapTapAppBar("Log in", navigationIcon = {
             IconButton(
                 onClick = {
                     composeNavigator.navigateUp()
@@ -182,7 +182,7 @@ fun PageContent(
                     var password by remember { mutableStateOf("") }
                     var passwordVisible by remember { mutableStateOf(false) }
 
-                    Input(
+                    TapTapTextField(
                         value = email,
                         onValueChange = { email = it },
                         maxLines = 1,
@@ -219,7 +219,7 @@ fun PageContent(
                             }
                         })
 
-                    Input(
+                    TapTapTextField(
                         value = password,
                         onValueChange = { password = it },
                         maxLines = 1,
@@ -293,7 +293,7 @@ fun PageContent(
                 }
 
                 1 -> {
-                    NoExistData(
+                    EmptyStateView(
                         subTextNull = "Write a post to start your profile’s never-ending journey.",
                         painterResourceName = R.drawable.sad_icon_top,
                         modifier = Modifier.padding(start = spacing.gutter)
