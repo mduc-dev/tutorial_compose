@@ -11,6 +11,12 @@ object TapTapDimens {
     // Tabs
     val TabBottomPadding: Dp = 10.dp
     val TabTopPadding: Dp = 48.dp
+    val BottomBarHeight: Dp = 60.dp
+    val BottomBarItemHeight: Dp = 44.dp
+    val BottomBarItemMarginTop: Dp = 6.dp
+    val FlipViewSize: Dp = 60.dp
+    val FlipViewTranslationY: Dp = (-12).dp
+    val BottomBarIconSize: Dp = 24.dp
 
     // Form fields
     val FieldVerticalSpacing: Dp = 18.dp

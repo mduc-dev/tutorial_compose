@@ -116,25 +116,22 @@ fun Account() {
             Row {
                 IconButton(onClick = {}) {
                     Icon(
-                        painter = painterResource(id = R.drawable.qr_code),
+                        painter = painterResource(id = R.drawable.ico_24_profile_qr),
                         contentDescription = null,
-                        tint = Color.White,
                         modifier = Modifier.size(spacing.large)
                     )
                 }
                 IconButton(onClick = {}) {
                     Icon(
-                        painter = painterResource(id = R.drawable.share),
+                        painter = painterResource(id = R.drawable.ico_24_profile_share),
                         contentDescription = null,
-                        tint = Color.White,
                         modifier = Modifier.size(spacing.large)
                     )
                 }
                 IconButton(onClick = { composeNavigator.navigate(TapTapScreen.Settings) }) {
                     Icon(
-                        painter = painterResource(id = R.drawable.settings),
+                        painter = painterResource(id = R.drawable.uci_user_toolbar_settings_ic),
                         contentDescription = null,
-                        tint = Color.White,
                         modifier = Modifier.size(spacing.large)
                     )
                 }

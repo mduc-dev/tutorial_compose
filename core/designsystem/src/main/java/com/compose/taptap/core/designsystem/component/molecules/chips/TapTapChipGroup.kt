@@ -18,6 +18,7 @@ import com.compose.taptap.core.designsystem.theme.IntlV2Grey90
 import com.compose.taptap.core.designsystem.theme.TapTapShape
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.core.designsystem.util.DisableParentPagerSwipeConnection
+import com.compose.taptap.core.designsystem.util.bouncingEffect
 
 @Composable
 fun TapTapChipGroup(
@@ -30,6 +31,7 @@ fun TapTapChipGroup(
         modifier = modifier
             .fillMaxWidth()
             .nestedScroll(DisableParentPagerSwipeConnection)
+            .bouncingEffect()
             .padding(vertical = TapTapTheme.spacing.small),
         contentPadding = PaddingValues(horizontal = TapTapTheme.spacing.mediumLarge),
         horizontalArrangement = Arrangement.spacedBy(TapTapTheme.spacing.small)

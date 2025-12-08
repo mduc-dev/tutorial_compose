@@ -2,9 +2,13 @@ package com.compose.taptap.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.compose.taptap.core.viewmodel.loader.RefreshTrigger
 import com.compose.taptap.core.viewmodel.loader.newRefreshTrigger
 import com.compose.taptap.core.domain.usecases.game.GetGameFlowUseCase
+import com.compose.taptap.core.domain.usecases.play.AddGameToHistoryUseCase
+import com.compose.taptap.core.domain.usecases.play.GetGameHistoryUseCase
+import com.compose.taptap.core.domain.usecases.play.GetPlayGamesFlowUseCase
+import com.compose.taptap.core.domain.usecases.play.GetRandomInstantGameUseCase
+import com.compose.taptap.core.domain.usecases.play.MarkGameAsPlayedUseCase
 import com.compose.taptap.core.domain.usecases.search.GetSearchPlaceholderFlowUseCase
 import com.compose.taptap.core.navigation.AppComposeNavigator
 import com.compose.taptap.core.navigation.TapComposeNavigator
@@ -31,6 +35,11 @@ fun commonModule() = module {
     //use-case
     factory<GetGameFlowUseCase> { GetGameFlowUseCase(get()) }
     factory<GetSearchPlaceholderFlowUseCase> { GetSearchPlaceholderFlowUseCase(get()) }
+    factory<GetRandomInstantGameUseCase> { GetRandomInstantGameUseCase(get()) }
+    factory<GetPlayGamesFlowUseCase> { GetPlayGamesFlowUseCase(get()) }
+    factory<AddGameToHistoryUseCase> { AddGameToHistoryUseCase(get()) }
+    factory<MarkGameAsPlayedUseCase> { MarkGameAsPlayedUseCase(get()) }
+    factory<GetGameHistoryUseCase> { GetGameHistoryUseCase(get()) }
 
     single<AppComposeNavigator<TapTapScreen>> { TapComposeNavigator() }
 

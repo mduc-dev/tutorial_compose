@@ -1,5 +1,6 @@
 package com.compose.taptap.core.network.service
 
+import com.compose.taptap.core.model.InstantGameRandomResponse
 import com.compose.taptap.core.network.di.BUILDCONFIG
 import com.compose.taptap.core.network.model.GameResponse
 import com.compose.taptap.core.network.model.PlayGameResponse
@@ -26,6 +27,10 @@ class TapTapClient(private val httpClient: HttpClient) : TapTapService {
 
     override suspend fun getSearchPlaceholder(): SearchResponse {
         return httpClient.get(BUILDCONFIG.searchPlaceholder()).body()
+    }
+
+    override suspend fun getRandomInstantGame(): InstantGameRandomResponse {
+        return httpClient.get(BUILDCONFIG.randomInstantPlayGame(xua = playXua)).body()
     }
 
     private fun resolveCursorUrl(cursor: String, xua: String): String {

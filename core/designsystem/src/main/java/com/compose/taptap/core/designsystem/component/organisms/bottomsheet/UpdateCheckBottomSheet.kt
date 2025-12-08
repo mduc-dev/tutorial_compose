@@ -72,7 +72,7 @@ fun UpdateCheckBottomSheet(
 
             // App Logo
             Image(
-                painter = painterResource(id = R.drawable.logo),
+                painter = painterResource(id = R.drawable.update_logo),
                 contentDescription = "App Logo",
                 modifier = Modifier
                     .size(80.dp)

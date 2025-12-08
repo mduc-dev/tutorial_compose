@@ -84,14 +84,16 @@ fun NavGraphBuilder.tapAuthNavigation(
     }
 }
 
-fun NavGraphBuilder.tapMainNavigation() {
+fun NavGraphBuilder.tapMainNavigation(
+    onToggleFlip: (Boolean, String?) -> Unit
+) {
     navigation<TapTapScreen.MainGraph>(
         startDestination = TapTapScreen.Game
     ) {
         composable<TapTapScreen.Game> {
             GameRoute()
         }
-        composable<TapTapScreen.Play> { Play() }
+        composable<TapTapScreen.Play> { Play(onToggleFlip = onToggleFlip) }
         composable<TapTapScreen.Tavern> { Tavern() }
         composable<TapTapScreen.You> { Account() }
 
@@ -116,4 +118,8 @@ fun NavGraphBuilder.tapMainNavigation() {
             InAppUpdateScreen()
         }
     }
+}
+
+fun TapTapScreen.isTabItem(): Boolean {
+    return this == TapTapScreen.Game || this == TapTapScreen.Play || this == TapTapScreen.Tavern || this == TapTapScreen.You
 }

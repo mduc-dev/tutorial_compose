@@ -11,11 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -34,15 +29,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.compose.taptap.core.designsystem.R
+import com.compose.taptap.core.designsystem.component.atoms.button.ButtonSize
+import com.compose.taptap.core.designsystem.component.atoms.button.TapTapButton
+import com.compose.taptap.core.designsystem.component.organisms.bottomsheet.UpdateCheckBottomSheet
+import com.compose.taptap.core.designsystem.component.templates.MainScreenTemplate
 import com.compose.taptap.core.designsystem.theme.BlackF16
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
+import com.compose.taptap.core.designsystem.theme.WhitePrimary
 import com.compose.taptap.core.navigation.currentComposeNavigator
 import com.compose.taptap.core.preview.TapTapPreviewTheme
-import com.compose.taptap.core.designsystem.component.atoms.button.TapTapButton
-import com.compose.taptap.core.designsystem.component.atoms.button.ButtonSize
-import com.compose.taptap.core.designsystem.component.organisms.bottomsheet.UpdateCheckBottomSheet
-
-import com.compose.taptap.core.designsystem.component.templates.MainScreenTemplate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,7 +71,7 @@ fun InAppUpdateScreen() {
             Spacer(modifier = Modifier.height(20.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
-                    painter = painterResource(id = R.drawable.logo),
+                    painter = painterResource(id = R.drawable.update_logo),
                     contentDescription = "App Icon",
                     modifier = Modifier
                         .size(56.dp)
@@ -92,15 +87,15 @@ fun InAppUpdateScreen() {
                     )
                     Text(
                         text = "3.56.7-marketFull.100000",
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                        color = Color.White
+                        style = TapTapTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        color = WhitePrimary
                     )
                 }
             }
             Spacer(modifier = Modifier.height(24.dp))
             Text(
                 text = "Ding! TapTap is leveling up with patched out bugs and performance improvements.",
-                style = MaterialTheme.typography.bodyLarge,
+                style = TapTapTheme.typography.bodyLarge,
                 color = Color.Gray
             )
 

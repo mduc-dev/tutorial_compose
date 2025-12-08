@@ -13,37 +13,17 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-private val DarkColorScheme =
-    darkColorScheme(
-        primary = TapTapTokens.darkColors.primary,
-        onPrimary = TapTapTokens.darkColors.onPrimary,
-        secondary = TapTapTokens.darkColors.secondary,
-        onSecondary = TapTapTokens.darkColors.onSecondary,
-        background = TapTapTokens.darkColors.background,
-        onBackground = TapTapTokens.darkColors.onBackground,
-        surface = TapTapTokens.darkColors.surface,
-        onSurface = TapTapTokens.darkColors.onSurface,
-        error = TapTapTokens.darkColors.error,
-        onError = TapTapTokens.darkColors.onError,
-    )
 
-private val LightColorScheme =
-    lightColorScheme(
-        primary = TapTapTokens.lightColors.primary,
-        onPrimary = TapTapTokens.lightColors.onPrimary,
-        secondary = TapTapTokens.lightColors.secondary,
-        onSecondary = TapTapTokens.lightColors.onSecondary,
-        background = TapTapTokens.lightColors.background,
-        onBackground = TapTapTokens.lightColors.onBackground,
-        surface = TapTapTokens.lightColors.surface,
-        onSurface = TapTapTokens.lightColors.onSurface,
-        error = TapTapTokens.lightColors.error,
-        onError = TapTapTokens.lightColors.onError,
-    )
+
+
+val LocalTapTapColors = staticCompositionLocalOf<TapTapColorTokens> {
+    error("No TapTapColors provided")
+}
 
 object TapTapTheme {
     @Composable
@@ -52,6 +32,8 @@ object TapTapTheme {
         dynamicColor: Boolean = false,
         content: @Composable () -> Unit,
     ) {
+        val tapTapColors = if (darkTheme) TapTapTokens.darkColors else TapTapTokens.lightColors
+        
         val colorScheme =
             when {
                 dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
@@ -59,8 +41,34 @@ object TapTapTheme {
                     if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
                 }
 
-                darkTheme -> DarkColorScheme
-                else -> LightColorScheme
+                darkTheme -> darkColorScheme(
+                    primary = tapTapColors.primary,
+                    onPrimary = tapTapColors.onPrimary,
+                    secondary = tapTapColors.secondary,
+                    onSecondary = tapTapColors.onSecondary,
+                    background = tapTapColors.background,
+                    onBackground = tapTapColors.onBackground,
+                    surface = tapTapColors.surface,
+                    onSurface = tapTapColors.onSurface,
+                    error = tapTapColors.error,
+                    onError = tapTapColors.onError,
+                    // Map tokens to Material slots if needed, e.g. mapping divider to outlineVariant if acceptable,
+                    // but since we have custom usage now, we don't strictly need to force it unless M3 components need it.
+                    // We'll leave outlineVariant as default or map it if we want consistency.
+                    // outlineVariant = tapTapColors.divider 
+                )
+                else -> lightColorScheme(
+                    primary = tapTapColors.primary,
+                    onPrimary = tapTapColors.onPrimary,
+                    secondary = tapTapColors.secondary,
+                    onSecondary = tapTapColors.onSecondary,
+                    background = tapTapColors.background,
+                    onBackground = tapTapColors.onBackground,
+                    surface = tapTapColors.surface,
+                    onSurface = tapTapColors.onSurface,
+                    error = tapTapColors.error,
+                    onError = tapTapColors.onError,
+                )
             }
         val view = LocalView.current
         if (!view.isInEditMode) {
@@ -71,6 +79,7 @@ object TapTapTheme {
         }
 
         CompositionLocalProvider(
+            LocalTapTapColors provides tapTapColors,
             LocalSpacing provides Spacing(),
             LocalShapeTokens provides ShapeTokens(),
         ) {
@@ -83,8 +92,8 @@ object TapTapTheme {
         }
     }
 
-    val colors: ColorScheme
-        @Composable get() = MaterialTheme.colorScheme
+    val colors: TapTapColorTokens
+        @Composable get() = LocalTapTapColors.current
 
     val typography: Typography
         @Composable get() = MaterialTheme.typography

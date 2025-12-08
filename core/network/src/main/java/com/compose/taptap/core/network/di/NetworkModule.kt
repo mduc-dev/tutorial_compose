@@ -54,7 +54,7 @@ object BUILDCONFIG {
             "V" to "1",
             "PN" to "TapLite",
             "VN_CODE" to "356061000",
-            "VN" to "3.56.6-lite.100000",
+            "VN" to "3.56.7-lite.100000",
             "LOC" to country,
             "LANG" to lang,
             "CH" to "default",
@@ -100,6 +100,10 @@ object BUILDCONFIG {
 
     fun instantPlay(xua: String = newXUA()): String {
         return "$BASE_URL/i/instant-game/v2/rec?X-UA=$xua"
+    }
+
+    fun randomInstantPlayGame(xua: String = newXUA()): String {
+        return "$BASE_URL/i/instant-game/v1/random?X-UA=$xua"
     }
 
     fun searchPlaceholder(locale: Locale = Locale.getDefault()): String {

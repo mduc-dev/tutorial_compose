@@ -10,6 +10,7 @@ import com.compose.taptap.core.data.paging.CursorPagingSource
 import com.compose.taptap.core.data.repository.game.GamesRepositoryImpl.Companion.DEFAULT_PAGE_SIZE
 import com.compose.taptap.core.domain.repository.PlayRepository
 import com.compose.taptap.core.model.InstantGameItem
+import com.compose.taptap.core.model.InstantGameRandomResponse
 import com.compose.taptap.core.network.service.TapTapService
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -31,7 +32,7 @@ class PlayRepositoryImpl(
     override fun fetchInstantGameStream(): Flow<PagingData<InstantGameItem>> {
         return Pager(
             config = PagingConfig(
-                pageSize = DEFAULT_PAGE_SIZE, prefetchDistance = 2, enablePlaceholders = false
+                pageSize = 20, prefetchDistance = 2, enablePlaceholders = false
             ), pagingSourceFactory = {
                 CursorPagingSource { cursor ->
                     val response = tapTapService.getPlayGames(cursor)
@@ -80,6 +81,10 @@ class PlayRepositoryImpl(
         return runCatching {
             json.decodeFromString<List<String>>(jsonStr)
         }.getOrElse { emptyList() }
+    }
+
+    override suspend fun getRandomInstantGame(): InstantGameRandomResponse {
+        return tapTapService.getRandomInstantGame()
     }
 
 }
