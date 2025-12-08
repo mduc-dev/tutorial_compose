@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,7 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -20,11 +23,24 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.PrimaryTabRow
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
+
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
+
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -39,9 +55,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.layout.positionInParent
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.zIndex
+import androidx.compose.foundation.layout.offset
 import coil3.compose.AsyncImage
 import com.compose.taptap.core.designsystem.R
+import com.compose.taptap.core.designsystem.theme.BlackF16
 import com.compose.taptap.core.designsystem.theme.GreenPrimary
 import com.compose.taptap.core.designsystem.theme.IntlCcDivider
 import com.compose.taptap.core.designsystem.theme.IntlCcGreenPrimary
@@ -65,7 +89,8 @@ val tabPlays = listOf("Games", "Recently")
 
 @Composable
 fun Play(
-    playViewModel: PlayViewModel = koinViewModel<PlayViewModel>()
+    playViewModel: PlayViewModel = koinViewModel<PlayViewModel>(),
+    onToggleFlip: (Boolean, String?) -> Unit = { _, _ -> }
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { tabPlays.size })
@@ -82,8 +107,33 @@ fun Play(
 
     val instantGames = playViewModel.instantGames.collectAsLazyPagingItems()
 
-    val recentlyGames = playViewModel.getHistory()
+    val recentlyGames by playViewModel.recentlyGames.collectAsStateWithLifecycle()
     val stableRecentlyGames = remember(recentlyGames) { recentlyGames.toImmutableList() }
+
+    val randomInstantGame by playViewModel.randomInstantGame.collectAsStateWithLifecycle()
+
+    // Hoist the grid state to observe scroll for flip logic
+    val gamesGridState = rememberLazyGridState()
+
+    // Derived state for scroll threshold (10th row -> index 18+)
+    val isBeyondThreshold by remember {
+        derivedStateOf {
+            gamesGridState.firstVisibleItemIndex >= 18
+        }
+    }
+
+    // Effect to handle flip logic based on scroll AND data availability
+    LaunchedEffect(isBeyondThreshold, randomInstantGame) {
+        if (isBeyondThreshold) {
+            if (randomInstantGame != null) {
+                onToggleFlip(true, randomInstantGame)
+            } else {
+                playViewModel.fetchRandomInstantGame()
+            }
+        } else {
+            onToggleFlip(false, null)
+        }
+    }
 
     CompositionLocalProvider(LocalInstantGameList provides instantGames) {
         Column(
@@ -134,24 +184,33 @@ fun Play(
                     }
                 }
             }
-
             PageContent(
                 pagerState,
+                gamesGridState = gamesGridState, // Pass hoisted state
                 recentlyGames = stableRecentlyGames,
-                modifier = Modifier.weight(1f),
                 onPlayGame = { game ->
                     playViewModel.onPLayGame(game)
-                })
+                },
+                onRandomPlay = {
+                    playViewModel.fetchRandomInstantGame()
+                    scope.launch {
+                        pagerState.animateScrollToPage(0) // Switch to Games tab
+                    }
+                }
+            )
         }
     }
 }
 
+
 @Composable
 fun PageContent(
     pagerState: PagerState,
+    gamesGridState: LazyGridState,
     recentlyGames: ImmutableList<InstantGameItem>,
     modifier: Modifier = Modifier,
-    onPlayGame: (InstantGameItem) -> Unit
+    onPlayGame: (InstantGameItem) -> Unit,
+    onRandomPlay: () -> Unit
 ) {
     val instantGames = LocalInstantGameList.current
 
@@ -166,10 +225,12 @@ fun PageContent(
         ) {
             when (page) {
                 0 -> LazyVerticalGrid(
+                    state = gamesGridState,
                     columns = GridCells.Fixed(2),
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(GridSpacing),
-                    verticalArrangement = Arrangement.spacedBy(GridSpacing)
+                    verticalArrangement = Arrangement.spacedBy(GridSpacing),
+                    contentPadding = PaddingValues(bottom = 100.dp)
                 ) {
                     items(
                         count = instantGames.itemCount,
@@ -181,16 +242,23 @@ fun PageContent(
                 }
 
                 1 -> {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        horizontalArrangement = Arrangement.spacedBy(GridSpacing),
-                        verticalArrangement = Arrangement.spacedBy(GridSpacing)
-                    ) {
-                        items(
-                            count = recentlyGames.size,
-                            key = { index -> recentlyGames[index].identification }) { index ->
-                            val game = recentlyGames[index]
-                            CardGame(game, onClick = { onPlayGame(game) })
+                    if (recentlyGames.isEmpty()) {
+                        RecentlyEmptyState(
+                            onRandomPlay = onRandomPlay
+                        )
+                    } else {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            horizontalArrangement = Arrangement.spacedBy(GridSpacing),
+                            verticalArrangement = Arrangement.spacedBy(GridSpacing),
+                            contentPadding = PaddingValues(bottom = 100.dp)
+                        ) {
+                            items(
+                                count = recentlyGames.size,
+                                key = { index -> recentlyGames[index].identification }) { index ->
+                                val game = recentlyGames[index]
+                                CardGame(game, onClick = { onPlayGame(game) })
+                            }
                         }
                     }
                 }
@@ -210,9 +278,9 @@ fun CardGame(item: InstantGameItem, onClick: () -> Unit) {
     ) {
         Box(
             modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(16f / 9f)
-            .clip(TapTapShape.corners.large),
+                .fillMaxWidth()
+                .aspectRatio(16f / 9f)
+                .clip(TapTapShape.corners.large),
             contentAlignment = Alignment.Center
         ) {
             AsyncImage(
@@ -276,5 +344,59 @@ fun CardGame(item: InstantGameItem, onClick: () -> Unit) {
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
+    }
+}
+
+@Composable
+fun RecentlyEmptyState(
+    modifier: Modifier = Modifier,
+    onRandomPlay: () -> Unit
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(TapTapTheme.spacing.medium),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.thi_taptap_logo),
+            contentDescription = null,
+            modifier = Modifier.size(120.dp)
+        )
+        Spacer(modifier = Modifier.height(TapTapTheme.spacing.mediumLarge))
+        Text(
+            text = "Your Game Profile",
+            style = TapTapTheme.typography.headlineSmall.copy(
+                fontWeight = FontWeight.W500,
+                color = TapTapTheme.colors.onBackground
+            )
+        )
+        Spacer(modifier = Modifier.height(TapTapTheme.spacing.medium))
+        Text(
+            text = "Start your first game adventure!",
+            style = TapTapTheme.typography.bodyLarge.copy(
+                color = TapTapTheme.colors.surfaceContainerHighest,
+                fontWeight = FontWeight.Normal
+            ),
+            modifier = Modifier.padding(horizontal = TapTapTheme.spacing.large)
+        )
+        Spacer(modifier = Modifier.height(TapTapTheme.spacing.large))
+        Button(
+            onClick = onRandomPlay,
+            shape = TapTapShape.corners.circle,
+            contentPadding = PaddingValues(
+                horizontal = TapTapTheme.spacing.large,
+                vertical = TapTapTheme.spacing.medium
+            )
+        ) {
+            Text(
+                text = "Random Play",
+                style = TapTapTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = BlackF16
+                )
+            )
+        }
     }
 }

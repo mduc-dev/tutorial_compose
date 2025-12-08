@@ -15,6 +15,10 @@ data class TapTapColorTokens(
     val onSurface: Color,
     val error: Color,
     val onError: Color,
+    val divider: Color,
+    val outline: Color,
+    val surfaceContainerHighest: Color,
+    val onSurfaceVariant: Color,
 )
 
 object TapTapTokens {
@@ -29,6 +33,10 @@ object TapTapTokens {
         onSurface = BlackPrimary,
         error = ErrorRed,
         onError = WhitePrimary,
+        divider = IntlCcDivider,
+        outline = IntlV2Grey60,
+        surfaceContainerHighest = IntlV2Grey20,
+        onSurfaceVariant = IntlV2Grey60,
     )
 
     val darkColors = TapTapColorTokens(
@@ -42,5 +50,9 @@ object TapTapTokens {
         onSurface = WhitePrimary,
         error = ErrorRed,
         onError = WhitePrimary,
+        divider = IntlCcDivider,
+        outline = IntlV2Grey60,
+        surfaceContainerHighest = IntlV2Grey20,
+        onSurfaceVariant = IntlV2Grey60,
     )
 }

@@ -42,6 +42,7 @@ import com.compose.taptap.core.designsystem.R
 import com.compose.taptap.core.designsystem.theme.TapTapShape
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.core.designsystem.util.DisableParentPagerSwipeConnection
+import com.compose.taptap.core.designsystem.util.bouncingEffect
 import com.compose.taptap.core.designsystem.component.atoms.image.TapTapNetworkImage
 import com.compose.taptap.core.designsystem.component.molecules.header.TapTapSectionHeader
 import com.compose.taptap.core.designsystem.component.molecules.game.GamePortraitItem
@@ -75,6 +76,7 @@ sealed interface GameCardUiState {
         val bannerUrl: String?,
         val rating: String?,
         val recReason: String?,
+        val recReasonType: Long? = null,
         val tagLineItems: ImmutableList<String>,
     ) : GameCardUiState
 
@@ -128,6 +130,7 @@ fun ListGameItem.toCardUiState(): GameCardUiState {
             bannerUrl = app.banner?.mediumUrl,
             rating = app.stat?.rating?.score?.takeIf { it.isNotBlank() },
             recReason = this.recReason?.text,
+            recReasonType = this.recReason?.type,
             tagLineItems = tagLineItems.toImmutableList()
         )
     }
@@ -423,8 +426,6 @@ private fun StandardGameCard(
         val imageModifier = Modifier
             .padding(
                 top = TapTapTheme.spacing.small,
-                start = TapTapTheme.spacing.mediumLarge,
-                end = TapTapTheme.spacing.mediumLarge
             )
             .fillMaxWidth()
             .aspectRatio(16f / 9f)
@@ -438,14 +439,34 @@ private fun StandardGameCard(
         )
 
         if (!uiState.recReason.isNullOrBlank()) {
-            Text(
-                text = uiState.recReason,
-                style = TapTapTheme.typography.bodyMedium,
-                color = TapTapTheme.colors.onSurface.copy(alpha = 0.7f),
+            Row(
                 modifier = Modifier.padding(
-                    top = TapTapTheme.spacing.small, start = TapTapTheme.spacing.mediumLarge
+                    top = TapTapTheme.spacing.small,
+                    start = TapTapTheme.spacing.mediumLarge,
+                    end = TapTapTheme.spacing.mediumLarge // Added end padding for alignment
+                ),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(TapTapTheme.spacing.small)
+            ) {
+                val iconResId = when (uiState.recReasonType?.toInt()) {
+                    5 -> R.drawable.cw_feed_personal_tag
+                    6 -> R.drawable.cw_feed_reason_top
+                    else -> R.drawable.cw_feed_user_good_sentence
+                }
+
+                Icon(
+                    painter = painterResource(id = iconResId),
+                    contentDescription = null,
+                    tint = Color.Unspecified,
+                    modifier = Modifier.size(16.dp) // Adjust size as needed, maybe TapTapTheme.spacing.medium
                 )
-            )
+
+                Text(
+                    text = uiState.recReason,
+                    style = TapTapTheme.typography.bodyMedium,
+                    color = TapTapTheme.colors.onSurface.copy(alpha = 0.7f)
+                )
+            }
         }
 
         HorizontalDivider(
@@ -589,7 +610,8 @@ private fun CategoryGameCard(
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
-                .nestedScroll(DisableParentPagerSwipeConnection),
+                .nestedScroll(DisableParentPagerSwipeConnection)
+                .bouncingEffect(),
             contentPadding = PaddingValues(horizontal = TapTapTheme.spacing.mediumLarge),
             horizontalArrangement = Arrangement.spacedBy(TapTapTheme.spacing.medium)
         ) {
@@ -727,6 +749,7 @@ private fun PreviewStandardGameCard() {
                 bannerUrl = "https://img.tapimg.net/market/images/44ac18c469939641cedf07fd89a7e98c.jpg?imageView2/0/w/720/h/405/format/jpg/interlace/1/ignore-error/1&t=1",
                 rating = "7.6",
                 recReason = "Sword of Justice champions true fair play by eliminating all pay-to-win mechanics—victory comes from skill, not spending.",
+                recReasonType = 5,
                 tagLineItems = persistentListOf("RPG", "Action", "Editors' Choice")
             ), onClick = {})
     }
