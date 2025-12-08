@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 @Stable
 class PlayViewModel(
@@ -37,7 +36,7 @@ class PlayViewModel(
         emitAll(getPlayGamesFlowUseCase.execute(Unit))
     }.cachedIn(viewModelScope)
 
-    val recentlyGames = stateHolder(runBlocking { getHistory() })
+    val recentlyGames = stateHolder<List<InstantGameItem>>(emptyList())
 
     fun onPLayGame(game: InstantGameItem) {
         viewModelScope.launch {

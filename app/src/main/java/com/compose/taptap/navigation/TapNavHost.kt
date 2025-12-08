@@ -1,29 +1,19 @@
 package com.compose.taptap.navigation
 
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.compose.taptap.core.designsystem.component.atoms.divider.TapTapDivider
 import com.compose.taptap.core.designsystem.theme.BlackF16
-import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.feature.auth.AuthState
 import com.compose.taptap.feature.auth.welcome.LocalWelcomeViewModel
@@ -63,8 +53,8 @@ private fun TapAuthNavigationHost(navHostController: NavHostController) {
 
 @Composable
 private fun TapMainNavigationHost(navHostController: NavHostController) {
-    var isFlipped by remember { mutableStateOf(false) }
-    var flipBackImageUrl by remember { mutableStateOf<String?>(null) }
+    val (isFlipped, setIsFlipped) = remember { mutableStateOf(false) }
+    val (flipBackImageUrl, setFlipBackImageUrl) = remember { mutableStateOf<String?>(null) }
 
     val currentRoute =
         navHostController.currentBackStackEntryAsState().value?.destination?.route?.substringBefore(
@@ -118,9 +108,9 @@ private fun TapMainNavigationHost(navHostController: NavHostController) {
             tapMainNavigation(
                 onToggleFlip = { shouldFlip, imageUrl ->
                     if (imageUrl != null) {
-                        flipBackImageUrl = imageUrl
+                        setFlipBackImageUrl(imageUrl)
                     }
-                    isFlipped = shouldFlip
+                    setIsFlipped(shouldFlip)
                 }
             )
         }

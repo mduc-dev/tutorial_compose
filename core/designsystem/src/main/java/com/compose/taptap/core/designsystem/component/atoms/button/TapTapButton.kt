@@ -15,11 +15,6 @@ import androidx.compose.material3.RippleConfiguration
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,7 +29,6 @@ import androidx.compose.ui.unit.sp
 import com.compose.taptap.core.designsystem.theme.TapTapShape
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.core.designsystem.util.nonScaledSp
-import kotlinx.coroutines.delay
 
 data class TapTapButtonPreviewParams(
     val label: String,
@@ -145,15 +139,7 @@ fun TapTapButton(
                 horizontalArrangement = Arrangement.spacedBy(TapTapTheme.spacing.small)
             ) {
                 if (isLoading == true) {
-                    var progress by remember { mutableFloatStateOf(0f) }
-                    LaunchedEffect(key1 = true) {
-                        while (progress < 1f) {
-                            delay(50)
-                            progress += 0.01f
-                        }
-                    }
                     CircularProgressIndicator(
-                        progress = { progress },
                         modifier = Modifier.size(ButtonDefaults.IconSize),
                         color = TapTapTheme.colors.onPrimary,
                         strokeWidth = 2.dp,

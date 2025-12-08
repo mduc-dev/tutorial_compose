@@ -7,7 +7,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.compose.taptap.core.data.paging.CursorPage
 import com.compose.taptap.core.data.paging.CursorPagingSource
-import com.compose.taptap.core.data.repository.game.GamesRepositoryImpl.Companion.DEFAULT_PAGE_SIZE
 import com.compose.taptap.core.domain.repository.PlayRepository
 import com.compose.taptap.core.model.InstantGameItem
 import com.compose.taptap.core.model.InstantGameRandomResponse
@@ -26,13 +25,14 @@ class PlayRepositoryImpl(
     companion object {
         private const val KEY_HISTORY = "history"
         private const val KEY_PLAYED = "played"
+        private const val DEFAULT_PAGE_SIZE = 20
         private const val MAX_HISTORY_SIZE = 20
     }
 
     override fun fetchInstantGameStream(): Flow<PagingData<InstantGameItem>> {
         return Pager(
             config = PagingConfig(
-                pageSize = 20, prefetchDistance = 2, enablePlaceholders = false
+                pageSize = DEFAULT_PAGE_SIZE, prefetchDistance = 2, enablePlaceholders = false
             ), pagingSourceFactory = {
                 CursorPagingSource { cursor ->
                     val response = tapTapService.getPlayGames(cursor)

@@ -25,6 +25,7 @@ fun TapTapListItem(
     supportingText: String? = null,
     textColor: Color = WhitePrimary,
     trailingContent: @Composable (() -> Unit)? = null,
+    showTrailingIcon: Boolean = true,
     onClick: () -> Unit
 ) {
     Row(
@@ -48,11 +49,7 @@ fun TapTapListItem(
         }
         if (trailingContent != null) {
             trailingContent()
-        } else {
-             // Default trailing icon (arrow) if no content provided AND we want it?
-             // To support "No Arrow", user should pass explicit empty lambda? Yes.
-             // Or we add a `showArrow` param? 
-             // Let's stick to the convention: null -> generic arrow. {} -> nothing.
+        } else if (showTrailingIcon) {
              Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,

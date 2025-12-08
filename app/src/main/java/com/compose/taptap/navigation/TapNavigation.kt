@@ -18,6 +18,7 @@ import com.compose.taptap.feature.notifications.Notifications
 import com.compose.taptap.feature.play.Play
 import com.compose.taptap.feature.search.SearchRoute
 import com.compose.taptap.feature.settings.InAppUpdateScreen
+import com.compose.taptap.feature.settings.SettingsPlaceholderScreen
 import com.compose.taptap.feature.settings.SettingsScreen
 import com.compose.taptap.feature.tavern.Tavern
 
@@ -96,7 +97,6 @@ fun NavGraphBuilder.tapMainNavigation(
         composable<TapTapScreen.Play> { Play(onToggleFlip = onToggleFlip) }
         composable<TapTapScreen.Tavern> { Tavern() }
         composable<TapTapScreen.You> { Account() }
-
         composable<TapTapScreen.Search> {
             SearchRoute()
         }
@@ -106,9 +106,6 @@ fun NavGraphBuilder.tapMainNavigation(
         composable<TapTapScreen.GameDetail> {
             GameDetail()
         }
-        composable<TapTapScreen.You> {
-            Account()
-        }
         composable<TapTapScreen.Settings> {
             SettingsScreen(
                 onLogout = {} // Placeholder for logout logic
@@ -117,6 +114,25 @@ fun NavGraphBuilder.tapMainNavigation(
         composable<TapTapScreen.InAppUpdate> {
             InAppUpdateScreen()
         }
+        composable<TapTapScreen.GameUpdate> {
+            SettingsPlaceholderScreen("Game Update")
+        }
+
+        // Settings Placeholders
+        composable<TapTapScreen.Feedback> { SettingsPlaceholderScreen("Feedback") }
+        composable<TapTapScreen.AccountSecurity> { SettingsPlaceholderScreen("Account and Security") }
+        composable<TapTapScreen.DarkMode> { SettingsPlaceholderScreen("Dark mode") }
+        composable<TapTapScreen.Languages> { SettingsPlaceholderScreen("Languages") }
+        composable<TapTapScreen.OrdersPayments> { SettingsPlaceholderScreen("Orders & Payments") }
+        composable<TapTapScreen.General> { SettingsPlaceholderScreen("General") }
+        composable<TapTapScreen.Redeem> { SettingsPlaceholderScreen("Redeem") }
+        composable<TapTapScreen.DownloadInstall> { SettingsPlaceholderScreen("Download & Install") }
+        composable<TapTapScreen.NotificationSettings> { SettingsPlaceholderScreen("Notification settings") }
+        composable<TapTapScreen.AboutTapTap> { SettingsPlaceholderScreen("About TapTap") }
+        composable<TapTapScreen.TermsOfService> { SettingsPlaceholderScreen("Terms of Service") }
+        composable<TapTapScreen.Privacy> { SettingsPlaceholderScreen("Privacy") }
+        composable<TapTapScreen.PrivacyPolicy> { SettingsPlaceholderScreen("Privacy Policy") }
+        composable<TapTapScreen.Authorization> { SettingsPlaceholderScreen("Authorization") }
     }
 }
 
