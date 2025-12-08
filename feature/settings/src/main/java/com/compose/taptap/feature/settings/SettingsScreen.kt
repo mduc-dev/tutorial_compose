@@ -1,39 +1,26 @@
 package com.compose.taptap.feature.settings
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.compose.taptap.core.designsystem.theme.TapTapTheme
-import com.compose.taptap.core.designsystem.theme.WhitePrimary
-import com.compose.taptap.core.preview.TapTapPreviewTheme
-import com.compose.taptap.core.designsystem.component.templates.MainScreenTemplate
-import com.compose.taptap.core.navigation.currentComposeNavigator
-import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.core.designsystem.component.molecules.settings.TapTapListItem
 import com.compose.taptap.core.designsystem.component.organisms.dialog.LogoutConfirmDialog
+import com.compose.taptap.core.designsystem.component.templates.MainScreenTemplate
+import com.compose.taptap.core.designsystem.theme.TapTapTheme
+import com.compose.taptap.core.designsystem.theme.WhitePrimary
+import com.compose.taptap.core.navigation.TapTapScreen
+import com.compose.taptap.core.navigation.currentComposeNavigator
+import com.compose.taptap.core.preview.TapTapPreviewTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,19 +72,31 @@ fun SettingsScreen(
                 TapTapListItem(
                     headline = item,
                     onClick = {
-                        if (isLogOut) {
-                            showLogoutDialog.value = true
-                        } else {
-                            composeNavigator.navigate(TapTapScreen.InAppUpdate)
+                        when (item) {
+                            "Feedback" -> composeNavigator.navigate(TapTapScreen.Feedback)
+                            "Account and Security" -> composeNavigator.navigate(TapTapScreen.AccountSecurity)
+                            "Dark mode" -> composeNavigator.navigate(TapTapScreen.DarkMode)
+                            "Languages" -> composeNavigator.navigate(TapTapScreen.Languages)
+                            "Orders & Payments" -> composeNavigator.navigate(TapTapScreen.OrdersPayments)
+                            "General" -> composeNavigator.navigate(TapTapScreen.General)
+                            "Redeem" -> composeNavigator.navigate(TapTapScreen.Redeem)
+                            "Download & Install" -> composeNavigator.navigate(TapTapScreen.DownloadInstall)
+                            "Game Update" -> composeNavigator.navigate(TapTapScreen.GameUpdate)
+                            "Notification settings" -> composeNavigator.navigate(TapTapScreen.NotificationSettings)
+                            "Ver 1.0.0-marketFull.100000" -> composeNavigator.navigate(TapTapScreen.InAppUpdate)
+                            "About TapTap" -> composeNavigator.navigate(TapTapScreen.AboutTapTap)
+                            "Terms of Service" -> composeNavigator.navigate(TapTapScreen.TermsOfService)
+                            "Privacy" -> composeNavigator.navigate(TapTapScreen.Privacy)
+                            "Privacy Policy" -> composeNavigator.navigate(TapTapScreen.PrivacyPolicy)
+                            "Authorization" -> composeNavigator.navigate(TapTapScreen.Authorization)
+                            "Log Out" -> showLogoutDialog.value = true
+                            else -> {
+                                // For items that don't need navigation
+                            }
                         }
                     },
                     textColor = if (isLogOut) TapTapTheme.colors.primary else WhitePrimary,
-                    trailingContent = if (isLogOut) { {} } else null // Default arrow is shown if trailingContent is null, logic in component is 'if null show arrow else show content'. Wait, previous logic was 'showArrow boolean'. My new logic: 'if trailingContent != null show it else show arrow'. This is wrong if I want NO arrow. 
-                    // Let's fix the component logic first. 
-                    // Actually, let's keep it simple for now and stick to bool or just pass null for default arrow. 
-                    // If isLogOut, I want NO arrow. My new component logic: "If trailingContent != null show it, else show arrow". This means I can't hide arrow easily without passing empty lambda? 
-                    // Let's refine the component in next step if needed, or pass empty lambda.
-                    // Empty lambda {} will show nothing. Correct.
+                    showTrailingIcon = !isLogOut
                 )
                 if (index < settingsItems.lastIndex) {
                     HorizontalDivider(

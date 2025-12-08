@@ -1,17 +1,24 @@
 package com.compose.taptap.feature.play
 
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -20,23 +27,10 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.PrimaryTabRow
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ScrollableTabRow
-import androidx.compose.material3.Tab
-
-import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
-
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -49,6 +43,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -57,35 +53,28 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInWindow
-import androidx.compose.ui.layout.positionInParent
-import androidx.compose.foundation.layout.width
-import androidx.compose.ui.zIndex
-import androidx.compose.foundation.layout.offset
 import coil3.compose.AsyncImage
 import com.compose.taptap.core.designsystem.R
+import com.compose.taptap.core.designsystem.component.atoms.divider.TapTapDivider
 import com.compose.taptap.core.designsystem.theme.BlackF16
 import com.compose.taptap.core.designsystem.theme.GreenPrimary
-import com.compose.taptap.core.designsystem.theme.IntlCcDivider
 import com.compose.taptap.core.designsystem.theme.IntlCcGreenPrimary
 import com.compose.taptap.core.designsystem.theme.IntlV2Grey20
 import com.compose.taptap.core.designsystem.theme.IntlV2Grey60
 import com.compose.taptap.core.designsystem.theme.TapTapDimens.GridSpacing
 import com.compose.taptap.core.designsystem.theme.TapTapDimens.ScoreIconSize
-import com.compose.taptap.core.designsystem.theme.TapTapDimens.TabBottomPadding
 import com.compose.taptap.core.designsystem.theme.TapTapDimens.TitleTopPadding
 import com.compose.taptap.core.designsystem.theme.TapTapShape
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.core.designsystem.theme.WhitePrimary
-import com.compose.taptap.core.designsystem.util.DisabledInteractionSource
 import com.compose.taptap.core.model.InstantGameItem
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
-val tabPlays = listOf("Games", "Recently")
+val tabPlays = persistentListOf("Games", "Recently")
 
 @Composable
 fun Play(
@@ -94,16 +83,7 @@ fun Play(
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { tabPlays.size })
-    val density = LocalDensity.current
     val spacing = TapTapTheme.spacing
-
-    val tabWidths = remember {
-        val tabWidthStateList = mutableStateListOf<Dp>()
-        repeat(tabPlays.size) {
-            tabWidthStateList.add(0.dp)
-        }
-        tabWidthStateList
-    }
 
     val instantGames = playViewModel.instantGames.collectAsLazyPagingItems()
 
@@ -141,49 +121,16 @@ fun Play(
                 .fillMaxSize()
                 .background(TapTapTheme.colors.background)
         ) {
-            PrimaryTabRow(
-                selectedTabIndex = pagerState.currentPage,
-                containerColor = TapTapTheme.colors.background,
-                divider = {
-                    HorizontalDivider(
-                        thickness = spacing.xSmall / 2, color = IntlCcDivider
-                    )
-                },
-                modifier = Modifier.padding(vertical = spacing.mediumLarge),
-                indicator = {
-                    TabRowDefaults.PrimaryIndicator(
-                        modifier = Modifier.tabIndicatorOffset(pagerState.currentPage),
-                        width = tabWidths[pagerState.currentPage],
-                        color = IntlCcGreenPrimary
-                    )
-                },
-            ) {
-                tabPlays.forEachIndexed { tabIndex, item ->
-                    Tab(
-                        selectedContentColor = WhitePrimary,
-                        unselectedContentColor = IntlV2Grey60,
-                        selected = tabIndex == pagerState.currentPage,
-                        interactionSource = DisabledInteractionSource(),
-                        onClick = {
-                            scope.launch {
-                                pagerState.animateScrollToPage(tabIndex)
-                            }
-                        }) {
-                        Text(
-                            text = item,
-                            style = TapTapTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Bold,
-                            ),
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .padding(bottom = TabBottomPadding),
-                            onTextLayout = { textLayoutResult ->
-                                tabWidths[tabIndex] =
-                                    with(density) { textLayoutResult.size.width.toDp() }
-                            })
+            PlayTabRow(
+                tabs = tabPlays,
+                pagerState = pagerState,
+                onTabClick = { index ->
+                    scope.launch {
+                        pagerState.animateScrollToPage(index)
                     }
-                }
-            }
+                },
+                modifier = Modifier.padding(vertical = spacing.mediumLarge)
+            )
             PageContent(
                 pagerState,
                 gamesGridState = gamesGridState, // Pass hoisted state
@@ -400,3 +347,95 @@ fun RecentlyEmptyState(
         }
     }
 }
+
+@Composable
+private fun PlayTabRow(
+    tabs: ImmutableList<String>,
+    pagerState: PagerState,
+    onTabClick: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val density = LocalDensity.current
+    val tabWidths = remember { mutableStateListOf<Dp>() }
+    val tabOffsets = remember { mutableStateListOf<Dp>() }
+
+    if (tabWidths.size != tabs.size) {
+        tabWidths.clear()
+        tabOffsets.clear()
+        tabs.forEach { _ ->
+            tabWidths.add(0.dp)
+            tabOffsets.add(0.dp)
+        }
+    }
+
+    val currentTabIndex = pagerState.currentPage
+    val indicatorWidth by animateDpAsState(
+        targetValue = if (tabWidths.isNotEmpty() && currentTabIndex in tabWidths.indices) {
+            tabWidths[currentTabIndex]
+        } else 0.dp, label = "indicatorWidth"
+    )
+    val indicatorOffset by animateDpAsState(
+        targetValue = if (tabOffsets.isNotEmpty() && currentTabIndex in tabOffsets.indices) {
+            tabOffsets[currentTabIndex]
+        } else 0.dp, label = "indicatorOffset"
+    )
+
+    Box(
+        modifier = modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        Box {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                tabs.forEachIndexed { index, title ->
+                    val isSelected = pagerState.currentPage == index
+                    val color = if (isSelected) TapTapTheme.colors.onBackground else IntlV2Grey60
+                    val style = TapTapTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                    )
+
+                    Column(
+                        modifier = Modifier
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ) { onTabClick(index) }
+                            .padding(horizontal = TapTapTheme.spacing.medium)
+                            .onGloballyPositioned { coordinates ->
+                                val width = with(density) { coordinates.size.width.toDp() }
+                                val offset = with(density) { coordinates.positionInParent().x.toDp() }
+                                
+                                if (index < tabWidths.size) {
+                                    if (tabWidths[index] != width) tabWidths[index] = width
+                                    if (tabOffsets[index] != offset) tabOffsets[index] = offset
+                                }
+                            }
+                    ) {
+                        Text(
+                            text = title,
+                            style = style,
+                            color = color,
+                            modifier = Modifier.padding(bottom = TapTapTheme.spacing.mediumSmall)
+                        )
+                    }
+                }
+            }
+
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .offset(x = indicatorOffset)
+                    .width(indicatorWidth)
+                    .height(3.dp)
+                    .background(IntlCcGreenPrimary, TapTapShape.corners.pill)
+            )
+        }
+        
+        TapTapDivider(
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
+    }
+}
+

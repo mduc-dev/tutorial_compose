@@ -51,4 +51,50 @@ sealed interface TapTapScreen {
 
     @Serializable
     data object InAppUpdate : TapTapScreen
+
+    @Serializable
+    data object GameUpdate : TapTapScreen
+
+    // Settings Screens
+    @Serializable
+    data object Feedback : TapTapScreen
+
+    @Serializable
+    data object AccountSecurity : TapTapScreen
+
+    @Serializable
+    data object DarkMode : TapTapScreen
+
+    @Serializable
+    data object Languages : TapTapScreen
+
+    @Serializable
+    data object OrdersPayments : TapTapScreen
+
+    @Serializable
+    data object General : TapTapScreen
+
+    @Serializable
+    data object Redeem : TapTapScreen
+
+    @Serializable
+    data object DownloadInstall : TapTapScreen
+
+    @Serializable
+    data object NotificationSettings : TapTapScreen
+
+    @Serializable
+    data object AboutTapTap : TapTapScreen
+
+    @Serializable
+    data object TermsOfService : TapTapScreen
+
+    @Serializable
+    data object Privacy : TapTapScreen
+
+    @Serializable
+    data object PrivacyPolicy : TapTapScreen
+
+    @Serializable
+    data object Authorization : TapTapScreen
 }
