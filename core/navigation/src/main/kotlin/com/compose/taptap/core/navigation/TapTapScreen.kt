@@ -33,7 +33,7 @@ sealed interface TapTapScreen {
     data object Tavern : TapTapScreen
 
     @Serializable
-    data object You : TapTapScreen
+    data object Me : TapTapScreen
 
 
     //common screens

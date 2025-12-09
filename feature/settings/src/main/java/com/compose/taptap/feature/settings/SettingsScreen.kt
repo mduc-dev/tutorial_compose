@@ -23,6 +23,12 @@ import com.compose.taptap.core.navigation.currentComposeNavigator
 import com.compose.taptap.core.preview.TapTapPreviewTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
+data class SettingsItem(
+    val title: String,
+    val destination: TapTapScreen? = null,
+    val isLogout: Boolean = false
+)
+
 @Composable
 fun SettingsScreen(
     onLogout: () -> Unit
@@ -30,25 +36,27 @@ fun SettingsScreen(
     val composeNavigator = currentComposeNavigator
     val showLogoutDialog = remember { mutableStateOf(false) }
 
-    val settingsItems = listOf(
-        "Feedback",
-        "Account and Security",
-        "Dark mode",
-        "Languages",
-        "Orders & Payments",
-        "General",
-        "Redeem",
-        "Download & Install",
-        "Game Update",
-        "Notification settings",
-        "Ver 1.0.0-marketFull.100000",
-        "About TapTap",
-        "Terms of Service",
-        "Privacy",
-        "Privacy Policy",
-        "Authorization",
-        "Log Out"
-    )
+    val settingsItems = remember {
+        listOf(
+            SettingsItem("Feedback", TapTapScreen.Feedback),
+            SettingsItem("Account and Security", TapTapScreen.AccountSecurity),
+            SettingsItem("Dark mode", TapTapScreen.DarkMode),
+            SettingsItem("Languages", TapTapScreen.Languages),
+            SettingsItem("Orders & Payments", TapTapScreen.OrdersPayments),
+            SettingsItem("General", TapTapScreen.General),
+            SettingsItem("Redeem", TapTapScreen.Redeem),
+            SettingsItem("Download & Install", TapTapScreen.DownloadInstall),
+            SettingsItem("Game Update", TapTapScreen.GameUpdate),
+            SettingsItem("Notification settings", TapTapScreen.NotificationSettings),
+            SettingsItem("Ver 1.0.0-marketFull.100000", TapTapScreen.InAppUpdate),
+            SettingsItem("About TapTap", TapTapScreen.AboutTapTap),
+            SettingsItem("Terms of Service", TapTapScreen.TermsOfService),
+            SettingsItem("Privacy", TapTapScreen.Privacy),
+            SettingsItem("Privacy Policy", TapTapScreen.PrivacyPolicy),
+            SettingsItem("Authorization", TapTapScreen.Authorization),
+            SettingsItem("Log Out", isLogout = true)
+        )
+    }
 
     if (showLogoutDialog.value) {
         LogoutConfirmDialog(
@@ -68,35 +76,17 @@ fun SettingsScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             itemsIndexed(settingsItems) { index, item ->
-                val isLogOut = item == "Log Out"
                 TapTapListItem(
-                    headline = item,
+                    headline = item.title,
                     onClick = {
-                        when (item) {
-                            "Feedback" -> composeNavigator.navigate(TapTapScreen.Feedback)
-                            "Account and Security" -> composeNavigator.navigate(TapTapScreen.AccountSecurity)
-                            "Dark mode" -> composeNavigator.navigate(TapTapScreen.DarkMode)
-                            "Languages" -> composeNavigator.navigate(TapTapScreen.Languages)
-                            "Orders & Payments" -> composeNavigator.navigate(TapTapScreen.OrdersPayments)
-                            "General" -> composeNavigator.navigate(TapTapScreen.General)
-                            "Redeem" -> composeNavigator.navigate(TapTapScreen.Redeem)
-                            "Download & Install" -> composeNavigator.navigate(TapTapScreen.DownloadInstall)
-                            "Game Update" -> composeNavigator.navigate(TapTapScreen.GameUpdate)
-                            "Notification settings" -> composeNavigator.navigate(TapTapScreen.NotificationSettings)
-                            "Ver 1.0.0-marketFull.100000" -> composeNavigator.navigate(TapTapScreen.InAppUpdate)
-                            "About TapTap" -> composeNavigator.navigate(TapTapScreen.AboutTapTap)
-                            "Terms of Service" -> composeNavigator.navigate(TapTapScreen.TermsOfService)
-                            "Privacy" -> composeNavigator.navigate(TapTapScreen.Privacy)
-                            "Privacy Policy" -> composeNavigator.navigate(TapTapScreen.PrivacyPolicy)
-                            "Authorization" -> composeNavigator.navigate(TapTapScreen.Authorization)
-                            "Log Out" -> showLogoutDialog.value = true
-                            else -> {
-                                // For items that don't need navigation
-                            }
+                        if (item.isLogout) {
+                            showLogoutDialog.value = true
+                        } else {
+                            item.destination?.let { composeNavigator.navigate(it) }
                         }
                     },
-                    textColor = if (isLogOut) TapTapTheme.colors.primary else WhitePrimary,
-                    showTrailingIcon = !isLogOut
+                    textColor = if (item.isLogout) TapTapTheme.colors.primary else WhitePrimary,
+                    showTrailingIcon = !item.isLogout
                 )
                 if (index < settingsItems.lastIndex) {
                     HorizontalDivider(

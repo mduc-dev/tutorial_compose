@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.compose.taptap.core.domain.usecases.play.AddGameToHistoryUseCase
 import com.compose.taptap.core.domain.usecases.play.GetGameHistoryUseCase
-import com.compose.taptap.core.domain.usecases.play.GetPlayGamesFlowUseCase
+import com.compose.taptap.core.domain.usecases.play.GetPlayGameFlowUseCase
 import com.compose.taptap.core.domain.usecases.play.GetRandomInstantGameUseCase
 import com.compose.taptap.core.domain.usecases.play.MarkGameAsPlayedUseCase
 import com.compose.taptap.core.model.InstantGameItem
@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 
 @Stable
 class PlayViewModel(
-    private val getPlayGamesFlowUseCase: GetPlayGamesFlowUseCase,
+    private val getPlayGamesFlowUseCase: GetPlayGameFlowUseCase,
     private val getRandomInstantGameUseCase: GetRandomInstantGameUseCase,
     private val addGameToHistoryUseCase: AddGameToHistoryUseCase,
     private val markGameAsPlayedUseCase: MarkGameAsPlayedUseCase,
@@ -55,11 +55,10 @@ class PlayViewModel(
         viewModelScope.launch {
             try {
                 val response = getRandomInstantGameUseCase.execute(Unit)
-                if (response.success) {
-                    val mediumUrl = response.data.info.icon.mediumUrl
-                    _randomInstantGame.updateState { mediumUrl }
-                }
+                val mediumUrl = response.info.icon.mediumUrl
+                _randomInstantGame.updateState { mediumUrl }
             } catch (e: Exception) {
+                // TODO: Propagate error to the UI, e.g., via a one-time event channel.
                 e.printStackTrace()
             } finally {
                 isFetchingRandomGame = false

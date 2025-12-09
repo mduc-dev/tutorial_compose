@@ -54,12 +54,14 @@ class TapTapButtonPreviewProvider : PreviewParameterProvider<TapTapButtonPreview
 fun PreviewTapTapButton(
     @PreviewParameter(TapTapButtonPreviewProvider::class) params: TapTapButtonPreviewParams
 ) {
-    TapTapButton(
-        label = params.label,
-        isLoading = params.isLoading,
-        size = params.size,
-        variant = params.variant,
-        onPress = {})
+    TapTapTheme(darkTheme = true, dynamicColor = false) {
+        TapTapButton(
+            label = params.label,
+            isLoading = params.isLoading,
+            size = params.size,
+            variant = params.variant,
+            onPress = {})
+    }
 }
 
 enum class Variant { SOLID, BORDERED, LIGHT, FLAT, FADED, SHADOW }
@@ -113,11 +115,12 @@ fun TapTapButton(
     }
 
     val finalContainerColor = containerColor ?: defaultContainerColor
-    
+
     val buttonColors = ButtonDefaults.buttonColors(
         containerColor = finalContainerColor,
-        disabledContainerColor = finalContainerColor.copy(alpha = if(variant == Variant.SOLID || variant == Variant.LIGHT) 0.3f else 0.12f),
-        contentColor = contentColor ?: if (variant == Variant.SOLID) TapTapTheme.colors.onPrimary else TapTapTheme.colors.onSurface
+        disabledContainerColor = finalContainerColor.copy(alpha = if (variant == Variant.SOLID || variant == Variant.LIGHT) 0.3f else 0.12f),
+        contentColor = contentColor
+            ?: if (variant == Variant.SOLID) TapTapTheme.colors.onPrimary else TapTapTheme.colors.onSurface
     )
 
     CompositionLocalProvider(LocalRippleConfiguration provides rippleConfiguration) {
@@ -150,7 +153,8 @@ fun TapTapButton(
                     text = label,
                     style = size.textStyle(),
                     fontSize = 15.sp.nonScaledSp,
-                    color = contentColor ?: (if (variant == Variant.SOLID) TapTapTheme.colors.onPrimary else TapTapTheme.colors.onSurface)
+                    color = contentColor
+                        ?: (if (variant == Variant.SOLID) TapTapTheme.colors.onPrimary else TapTapTheme.colors.onSurface)
                 )
             }
         }

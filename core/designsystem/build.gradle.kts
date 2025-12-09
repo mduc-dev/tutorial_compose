@@ -20,8 +20,9 @@ dependencies {
     api(libs.androidx.compose.ui.tooling.preview)
     api(libs.androidx.compose.material3)
     api(libs.androidx.constraintlayout.compose)
-    implementation(libs.bundles.coil)
     api(libs.androidx.material.icons.extended)
+    
+    implementation(libs.bundles.coil)
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.androidx.appcompat)
     debugImplementation(libs.androidx.compose.ui.tooling)

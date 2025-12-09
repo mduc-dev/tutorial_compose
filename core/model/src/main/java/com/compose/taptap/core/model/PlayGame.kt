@@ -8,12 +8,7 @@ import kotlinx.serialization.Serializable
  *
  * Copyright © 2025 mduc. All rights reserved.
  */
-@Serializable
-data class InstantGame(
-    val list: List<InstantGameItem>,
-    @SerialName("prev_page") val prevPage: String,
-    @SerialName("next_page") val nextPage: String
-)
+typealias InstantGame = PaginationData<InstantGameItem>
 
 @Serializable
 data class InstantGameItem(
