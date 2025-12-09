@@ -33,11 +33,7 @@ object BUILDCONFIG {
     private const val SEARCH_VID = "364066371"
 
     const val ACTION_ITEM_URL =
-        "/i/app/v1/action-item?X-UA=V%3D1%26PN%3DTapLite%26VN_CODE%3D356061000%26VN%3D3.56.6-lite.100000%26LOC%3DVN%26LANG%3Den_US%26CH%3Ddefault%26UID%3Daee8172a-80ed-4b17-a9cb-68f3ad03d57e%26VID%3D364066371%26NT%3D1%26SR%3D1080x2332%26DEB%3Drealme%26DEM%3DRMX1931%26OSV%3D10%26CURR%3DVN"
-
-    //USER_PROFILE
-    const val PROFILE_USER_URL =
-        "/user-profile/v1/me?X-UA=V%3D1%26PN%3DTapLite%26VN_CODE%3D356061000%26VN%3D3.56.6-lite.100000%26LOC%3DVN%26LANG%3Den_US%26CH%3Ddefault%26UID%3Daee8172a-80ed-4b17-a9cb-68f3ad03d57e%26VID%3D364066371%26NT%3D1%26SR%3D1080x2332%26DEB%3Drealme%26DEM%3DRMX1931%26OSV%3D10%26CURR%3DVN"
+        "/i/app/v1/action-item?X-UA=V%3D1%26PN%3DTapLite%26VN_CODE%3D356061000%26VN%3D3.56.7-lite.100000%26LOC%3DVN%26LANG%3Den_US%26CH%3Ddefault%26UID%3Daee8172a-80ed-4b17-a9cb-68f3ad03d57e%26VID%3D364066371%26NT%3D1%26SR%3D1080x2332%26DEB%3Drealme%26DEM%3DRMX1931%26OSV%3D10%26CURR%3DVN"
 
     private fun buildXUA(
         locale: Locale = Locale.getDefault(),
@@ -52,7 +48,7 @@ object BUILDCONFIG {
 
         val params = mapOf(
             "V" to "1",
-            "PN" to "TapLite",
+            "PN" to "TapIntl2",
             "VN_CODE" to "356061000",
             "VN" to "3.56.7-lite.100000",
             "LOC" to country,
@@ -84,6 +80,54 @@ object BUILDCONFIG {
         }
         val separator = if (url.contains("?")) "&" else "?"
         return "$url${separator}X-UA=$xua"
+    }
+
+    fun countMetricAccount(xua: String = newXUA()): String {
+        return "$BASE_URL/account/v1/counts?X-UA=$xua)"
+    }
+
+    fun newErnBadge(xua: String = newXUA()): String {
+        return "$BASE_URL/i/badge/v1/new-earned?X-UA=$xua"
+    }
+
+    fun miniMultiGet(xua: String = newXUA()): String {
+        return "$BASE_URL/app/v1/mini-multi-get?X-UA=$xua"
+    }
+
+    fun userAppByIdentifiers(xua: String = newXUA()): String {
+        return "$BASE_URL/user-app/v2/by-identifiers?X-UA=$xua"
+    }
+
+    fun userAppStatus(xua: String = newXUA()): String {
+        return "$BASE_URL/i/user-app-status/v1/by-me?X-UA=$xua&source=1&status=0"
+    }
+
+    fun badgeWearInfoByMe(xua: String = newXUA()): String {
+        return "$BASE_URL/i/badge/v1/wear-info-by-me?X-UA=$xua"
+    }
+
+    fun feedByMe(xua: String = newXUA()): String {
+        return "$BASE_URL/feeds/v2/by-me?limit=10&X-UA=$xua&from=0&type=0"
+    }
+
+    fun creationFavorite(xua: String = newXUA()): String {
+        return "$BASE_URL/creation/favorite/v1/multi-get?type=post&ids=7456704&X-UA=$xua"
+    }
+
+    fun creationVote(xua: String = newXUA()): String {
+        return "$BASE_URL/creation/vote/v1/multi-get?type=post&ids=7456704&X-UA=$xua"
+    }
+
+    fun badgeListByMe(xua: String = newXUA()): String {
+        return "$BASE_URL/i/badge/v1/list-by-me?limit=50&X-UA=$xua&from=0"
+    }
+
+    fun userProfileUrl(xua: String = newXUA()): String {
+        return "$BASE_URL/user-profile/v1/me?X-UA=$xua"
+    }
+
+    fun termBrand(xua: String = newXUA()): String {
+        return "$BASE_URL/config/v1/term?brand=?realme&X-UA=$xua"
     }
 
     fun gameUrl(

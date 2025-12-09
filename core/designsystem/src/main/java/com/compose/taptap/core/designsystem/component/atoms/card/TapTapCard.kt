@@ -9,7 +9,9 @@ import androidx.compose.material3.CardElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.compose.taptap.core.designsystem.component.atoms.text.TapTapText
 import com.compose.taptap.core.designsystem.theme.TapTapShape
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
 
@@ -30,4 +32,15 @@ fun TapTapCard(
         border = border,
         content = content
     )
+}
+
+
+@Preview
+@Composable
+fun PreviewTapTapCard() {
+    TapTapTheme(darkTheme = true, dynamicColor = false) {
+        TapTapCard {
+            TapTapText("Preview card")
+        }
+    }
 }

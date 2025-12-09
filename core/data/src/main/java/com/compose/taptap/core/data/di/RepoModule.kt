@@ -1,5 +1,8 @@
 package com.compose.taptap.core.data.di
 
+import com.compose.taptap.core.data.repository.MeRepositoryImpl
+import com.compose.taptap.core.domain.repository.MeRepository
+
 import com.compose.taptap.core.data.repository.game.GamesRepositoryImpl
 import com.compose.taptap.core.data.repository.play.PlayRepositoryImpl
 import com.compose.taptap.core.data.repository.search.SearchRepositoryImpl
@@ -27,4 +30,5 @@ fun repoModule() = module {
         )
     }
     single<SearchRepository> { SearchRepositoryImpl(get()) }
+    single<MeRepository> { MeRepositoryImpl(get()) }
 }

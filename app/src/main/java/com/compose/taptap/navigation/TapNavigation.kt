@@ -6,7 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.compose.taptap.core.navigation.TapTapScreen
-import com.compose.taptap.feature.account.Account
+import com.compose.taptap.feature.me.MeScreen
 import com.compose.taptap.feature.auth.forgotpassword.ForgotPasswordScreen
 import com.compose.taptap.feature.auth.login.LoginScreen
 import com.compose.taptap.feature.auth.loginwithoutpassword.LoginWithoutPasswordScreen
@@ -96,7 +96,7 @@ fun NavGraphBuilder.tapMainNavigation(
         }
         composable<TapTapScreen.Play> { Play(onToggleFlip = onToggleFlip) }
         composable<TapTapScreen.Tavern> { Tavern() }
-        composable<TapTapScreen.You> { Account() }
+        composable<TapTapScreen.Me> { MeScreen() }
         composable<TapTapScreen.Search> {
             SearchRoute()
         }
@@ -137,5 +137,5 @@ fun NavGraphBuilder.tapMainNavigation(
 }
 
 fun TapTapScreen.isTabItem(): Boolean {
-    return this == TapTapScreen.Game || this == TapTapScreen.Play || this == TapTapScreen.Tavern || this == TapTapScreen.You
+    return this == TapTapScreen.Game || this == TapTapScreen.Play || this == TapTapScreen.Tavern || this == TapTapScreen.Me
 }

@@ -10,12 +10,7 @@ import kotlinx.serialization.Serializable
  * Copyright © 2025 mduc. All rights reserved.
  */
 
-@Serializable
-data class Games(
-    val list: List<ListGameItem>,
-    @SerialName("prev_page") val prevPage: String,
-    @SerialName("next_page") val nextPage: String,
-)
+typealias Games = PaginationData<ListGameItem>
 
 @Immutable
 @Serializable

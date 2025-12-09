@@ -85,7 +85,7 @@ dependencies {
     implementation(project(":feature:search"))
     implementation(project(":feature:auth"))
     implementation(project(":feature:play"))
-    implementation(project(":feature:account"))
+    implementation(project(":feature:me"))
     implementation(project(":feature:game_detail"))
     implementation(project(":feature:notifications"))
     implementation(project(":feature:tavern"))
@@ -120,13 +120,6 @@ dependencies {
     implementation(libs.media3.ui.compose)
     
     implementation(libs.kotlinx.serialization.json)
-
-    // di
-//    implementation(libs.koin.core)
-//    implementation(libs.koin.compose)
-//    implementation(libs.koin.composeViewModel)
-//    implementation(libs.koin.android)
-//    implementation(libs.koin.androidx.compose)
 
 
     implementation(libs.androidx.paging.compose)

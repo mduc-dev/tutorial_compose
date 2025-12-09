@@ -2,7 +2,7 @@ package com.compose.taptap.core.domain.repository
 
 import androidx.paging.PagingData
 import com.compose.taptap.core.model.InstantGameItem
-import com.compose.taptap.core.model.InstantGameRandomResponse
+import com.compose.taptap.core.model.InstantGameRandomData
 import kotlinx.coroutines.flow.Flow
 
 interface PlayRepository {
@@ -18,5 +18,5 @@ interface PlayRepository {
 
     fun getPlayed(): List<String>
 
-    suspend fun getRandomInstantGame(): InstantGameRandomResponse
+    suspend fun getRandomInstantGame(): InstantGameRandomData
 }

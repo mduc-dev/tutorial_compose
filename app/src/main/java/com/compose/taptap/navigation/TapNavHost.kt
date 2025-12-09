@@ -64,7 +64,7 @@ private fun TapMainNavigationHost(navHostController: NavHostController) {
         TapTapScreen.Game::class.qualifiedName -> TapTapScreen.Game
         TapTapScreen.Play::class.qualifiedName -> TapTapScreen.Play
         TapTapScreen.Tavern::class.qualifiedName -> TapTapScreen.Tavern
-        TapTapScreen.You::class.qualifiedName -> TapTapScreen.You
+        TapTapScreen.Me::class.qualifiedName -> TapTapScreen.Me
         TapTapScreen.Search::class.qualifiedName -> TapTapScreen.Search
         TapTapScreen.Notifications::class.qualifiedName -> TapTapScreen.Notifications
         TapTapScreen.GameDetail::class.qualifiedName -> TapTapScreen.GameDetail
@@ -82,7 +82,7 @@ private fun TapMainNavigationHost(navHostController: NavHostController) {
                     isFlipped = isFlipped,
                     flipBackImageUrl = flipBackImageUrl,
                     onFlip = {
-                        // Handle flip click
+                        // TODO: Implement flip click logic, e.g., trigger random play.
                     },
                     onItemClick = { screen ->
                         if (screen != currentScreen) {

@@ -8,6 +8,4 @@ data class BottomTab(
     val icon: Painter,
     val selectedIcon: Painter,
     val route: TapTapScreen,
-    val hasBadge: Boolean? = false,
-    val badgeCount: Number? = null,
 )

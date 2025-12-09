@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.compose.taptap.feature.account"
+    namespace = "com.compose.taptap.feature.me"
 }
 
 dependencies {

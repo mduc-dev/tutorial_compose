@@ -43,4 +43,5 @@ object TapTapDimens {
     val ProtocolTopPadding: Dp = 40.dp
     val ProtocolBottomPadding: Dp = 72.dp
     val ButtonHeight: Dp = 44.dp
+    val ListBottomPadding: Dp = 100.dp
 }

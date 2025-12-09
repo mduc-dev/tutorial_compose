@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.compose.taptap.core.data.paging.CursorPage
 import com.compose.taptap.core.data.paging.CursorPagingSource
+import com.compose.taptap.core.data.repository.base.BaseRepository
 import com.compose.taptap.core.domain.repository.GamesRepository
 import com.compose.taptap.core.model.GameFilterType
 import com.compose.taptap.core.model.GameSortType
@@ -18,14 +19,14 @@ import kotlinx.coroutines.withContext
 class GamesRepositoryImpl(
     private val tapTapService: TapTapService,
     private val dispatcher: CoroutineDispatcher,
-) : GamesRepository {
+) : BaseRepository(), GamesRepository {
     
     override fun gamesStream(
         category: String?,
         sortBy: GameSortType,
         filterType: GameFilterType
     ): Flow<PagingData<ListGameItem>> {
-        return Pager(
+        return createPager(
             config = PagingConfig(
                 pageSize = DEFAULT_PAGE_SIZE,
                 prefetchDistance = PREFETCH_DISTANCE,
@@ -38,21 +39,19 @@ class GamesRepositoryImpl(
                     val response = tapTapService.getGames(cursor)
                     val data = response.data
                     CursorPage(
-                        items = data.list,
-                        prevCursor = data.prevPage.takeIf { it.isNotBlank() },
-                        nextCursor = data.nextPage.takeIf { it.isNotBlank() }
+                        items = data.list ?: emptyList(),
+                        prevCursor = data.prevPage?.takeIf { it.isNotBlank() },
+                        nextCursor = data.nextPage?.takeIf { it.isNotBlank() }
                     )
                 }
             }
-        ).flow.flowOn(dispatcher)
+        ).flowOn(dispatcher)
     }
     
-    override suspend fun refreshGames(): Result<Unit> = withContext(dispatcher) {
-        try {
+    override suspend fun refreshGames(): Result<Unit> = safeApiCall {
+        withContext(dispatcher) {
             // TODO: Implement cache invalidation when local database is added
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
+            Unit
         }
     }
 

@@ -104,13 +104,13 @@ fun InAppUpdateScreen() {
             TapTapButton(
                 label = if (isLatestVersion) "This is the latest version" else "Check for update",
                 onPress = {
-                     if (!isLatestVersion) {
-                          showBottomSheet = true
-                     }
+                    if (!isLatestVersion) {
+                        showBottomSheet = true
+                    }
                 },
                 modifier = Modifier.fillMaxWidth(),
                 size = ButtonSize.LG,
-                containerColor = if (isLatestVersion) Color(0xFFCCCCCC) else TapTapTheme.colors.primary,
+                containerColor = if (isLatestVersion) TapTapTheme.colors.surfaceContainerHighest else TapTapTheme.colors.primary,
                 contentColor = if (isLatestVersion) Color.Gray else BlackF16,
                 shape = RoundedCornerShape(28.dp)
             )

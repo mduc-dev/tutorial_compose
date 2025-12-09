@@ -12,13 +12,14 @@ android {
 }
 
 dependencies {
-    implementation(projects.core.model)
+    api(projects.core.model)
     //coroutines
     implementation(libs.kotlinx.coroutines.android)
 
     //network
-    implementation(libs.bundles.ktor)
-    implementation(libs.ktor.android)
+    api(libs.bundles.ktor)
+    api(libs.ktor.network)
+    api(libs.ktor.android)
 
     implementation(libs.kotlinx.serialization.json)
 }
