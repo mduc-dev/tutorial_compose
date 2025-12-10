@@ -30,5 +30,10 @@ fun repoModule() = module {
         )
     }
     single<SearchRepository> { SearchRepositoryImpl(get()) }
-    single<MeRepository> { MeRepositoryImpl(get()) }
+    single<MeRepository> {
+        MeRepositoryImpl(
+            client = get(),
+            dispatcher = get<CoroutineDispatcher>(named(TapTapAppDispatcher.IO))
+        )
+    }
 }

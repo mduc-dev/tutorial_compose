@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -44,6 +45,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -82,11 +84,13 @@ import com.compose.taptap.core.designsystem.util.DisabledInteractionSource
 import com.compose.taptap.core.model.UserProfileData
 import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.core.navigation.currentComposeNavigator
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
-val tabs = listOf("Posts", "Saved", "Drafts")
-val enumValuesChip = listOf("All", "Gamelists", "Articles", "Videos") // Keep or update as needed
+private val tabs = persistentListOf("Posts", "Saved", "Drafts")
+private val enumValuesChip = persistentListOf("All", "Gamelists", "Articles", "Videos")
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -108,7 +112,7 @@ fun MeScreen(
     val userProfile = (uiState as? MeUiState.Success)?.data
 
     val avatarAlpha by remember {
-        androidx.compose.runtime.derivedStateOf {
+        derivedStateOf {
             val firstVisibleItemIndex = listState.firstVisibleItemIndex
             val firstVisibleItemScrollOffset = listState.firstVisibleItemScrollOffset
             if (firstVisibleItemIndex > 0) {
@@ -171,7 +175,6 @@ fun MeScreen(
             state = listState,
             modifier = Modifier
                 .fillMaxSize()
-                .background(TapTapTheme.colors.background)
                 .padding(
                     top = innerPadding.calculateTopPadding(),
                     start = innerPadding.calculateStartPadding(LayoutDirection.Ltr),
@@ -213,7 +216,7 @@ fun MeScreen(
                                 unselectedContentColor = BlackDisable,
                                 selected = pagerState.currentPage == index,
                                 onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
-                                interactionSource = DisabledInteractionSource(),
+                                interactionSource = remember { DisabledInteractionSource() },
                                 text = {
                                     Text(
                                         text = title,
@@ -237,15 +240,14 @@ fun MeScreen(
                             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            items(enumValuesChip.size) { index ->
-                                val chipText = enumValuesChip[index]
+                            items(enumValuesChip) { chipText ->
                                 FilterChip(
                                     selected = chipText == selectedFilter,
                                     onClick = {
                                         selectedFilter = chipText
                                     },
                                     label = { Text(text = chipText, style = styleTextBtn) },
-                                    interactionSource = DisabledInteractionSource(),
+                                    interactionSource = remember { DisabledInteractionSource() },
                                     colors = FilterChipDefaults.filterChipColors(
                                         selectedContainerColor = Green1A,
                                         labelColor = BlackDisable,
@@ -279,7 +281,7 @@ fun MeScreen(
 
                     val density = LocalDensity.current
                     val topPadding by remember {
-                        androidx.compose.runtime.derivedStateOf {
+                        derivedStateOf {
                             val pagerItem = listState.layoutInfo.visibleItemsInfo.find { it.index == 2 }
                             val itemOffset = pagerItem?.offset ?: 0
                             
@@ -571,16 +573,18 @@ fun UserCenterHeader(userProfile: UserProfileData?) {
                             .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        val gameIcons = listOf(
-                            "https://example.com/0.jpg",
-                            "https://example.com/1.jpg",
-                            "https://example.com/2.jpg",
-                            "https://example.com/3.jpg",
-                            "https://example.com/4.jpg",
-                            "https://example.com/5.jpg",
-                            "https://example.com/6.jpg",
-                            "https://example.com/7.jpg",
-                        )
+                        val gameIcons = remember {
+                            persistentListOf(
+                                "https://example.com/0.jpg",
+                                "https://example.com/1.jpg",
+                                "https://example.com/2.jpg",
+                                "https://example.com/3.jpg",
+                                "https://example.com/4.jpg",
+                                "https://example.com/5.jpg",
+                                "https://example.com/6.jpg",
+                                "https://example.com/7.jpg",
+                            )
+                        }
 
                         // Max 5 items: 4 icons + 1 overflow if needed
                         // Add padding end to reduce width -> smaller items while keeping 3.66 ratio
@@ -776,7 +780,7 @@ fun UserCenterContentEmpty() {
 
 @Composable
 fun GameListContent(
-    gameIcons: List<String>,
+    gameIcons: ImmutableList<String>,
     spacing: Dp,
     modifier: Modifier = Modifier,
     onItemWidthChange: (Dp) -> Unit
