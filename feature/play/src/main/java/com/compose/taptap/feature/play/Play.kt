@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.compose.ui.platform.testTag
 import coil3.compose.AsyncImage
 import com.compose.taptap.core.designsystem.R
 import com.compose.taptap.core.designsystem.component.atoms.divider.TapTapDivider
@@ -173,7 +174,7 @@ fun PageContent(
                 0 -> LazyVerticalGrid(
                     state = gamesGridState,
                     columns = GridCells.Fixed(2),
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().testTag("play_grid"),
                     horizontalArrangement = Arrangement.spacedBy(GridSpacing),
                     verticalArrangement = Arrangement.spacedBy(GridSpacing),
                     contentPadding = PaddingValues(bottom = ListBottomPadding)

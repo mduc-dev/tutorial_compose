@@ -9,5 +9,5 @@ android {
 dependencies {
     api(projects.core.model)
     api(libs.androidx.paging.common)
-    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
 }

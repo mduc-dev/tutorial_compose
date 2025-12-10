@@ -1,5 +1,7 @@
 @file:Suppress("UnstableApiUsage")
 
+include(":baselineprofile")
+
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 pluginManagement {
     includeBuild("build-logic")
@@ -41,4 +43,3 @@ include(":feature:game_detail")
 include(":feature:notifications")
 include(":feature:tavern")
 include(":feature:settings")
-include(":benchmark")

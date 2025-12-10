@@ -28,6 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.compose.ui.platform.testTag
 import com.compose.taptap.core.designsystem.component.organisms.paging.AppendLoadingIndicator
 import com.compose.taptap.core.designsystem.component.organisms.game.CardGame
 import com.compose.taptap.core.designsystem.component.organisms.game.FeaturedGamesPager
@@ -239,7 +240,8 @@ fun DiscoverPageContent(
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .background(BlackF16),
+            .background(BlackF16)
+            .testTag("game_list"),
     ) {
         // Sub-tabs as first item - scrolls with content
         item {
