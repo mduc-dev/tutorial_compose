@@ -1,16 +1,23 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import com.compose.taptap.Configuration
+import java.util.Properties
+import java.io.FileInputStream
 
 plugins {
     id("compose.taptap.android.application")
     id("compose.taptap.android.application.compose")
     id("compose.taptap.android.koin")
     alias(libs.plugins.androidApplication)
-    alias(libs.plugins.jetbrainsKotlin)
+    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ktLint)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinx.serialization)
-    alias(libs.plugins.androidx.baselineprofile)
+    alias(libs.plugins.baselineprofile)
+}
+
+baselineProfile {
+    // dexLayoutOptimization is an incubating feature in AGP 8.2+
+    dexLayoutOptimization = true
 }
 
 android {
@@ -34,11 +41,21 @@ android {
 
     signingConfigs {
         create("release") {
-            val keystorePath = System.getenv("KEYSTORE_PATH") ?: "../keystore_release.jks"
+            val keystorePropertiesFile = rootProject.file("keystore.config.properties")
+            val keystoreProperties = Properties()
+            if (keystorePropertiesFile.exists()) {
+                keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+            }
+
+            val keystorePath = keystoreProperties["storeFile"] as? String
+                ?: System.getenv("KEYSTORE_PATH") ?: "../keystore_release.jks"
             storeFile = file(keystorePath)
-            storePassword = System.getenv("KEYSTORE_PASSWORD")
-            keyAlias = System.getenv("KEY_ALIAS")
-            keyPassword = System.getenv("KEY_PASSWORD")
+            storePassword = keystoreProperties["storePassword"] as? String
+                ?: System.getenv("KEYSTORE_PASSWORD")
+            keyAlias = keystoreProperties["keyAlias"] as? String
+                ?: System.getenv("KEY_ALIAS")
+            keyPassword = keystoreProperties["keyPassword"] as? String
+                ?: System.getenv("KEY_PASSWORD")
         }
     }
 
@@ -72,13 +89,6 @@ android {
             excludes += "META-INF/LICENSE-notice.md"
         }
     }
-
-    baselineProfile {
-        // This specifies the module that generates the baseline profile.
-        // It must be a com.android.test module.
-        saveInSrc = true
-        from(project(":benchmark"))
-    }
 }
 
 kotlin {
@@ -98,6 +108,9 @@ dependencies {
     implementation(project(":feature:notifications"))
     implementation(project(":feature:tavern"))
     implementation(project(":feature:settings"))
+
+
+    implementation(libs.androidx.startup.runtime)
     
     // Core modules
     implementation(projects.core.navigation)
@@ -120,7 +133,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout.compose)
 
     implementation(libs.bundles.coil)
-    implementation(libs.androidx.profileinstaller)
+
 
     implementation(libs.media3.exoplayer)
     implementation(libs.media3.exoplayer.dash)
@@ -132,14 +145,18 @@ dependencies {
 
     implementation(libs.androidx.paging.compose)
 
+    // baseline profile
+    implementation(libs.profileinstaller)
+    baselineProfile(project(":baselineprofile"))
+
     //unit test
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.junit)
+//    androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.tooling.manifest)
+//    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+//    debugImplementation(libs.androidx.compose.ui.tooling)
+//    debugImplementation(libs.androidx.compose.ui.tooling.manifest)
 
     // Extend icons
     implementation(libs.androidx.material.icons.extended)

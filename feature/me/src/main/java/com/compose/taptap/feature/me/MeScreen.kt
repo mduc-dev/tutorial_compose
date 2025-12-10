@@ -84,6 +84,7 @@ import com.compose.taptap.core.designsystem.util.DisabledInteractionSource
 import com.compose.taptap.core.model.UserProfileData
 import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.core.navigation.currentComposeNavigator
+import androidx.compose.ui.platform.testTag
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
@@ -179,7 +180,8 @@ fun MeScreen(
                     top = innerPadding.calculateTopPadding(),
                     start = innerPadding.calculateStartPadding(LayoutDirection.Ltr),
                     end = innerPadding.calculateStartPadding(LayoutDirection.Ltr)
-                ),
+                )
+                .testTag("me_list"),
             horizontalAlignment = CenterHorizontally,
         ) {
             item {
