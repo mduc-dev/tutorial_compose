@@ -1,5 +1,8 @@
 package com.compose.taptap.feature.me
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -8,8 +11,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -37,6 +42,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,19 +56,26 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.compose.taptap.core.designsystem.R
+import com.compose.taptap.core.designsystem.component.molecules.state.TapErrorView
 import com.compose.taptap.core.designsystem.theme.Black1A
 import com.compose.taptap.core.designsystem.theme.BlackDisable
 import com.compose.taptap.core.designsystem.theme.BlackF3
 import com.compose.taptap.core.designsystem.theme.Green1A
 import com.compose.taptap.core.designsystem.theme.IntlCcGreenPrimary
+import com.compose.taptap.core.designsystem.theme.IntlV2Grey20
+import com.compose.taptap.core.designsystem.theme.IntlV2Grey60
+import com.compose.taptap.core.designsystem.theme.IntlV2White
 import com.compose.taptap.core.designsystem.theme.TapTapShape
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.core.designsystem.util.DisabledInteractionSource
@@ -87,11 +100,9 @@ fun MeScreen(
 
     val spacing = TapTapTheme.spacing
     var selectedFilter by remember { mutableStateOf(enumValuesChip[0]) } // String selection for snippet
-    val styleTextBtn =
-        TapTapTheme.typography.titleMedium.copy(
-            color = TapTapTheme.colors.onSecondary,
-            fontWeight = FontWeight.Bold
-        )
+    val styleTextBtn = TapTapTheme.typography.titleMedium.copy(
+        color = TapTapTheme.colors.onSecondary, fontWeight = FontWeight.Bold
+    )
 
     val uiState by viewModel.uiState.collectAsState()
     val userProfile = (uiState as? MeUiState.Success)?.data
@@ -161,7 +172,11 @@ fun MeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(TapTapTheme.colors.background)
-                .padding(innerPadding),
+                .padding(
+                    top = innerPadding.calculateTopPadding(),
+                    start = innerPadding.calculateStartPadding(LayoutDirection.Ltr),
+                    end = innerPadding.calculateStartPadding(LayoutDirection.Ltr)
+                ),
             horizontalAlignment = CenterHorizontally,
         ) {
             item {
@@ -169,7 +184,7 @@ fun MeScreen(
             }
 
             stickyHeader {
-                Box(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(TapTapTheme.colors.background)
@@ -183,8 +198,7 @@ fun MeScreen(
                         indicator = {
                             TabRowDefaults.PrimaryIndicator(
                                 modifier = Modifier.tabIndicatorOffset(
-                                    pagerState.currentPage,
-                                    matchContentSize = true
+                                    pagerState.currentPage, matchContentSize = true
                                 ),
                                 color = IntlCcGreenPrimary,
                                 height = 4.dp,
@@ -192,8 +206,7 @@ fun MeScreen(
                                 shape = RoundedCornerShape(3.dp)
                             )
                         },
-                        divider = {}
-                    ) {
+                        divider = {}) {
                         tabs.forEachIndexed { index, title ->
                             Tab(
                                 selectedContentColor = Color.White,
@@ -209,8 +222,46 @@ fun MeScreen(
                                             fontWeight = FontWeight.Bold,
                                         )
                                     )
-                                }
-                            )
+                                })
+                        }
+                    }
+
+                    AnimatedVisibility(
+                        visible = pagerState.currentPage == 0 || pagerState.currentPage == 1,
+                        enter = expandVertically(),
+                        exit = shrinkVertically()
+                    ) {
+                        LazyRow(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            items(enumValuesChip.size) { index ->
+                                val chipText = enumValuesChip[index]
+                                FilterChip(
+                                    selected = chipText == selectedFilter,
+                                    onClick = {
+                                        selectedFilter = chipText
+                                    },
+                                    label = { Text(text = chipText, style = styleTextBtn) },
+                                    interactionSource = DisabledInteractionSource(),
+                                    colors = FilterChipDefaults.filterChipColors(
+                                        selectedContainerColor = Green1A,
+                                        labelColor = BlackDisable,
+                                        selectedLabelColor = Color.White,
+                                        containerColor = Black1A,
+                                    ),
+                                    border = FilterChipDefaults.filterChipBorder(
+                                        enabled = true,
+                                        selected = chipText == selectedFilter,
+                                        borderColor = BlackF3,
+                                        selectedBorderColor = Color.Transparent,
+                                        selectedBorderWidth = 0.dp,
+                                    ),
+                                    shape = MaterialTheme.shapes.small
+                                )
+                            }
                         }
                     }
                 }
@@ -224,47 +275,63 @@ fun MeScreen(
                         .fillParentMaxSize(), // Allow Pager to take full screen height to enable scrolling past header
                     verticalAlignment = Alignment.Top
                 ) { page ->
-                    when (page) {
-                        0 -> Column {
-                            // Filter Chips
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                enumValuesChip.forEach {
-                                    FilterChip(
-                                        selected = it == selectedFilter,
-                                        onClick = {
-                                            selectedFilter = it
-                                        },
-                                        label = { Text(text = it, style = styleTextBtn) },
-                                        interactionSource = DisabledInteractionSource(),
-                                        colors = FilterChipDefaults.filterChipColors(
-                                            selectedContainerColor = Green1A,
-                                            labelColor = BlackDisable,
-                                            selectedLabelColor = Color.White,
-                                            containerColor = Black1A,
-                                        ),
-                                        border = FilterChipDefaults.filterChipBorder(
-                                            enabled = true,
-                                            selected = it == selectedFilter,
-                                            borderColor = BlackF3,
-                                            selectedBorderColor = Color.Transparent,
-                                            selectedBorderWidth = 0.dp,
-                                        ),
-                                        shape = MaterialTheme.shapes.small
-                                    )
-                                }
-                            }
 
-                            // Example Feed Content - Duplicated to demonstrate scroll
-                            FeedItem(userProfile)
+
+                    val density = LocalDensity.current
+                    val topPadding by remember {
+                        androidx.compose.runtime.derivedStateOf {
+                            val pagerItem = listState.layoutInfo.visibleItemsInfo.find { it.index == 2 }
+                            val itemOffset = pagerItem?.offset ?: 0
+                            
+                            val stickyHeight = if (page == 0 || page == 1) 136.dp else 72.dp
+                            val minPadding = 24.dp
+                            
+                            val stickyHeightPx = with(density) { stickyHeight.toPx() }
+                            val minPaddingPx = with(density) { minPadding.toPx() }
+                            
+                            val paddingPx = maxOf(minPaddingPx, stickyHeightPx - itemOffset)
+                            with(density) { paddingPx.toDp() }
+                        }
+                    }
+
+                    val contentModifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = topPadding)
+                    when (page) {
+                        0 -> {
+                            // Posts
+                            TapErrorView(
+                                modifier = contentModifier,
+                                painter = painterResource(id = R.drawable.emoji_3d_lilac_front_sad),
+                                title = "Emptier than the void",
+                                subTitle = "Looks like you have scribed all of your thoughts.",
+                                buttonText = "Retry",
+                                onRetry = {}
+                            )
                         }
 
-                        else -> {
-                            UserCenterContentEmpty()
+                        1 -> {
+                            // Saved
+                            TapErrorView(
+                                modifier = contentModifier,
+                                painter = painterResource(id = R.drawable.emoji_3d_lilac_rightbottom_sad),
+                                title = "Emptier than the void",
+                                subTitle = "Save your favorite content to populate your profile's never-ending journey.",
+                                buttonText = "Retry",
+                                onRetry = {}
+                            )
+                        }
+
+                        2 -> {
+                            // Drafts
+                            TapErrorView(
+                                modifier = contentModifier,
+                                painter = painterResource(id = R.drawable.emoji_3d_lilac_righttop_sad),
+                                title = "Emptier than the void",
+                                subTitle = "Looks like you have scribed all of your thoughts.",
+                                buttonText = "Retry",
+                                onRetry = {}
+                            )
                         }
                     }
                 }
@@ -301,10 +368,7 @@ fun FeedItem(userProfile: UserProfileData?) {
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = "hello",
-            color = Color.White,
-            fontWeight = FontWeight.Bold,
-            fontSize = 16.sp
+            text = "hello", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -335,9 +399,7 @@ fun FeedItem(userProfile: UserProfileData?) {
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = "2",
-                color = Color(0xFF00CC66),
-                fontSize = 12.sp
+                text = "2", color = Color(0xFF00CC66), fontSize = 12.sp
             )
         }
     }
@@ -353,9 +415,7 @@ fun UserCenterHeader(userProfile: UserProfileData?) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
-                    top = 12.dp,
-                    start = 16.dp,
-                    end = 16.dp
+                    top = 12.dp, start = 16.dp, end = 16.dp
                 ), // Approx top margin from XML (88dp includes toolbar usually, here we are inside scaffold content)
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -380,8 +440,7 @@ fun UserCenterHeader(userProfile: UserProfileData?) {
                 Text(
                     text = userProfile?.name ?: "TapUser",
                     style = TapTapTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
+                        fontWeight = FontWeight.Bold, fontSize = 16.sp
                     ), // style="@style/intl_heading_16_bold"
                     color = Color.White,
                     maxLines = 2
@@ -421,14 +480,18 @@ fun UserCenterHeader(userProfile: UserProfileData?) {
                 .padding(top = 12.dp, start = 16.dp, end = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            StatsItem(count = userProfile?.stats?.followingCount ?: 0, label = "Following", centered = true)
-            Spacer(modifier = Modifier.width(32.dp))
-            StatsItem(count = userProfile?.stats?.fansCount ?: 0, label = "Followers", centered = true)
+            StatsItem(
+                count = userProfile?.stats?.followingCount ?: 0,
+                label = "Following",
+                centered = true
+            )
             Spacer(modifier = Modifier.width(32.dp))
             StatsItem(
-                count = userProfile?.stats?.voteupCount ?: 0,
-                label = "Likes",
-                centered = true
+                count = userProfile?.stats?.fansCount ?: 0, label = "Followers", centered = true
+            )
+            Spacer(modifier = Modifier.width(32.dp))
+            StatsItem(
+                count = userProfile?.stats?.voteupCount ?: 0, label = "Likes", centered = true
             ) // Placeholder for Likes
 
             Spacer(modifier = Modifier.weight(1f))
@@ -440,15 +503,11 @@ fun UserCenterHeader(userProfile: UserProfileData?) {
                     .border(1.dp, Color(0xFF666666), RoundedCornerShape(20.dp))
                     .clickable { }
                     .padding(horizontal = 12.dp, vertical = 4.dp),
-                contentAlignment = Alignment.Center
-            ) {
+                contentAlignment = Alignment.Center) {
                 Text(
-                    text = "Edit",
-                    style = TapTapTheme.typography.bodySmall.copy(
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium
-                    ),
-                    color = Color.White
+                    text = "Edit", style = TapTapTheme.typography.bodySmall.copy(
+                        fontSize = 12.sp, fontWeight = FontWeight.Medium
+                    ), color = Color.White
                 )
             }
         }
@@ -458,7 +517,7 @@ fun UserCenterHeader(userProfile: UserProfileData?) {
         Text(
             text = userProfile?.intro ?: "Write a bio to help people discover you",
             style = TapTapTheme.typography.bodyMedium.copy(fontSize = 12.sp),
-            color = Color(0xFFCCCCCC), // @color/intl_v2_grey_20
+            color = IntlV2Grey20, // @color/intl_v2_grey_20
             modifier = Modifier
                 .padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
                 .fillMaxWidth(),
@@ -480,35 +539,40 @@ fun UserCenterHeader(userProfile: UserProfileData?) {
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            // Game Library View (Placeholder for now, matching structure)
+            // Game Library View
             Box(
                 modifier = Modifier
                     .weight(1f)
                     .height(135.dp)
                     .background(Color(0xFF242424), shape = TapTapShape.corners.dialog)
             ) {
-                // Content for Game Library as per existing/XML
                 Column(
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 10.dp),
-                    verticalArrangement = Arrangement.SpaceBetween
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 12.dp, start = 16.dp, end = 16.dp, bottom = 12.dp)
                 ) {
                     Text(
                         text = "My games",
                         style = TapTapTheme.typography.titleMedium.copy(
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
+                            fontSize = 16.sp, fontWeight = FontWeight.Bold
                         ),
-                        color = Color.White
+                        color = IntlV2White,
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(Modifier.height(8.dp))
+
+
+                    var itemWidth by remember { mutableStateOf(0.dp) }
+                    val spacing = 8.dp
 
                     // Game List Row
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         val gameIcons = listOf(
+                            "https://example.com/0.jpg",
                             "https://example.com/1.jpg",
                             "https://example.com/2.jpg",
                             "https://example.com/3.jpg",
@@ -516,81 +580,111 @@ fun UserCenterHeader(userProfile: UserProfileData?) {
                             "https://example.com/5.jpg",
                             "https://example.com/6.jpg",
                             "https://example.com/7.jpg",
-                            "https://example.com/8.jpg",
                         )
 
                         // Max 5 items: 4 icons + 1 overflow if needed
-                        LazyRow(
-                            modifier = Modifier.weight(1f),
-                            horizontalArrangement = Arrangement.spacedBy(10.dp)
-                        ) {
-                           val maxItems = 5
-
-                           items(maxItems) { index ->
-                               if (index == maxItems - 1) {
-                                   val remaining = gameIcons.size - (maxItems - 1)
-                                   Box(
-                                       modifier = Modifier
-                                           .size(44.dp)
-                                           .clip(RoundedCornerShape(10.dp)),
-                                       contentAlignment = Alignment.Center
-                                   ) {
-                                       Text(
-                                           text = "+$remaining",
-                                           style = TapTapTheme.typography.titleSmall.copy(
-                                               fontSize = 12.sp,
-                                               fontWeight = FontWeight.Bold
-                                           ),
-                                           color = Color.White
-                                       )
-                                   }
-                               } else {
-                                    AsyncImage(
-                                        model = null, // Mock URL
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .size(44.dp)
-                                            .clip(RoundedCornerShape(10.dp))
-                                            .background(Color.Gray),
-                                        contentScale = ContentScale.Crop,
-                                        error = painterResource(R.drawable.intl_cc_24_bottom_bar_games_unselect)
-                                    )
-                               }
-                           }
-                        }
+                        // Add padding end to reduce width -> smaller items while keeping 3.66 ratio
+                        GameListContent(
+                            gameIcons = gameIcons,
+                            spacing = spacing,
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 10.dp),
+                            onItemWidthChange = { width -> itemWidth = width }
+                        )
 
                         Icon(
-                            painter = painterResource(id = R.drawable.ico_24_top_bars_forward_right),
+                            painter = painterResource(id = R.drawable.ico_12_general_arrow),
                             contentDescription = null,
                             modifier = Modifier
-                                .padding(start = 12.dp)
-                                .size(24.dp),
-                            tint = Color(0xFF999999)
+                                .padding(start = 6.dp)
+                                .size(12.dp),
+                            tint = IntlV2Grey60
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.weight(1f))
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        StatsItem(
-                            count = userProfile?.stats?.appWishlistCount ?: 8, // Mock default for visual check as per image requirement if null
-                            label = "Wishlist",
-                            centered = true
-                        )
-                        StatsItem(
-                            count = userProfile?.stats?.playedAppCount ?: 16,
-                            label = "Played",
-                            centered = true
-                        )
-                        StatsItem(
-                            count = userProfile?.stats?.playingAppCount ?: 0,
-                            label = "Playing",
-                            centered = true
-                        )
+                    if (itemWidth > 0.dp) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            // Wishlist: Centered on Item 1
+                            Box(
+                                modifier = Modifier.width(itemWidth),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                                ) {
+                                    Text(
+                                        text = "${userProfile?.stats?.appWishlistCount ?: 8}",
+                                        style = TapTapTheme.typography.titleMedium.copy(
+                                            fontSize = 12.sp, fontWeight = FontWeight.Bold
+                                        ),
+                                        color = Color.White
+                                    )
+                                    Text(
+                                        text = "Wishlist",
+                                        style = TapTapTheme.typography.bodySmall.copy(fontSize = 11.sp),
+                                        color = Color(0x99FFFFFF)
+                                    )
+                                }
+                            }
+
+                            // Played: Centered on Item 3
+                            Box(
+                                modifier = Modifier.width(itemWidth),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                                ) {
+                                    Text(
+                                        text = "${userProfile?.stats?.playedAppCount ?: 16}",
+                                        style = TapTapTheme.typography.titleMedium.copy(
+                                            fontSize = 12.sp, fontWeight = FontWeight.Bold
+                                        ),
+                                        color = Color.White
+                                    )
+                                    Text(
+                                        text = "Played",
+                                        style = TapTapTheme.typography.bodySmall.copy(fontSize = 11.sp),
+                                        color = Color(0x99FFFFFF)
+                                    )
+                                }
+                            }
+
+                            // Playing: Centered on Item 4
+                            Box(
+                                modifier = Modifier.width(itemWidth),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                                ) {
+                                    Text(
+                                        text = "${userProfile?.stats?.playingAppCount ?: 0}",
+                                        style = TapTapTheme.typography.titleMedium.copy(
+                                            fontSize = 12.sp, fontWeight = FontWeight.Bold
+                                        ),
+                                        color = Color.White
+                                    )
+                                    Text(
+                                        text = "Playing",
+                                        style = TapTapTheme.typography.bodySmall.copy(fontSize = 11.sp),
+                                        color = Color(0x99FFFFFF)
+                                    )
+                                }
+                            }
+                        }
                     }
+
                 }
             }
         }
@@ -604,13 +698,9 @@ fun StatsItem(count: Int, label: String, centered: Boolean = false) {
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         Text(
-            text = count.toString(),
-            style = TapTapTheme.typography.titleMedium.copy(
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
-            ),
-            textAlign = TextAlign.Center,
-            color = Color.White
+            text = count.toString(), style = TapTapTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.Bold, fontSize = 16.sp
+            ), textAlign = TextAlign.Center, color = Color.White
         )
         Text(
             text = label,
@@ -624,15 +714,13 @@ fun StatsItem(count: Int, label: String, centered: Boolean = false) {
 @Composable
 fun UserCenterBadges(modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier
-            .background(Color(0xFF242424), shape = TapTapShape.corners.dialog)
+        modifier = modifier.background(Color(0xFF242424), shape = TapTapShape.corners.dialog)
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             Text(
                 text = "Badges",
                 style = TapTapTheme.typography.titleMedium.copy(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
+                    fontSize = 16.sp, fontWeight = FontWeight.Bold
                 ),
                 textAlign = TextAlign.Center,
                 color = Color.White,
@@ -683,5 +771,85 @@ fun UserCenterContentEmpty() {
             color = Color(0xFF999999), // @color/v3_common_gray_04
             modifier = Modifier.padding(top = 16.dp)
         )
+    }
+}
+
+@Composable
+fun GameListContent(
+    gameIcons: List<String>,
+    spacing: Dp,
+    modifier: Modifier = Modifier,
+    onItemWidthChange: (Dp) -> Unit
+) {
+    var componentWidth by remember { mutableStateOf(0.dp) }
+    val density = LocalDensity.current
+
+    Box(
+        modifier = modifier.onSizeChanged {
+            componentWidth = with(density) { it.width.toDp() }
+        }
+    ) {
+        // Calculate item size to show 3 items fully and 2/3 of the 4th item
+        // Formula: Width = 3.66 * ItemWidth + 3 * Spacing
+        // ItemWidth = (Width - 3 * Spacing) / 3.66
+        val visibleItems = 3.66f
+
+        // Avoid division by zero or negative width initially
+        val itemWidth =
+            if (componentWidth > 0.dp) ((componentWidth - (spacing * 3)) / visibleItems) else 0.dp
+
+        LaunchedEffect(itemWidth) {
+            onItemWidthChange(itemWidth)
+        }
+
+        // Ensure height matches width or fixed aspect ratio
+        val itemHeight = itemWidth
+
+        if (itemWidth > 0.dp) {
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(spacing)
+            ) {
+                val displayLimit = 5
+                val showOverflow = gameIcons.size > displayLimit
+                // If overflow, we show 5 items + 1 overflow item (total 6).
+                // If not, we show all items (size <= 5).
+                val displayCount = if (showOverflow) displayLimit + 1 else gameIcons.size
+
+                items(displayCount) { index ->
+                    if (showOverflow && index == displayLimit) {
+                        // This is the overflow item (e.g. index 5)
+                        val remaining = gameIcons.size - displayLimit
+                        Box(
+                            modifier = Modifier
+                                .size(itemWidth, itemHeight)
+                                .clip(RoundedCornerShape(10.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "+$remaining",
+                                style = TapTapTheme.typography.titleSmall.copy(
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                color = Color.White
+                            )
+                        }
+                    } else {
+                        // Regular game item
+                        AsyncImage(
+                            model = gameIcons[index],
+                            contentDescription = "my-games-item",
+                            modifier = Modifier
+                                .size(itemWidth, itemHeight)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(Color(0xFF333333)), // Placeholder background
+                            contentScale = ContentScale.Crop,
+                            error = painterResource(R.drawable.intl_cc_24_bottom_bar_games_unselect)
+                        )
+                    }
+                }
+            }
+        }
     }
 }
