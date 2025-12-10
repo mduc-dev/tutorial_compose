@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.ktLint)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.androidx.baselineprofile)
 }
 
 android {
@@ -71,6 +72,13 @@ android {
             excludes += "META-INF/LICENSE-notice.md"
         }
     }
+
+    baselineProfile {
+        // This specifies the module that generates the baseline profile.
+        // It must be a com.android.test module.
+        saveInSrc = true
+        from(project(":benchmark"))
+    }
 }
 
 kotlin {
@@ -112,7 +120,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout.compose)
 
     implementation(libs.bundles.coil)
-
+    implementation(libs.androidx.profileinstaller)
 
     implementation(libs.media3.exoplayer)
     implementation(libs.media3.exoplayer.dash)
