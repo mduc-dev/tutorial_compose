@@ -22,11 +22,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -49,11 +46,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.compose.taptap.core.designsystem.R
+import com.compose.taptap.core.designsystem.component.atoms.button.ButtonSize
+import com.compose.taptap.core.designsystem.component.atoms.button.TapTapButton
+import com.compose.taptap.core.designsystem.component.atoms.button.Variant
+import com.compose.taptap.core.designsystem.component.atoms.text.TapTapText
+import com.compose.taptap.core.designsystem.component.atoms.text.TapTapTextVariant
 import com.compose.taptap.core.designsystem.theme.BlackF16
 import com.compose.taptap.core.designsystem.theme.GreenPrimary
 import com.compose.taptap.core.designsystem.theme.IntlV2AuxiliaryGrey20
 import com.compose.taptap.core.designsystem.theme.IntlV2Black
-import com.compose.taptap.core.designsystem.theme.TapTapDimens.ButtonHeight
 import com.compose.taptap.core.designsystem.theme.TapTapDimens.GradientEndHeight
 import com.compose.taptap.core.designsystem.theme.TapTapDimens.LogoHeight
 import com.compose.taptap.core.designsystem.theme.TapTapDimens.LogoOffsetHeight
@@ -131,19 +132,22 @@ fun WelcomeScreen() {
             Spacer(modifier = Modifier.height(PostThirdLoginSpacer))
 
             // Login button
-            TextButton(
-                onClick = {
+            TapTapButton(
+                onPress = {
                     composeNavigator.navigate(TapTapScreen.Login)
-                }, modifier = Modifier.padding(
+                },
+                modifier = Modifier.padding(
                     horizontal = spacing.gutter, vertical = TextButtonVerticalPadding
-                )
+                ),
+                variant = Variant.FLAT,
+                size = ButtonSize.SM // TextButton usually small, check content
             ) {
-                Text(
+                TapTapText(
                     text = "Log in",
+                    variant = TapTapTextVariant.SM,
                     color = TapTapTheme.colors.primary,
-                    style = TapTapTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
+                    style = TapTapTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
                 )
             }
 
@@ -182,8 +186,9 @@ fun ProtocolText(
         pop() // link
     }
 
-    Text(
+    TapTapText(
         text = protocolText,
+        variant = TapTapTextVariant.XS,
         color = IntlV2AuxiliaryGrey20,
         style = TapTapTheme.typography.labelSmall,
         textAlign = TextAlign.Center,
@@ -215,17 +220,16 @@ fun ThirdLoginSection(
         verticalArrangement = Arrangement.spacedBy(ThirdLoginSpacing),
         modifier = Modifier.padding(horizontal = spacing.large),
     ) {
-        Button(
-            onClick = onFacebookSignIn,
-            enabled = (loadingProvider != Provider.Facebook),
+        TapTapButton(
+            onPress = onFacebookSignIn,
+            enable = (loadingProvider != Provider.Facebook),
             modifier = Modifier
                 .fillMaxWidth()
-                .widthIn(max = spacing.xxLarge * 8)
-                .height(ButtonHeight),
+                .widthIn(max = spacing.xxLarge * 8),
+            size = ButtonSize.LG, // 44.dp
             elevation = ButtonDefaults.buttonElevation(defaultElevation = spacing.tiny),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White, disabledContainerColor = Color.White
-            ),
+            containerColor = Color.White,
+            contentColor = Color.Unspecified, // To allow original content colors
             shape = RoundedCornerShape(spacing.large),
             contentPadding = PaddingValues(horizontal = spacing.mediumLarge)
         ) {
@@ -236,12 +240,12 @@ fun ThirdLoginSection(
                     modifier = Modifier.size(spacing.large)
                 )
 
-                Text(
+                TapTapText(
                     text = "Continue with Facebook",
+                    variant = TapTapTextVariant.SM,
                     color = V3LoginHomeThirdLoginButtonTextColor,
-                    style = TapTapTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
+                    style = TapTapTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center
                 )
@@ -253,17 +257,16 @@ fun ThirdLoginSection(
             }
         }
 
-        Button(
-            onClick = onGoogleSignIn,
-            enabled = (loadingProvider != Provider.Google),
+        TapTapButton(
+            onPress = onGoogleSignIn,
+            enable = (loadingProvider != Provider.Google),
             modifier = Modifier
                 .fillMaxWidth()
-                .widthIn(max = spacing.xxLarge * 8)
-                .height(ButtonHeight),
+                .widthIn(max = spacing.xxLarge * 8),
+            size = ButtonSize.LG, // 44.dp
             elevation = ButtonDefaults.buttonElevation(defaultElevation = spacing.tiny),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White, disabledContainerColor = Color.White
-            ),
+            containerColor = Color.White,
+            contentColor = Color.Unspecified,
             shape = RoundedCornerShape(spacing.large),
             contentPadding = PaddingValues(horizontal = spacing.mediumLarge)
         ) {
@@ -274,12 +277,12 @@ fun ThirdLoginSection(
                     modifier = Modifier.size(spacing.large)
                 )
 
-                Text(
+                TapTapText(
                     text = "Continue with Google",
+                    variant = TapTapTextVariant.SM,
                     color = V3LoginHomeThirdLoginButtonTextColor,
-                    style = TapTapTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
+                    style = TapTapTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center
                 )
@@ -290,24 +293,25 @@ fun ThirdLoginSection(
                 )
             }
         }
-        Button(
-            onClick = {
+        TapTapButton(
+            onPress = {
                 composeNavigator.navigate(TapTapScreen.SignUp)
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .widthIn(max = spacing.xxLarge * 8)
-                .height(ButtonHeight),
+                .widthIn(max = spacing.xxLarge * 8),
+            size = ButtonSize.LG, // 44.dp
             elevation = ButtonDefaults.buttonElevation(defaultElevation = spacing.tiny),
-            colors = ButtonDefaults.buttonColors(containerColor = GreenPrimary),
+            containerColor = GreenPrimary,
+            contentColor = V3LoginHomeThirdLoginButtonTextColor,
             shape = RoundedCornerShape(spacing.large),
         ) {
-            Text(
+            TapTapText(
                 text = "Sign up",
+                variant = TapTapTextVariant.SM,
                 color = V3LoginHomeThirdLoginButtonTextColor,
-                style = TapTapTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Bold
-                ),
+                style = TapTapTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold
             )
         }
     }

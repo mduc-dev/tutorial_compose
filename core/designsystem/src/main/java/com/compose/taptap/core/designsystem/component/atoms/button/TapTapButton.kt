@@ -2,12 +2,15 @@ package com.compose.taptap.core.designsystem.component.atoms.button
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.ripple.RippleAlpha
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonElevation
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalRippleConfiguration
@@ -26,6 +29,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.compose.taptap.core.designsystem.theme.TapTapDimens
 import com.compose.taptap.core.designsystem.theme.TapTapShape
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.core.designsystem.util.nonScaledSp
@@ -42,7 +46,7 @@ class TapTapButtonPreviewProvider : PreviewParameterProvider<TapTapButtonPreview
         TapTapButtonPreviewParams("Solid SM", false, ButtonSize.SM, Variant.SOLID),
         TapTapButtonPreviewParams("Bordered MD", false, ButtonSize.MD, Variant.BORDERED),
         TapTapButtonPreviewParams("Loading LG", true, ButtonSize.LG, Variant.SOLID),
-        TapTapButtonPreviewParams("Light LG", false, ButtonSize.LG, Variant.LIGHT),
+        TapTapButtonPreviewParams("Light XL", false, ButtonSize.XL, Variant.LIGHT),
         TapTapButtonPreviewParams("Flat SM", false, ButtonSize.SM, Variant.FLAT),
         TapTapButtonPreviewParams("Faded MD", false, ButtonSize.MD, Variant.FADED),
         TapTapButtonPreviewParams("Shadow LG", false, ButtonSize.LG, Variant.SHADOW),
@@ -66,29 +70,37 @@ fun PreviewTapTapButton(
 
 enum class Variant { SOLID, BORDERED, LIGHT, FLAT, FADED, SHADOW }
 
-enum class ButtonSize(val size: Dp) {
-    SM(ButtonDefaults.MinHeight), MD(ButtonDefaults.MinHeight), LG(ButtonDefaults.MinHeight);
+enum class ButtonSize {
+    SM, MD, LG, XL;
 
-    fun iconSize(): Dp = when (this) {
-        SM -> 16.dp
-        MD -> 20.dp
-        LG -> 24.dp
+    val size: Dp
+        @Composable
+        get() = when (this) {
+            SM -> TapTapTheme.spacing.xLarge
+            MD -> TapTapTheme.spacing.xxLarge
+            LG -> TapTapDimens.ButtonHeight
+            XL -> TapTapDimens.FieldMinHeight
+        }
+
+    fun iconSize(spacing: com.compose.taptap.core.designsystem.theme.Spacing): Dp = when (this) {
+        SM -> spacing.mediumLarge
+        MD -> spacing.gutter
+        LG, XL -> spacing.large
     }
 
-    fun iconSpace(): Dp = when (this) {
-        SM -> 4.dp
-        MD, LG -> 8.dp
+    fun iconSpace(spacing: com.compose.taptap.core.designsystem.theme.Spacing): Dp = when (this) {
+        SM -> spacing.tiny
+        MD, LG, XL -> spacing.small
     }
 
     @Composable
     fun textStyle() = when (this) {
-        SM -> TapTapTheme.typography.bodySmall
+        SM -> TapTapTheme.typography.labelMedium
         MD -> TapTapTheme.typography.bodyMedium
-        LG -> TapTapTheme.typography.bodyLarge
+        LG, XL -> TapTapTheme.typography.bodyLarge
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TapTapButton(
     modifier: Modifier = Modifier,
@@ -102,6 +114,50 @@ fun TapTapButton(
     contentColor: Color? = null,
     onPress: () -> Unit
 ) {
+    TapTapButton(
+        modifier = modifier,
+        variant = variant,
+        size = size,
+        isLoading = isLoading,
+        enable = enable,
+        shape = shape,
+        containerColor = containerColor,
+        contentColor = contentColor,
+        onPress = onPress
+    ) {
+        if (isLoading == true) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(size.iconSize(TapTapTheme.spacing)),
+                color = contentColor ?: if (variant == Variant.SOLID) TapTapTheme.colors.onPrimary else TapTapTheme.colors.onSurface,
+                strokeWidth = TapTapTheme.spacing.xSmall,
+                trackColor = TapTapTheme.colors.surface.copy(alpha = 0.5f),
+            )
+        }
+        Text(
+            text = label,
+            style = size.textStyle(),
+            fontSize = 15.sp.nonScaledSp,
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TapTapButton(
+    modifier: Modifier = Modifier,
+    variant: Variant = Variant.SOLID,
+    size: ButtonSize = ButtonSize.SM,
+    isLoading: Boolean? = false,
+    enable: Boolean = true,
+    shape: Shape = TapTapShape.corners.pill,
+    containerColor: Color? = null,
+    contentColor: Color? = null,
+    elevation: ButtonElevation? = null,
+    border: BorderStroke? = null,
+    contentPadding: PaddingValues? = null,
+    onPress: () -> Unit,
+    content: @Composable RowScope.() -> Unit
+) {
     val rippleConfiguration = RippleConfiguration(
         color = TapTapTheme.colors.onSurface, rippleAlpha = RippleAlpha(
             draggedAlpha = 0.16f, focusedAlpha = 0.12f, hoveredAlpha = 0.08f, pressedAlpha = 0.24f
@@ -110,18 +166,43 @@ fun TapTapButton(
 
     val defaultContainerColor = when (variant) {
         Variant.SOLID -> TapTapTheme.colors.primary
-        Variant.LIGHT -> TapTapTheme.colors.surface
+        Variant.LIGHT, Variant.SHADOW -> TapTapTheme.colors.surface
+        Variant.FADED -> TapTapTheme.colors.primary.copy(alpha = 0.1f)
         else -> Color.Transparent
     }
 
     val finalContainerColor = containerColor ?: defaultContainerColor
 
+    val defaultContentColor = when (variant) {
+        Variant.SOLID -> TapTapTheme.colors.onPrimary
+        else -> TapTapTheme.colors.onSurface
+    }
+
+    val finalContentColor = contentColor ?: defaultContentColor
+
     val buttonColors = ButtonDefaults.buttonColors(
         containerColor = finalContainerColor,
-        disabledContainerColor = finalContainerColor.copy(alpha = if (variant == Variant.SOLID || variant == Variant.LIGHT) 0.3f else 0.12f),
-        contentColor = contentColor
-            ?: if (variant == Variant.SOLID) TapTapTheme.colors.onPrimary else TapTapTheme.colors.onSurface
+        disabledContainerColor = finalContainerColor.copy(alpha = if (variant == Variant.SOLID || variant == Variant.LIGHT || variant == Variant.FADED) 0.3f else 0.12f),
+        contentColor = finalContentColor,
+        disabledContentColor = finalContentColor.copy(alpha = 0.38f)
     )
+
+    val finalElevation: ButtonElevation? = elevation ?: if (variant == Variant.SHADOW) {
+        ButtonDefaults.buttonElevation(defaultElevation = TapTapTheme.spacing.xSmall)
+    } else {
+        ButtonDefaults.buttonElevation(
+            defaultElevation = 0.dp,
+            pressedElevation = 0.dp,
+            focusedElevation = 0.dp,
+            hoveredElevation = 0.dp,
+            disabledElevation = 0.dp
+        )
+    }
+    
+    val finalBorder = border ?: if (variant == Variant.BORDERED) BorderStroke(
+        width = 1.dp, // 1.dp is standard hairline, can use TapTapTheme.spacing.xSmall / 2 if strictly needed but Dp(1f) is clearer
+        color = TapTapTheme.colors.outline.copy(alpha = 0.5f)
+    ) else null
 
     CompositionLocalProvider(LocalRippleConfiguration provides rippleConfiguration) {
         Button(
@@ -130,32 +211,17 @@ fun TapTapButton(
                 .height(size.size)
                 .testTag("taptap_button"),
             colors = buttonColors,
+            elevation = finalElevation,
             enabled = enable,
             shape = shape,
-            border = if (variant == Variant.BORDERED) BorderStroke(
-                width = 0.5.dp,
-                color = TapTapTheme.colors.onSurface.copy(alpha = 0.2f)
-            ) else null
+            contentPadding = contentPadding ?: PaddingValues(horizontal = TapTapTheme.spacing.mediumLarge),
+            border = finalBorder
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(TapTapTheme.spacing.small)
+                horizontalArrangement = Arrangement.spacedBy(size.iconSpace(TapTapTheme.spacing))
             ) {
-                if (isLoading == true) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(ButtonDefaults.IconSize),
-                        color = TapTapTheme.colors.onPrimary,
-                        strokeWidth = 2.dp,
-                        trackColor = TapTapTheme.colors.surface,
-                    )
-                }
-                Text(
-                    text = label,
-                    style = size.textStyle(),
-                    fontSize = 15.sp.nonScaledSp,
-                    color = contentColor
-                        ?: (if (variant == Variant.SOLID) TapTapTheme.colors.onPrimary else TapTapTheme.colors.onSurface)
-                )
+                content()
             }
         }
     }

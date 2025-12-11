@@ -60,6 +60,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -69,26 +70,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.compose.taptap.core.designsystem.R
+import com.compose.taptap.core.designsystem.component.atoms.text.TapTapText
+import com.compose.taptap.core.designsystem.component.atoms.text.TapTapTextVariant
 import com.compose.taptap.core.designsystem.component.molecules.state.TapErrorView
 import com.compose.taptap.core.designsystem.theme.Black1A
 import com.compose.taptap.core.designsystem.theme.BlackDisable
 import com.compose.taptap.core.designsystem.theme.BlackF3
 import com.compose.taptap.core.designsystem.theme.Green1A
 import com.compose.taptap.core.designsystem.theme.IntlCcGreenPrimary
-import com.compose.taptap.core.designsystem.theme.IntlV2Grey20
-import com.compose.taptap.core.designsystem.theme.IntlV2Grey60
-import com.compose.taptap.core.designsystem.theme.IntlV2White
 import com.compose.taptap.core.designsystem.theme.TapTapShape
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.core.designsystem.util.DisabledInteractionSource
 import com.compose.taptap.core.model.UserProfileData
 import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.core.navigation.currentComposeNavigator
-import androidx.compose.ui.platform.testTag
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 private val tabs = persistentListOf("Posts", "Saved", "Drafts")
 private val enumValuesChip = persistentListOf("All", "Gamelists", "Articles", "Videos")
@@ -220,12 +219,12 @@ fun MeScreen(
                                 onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
                                 interactionSource = remember { DisabledInteractionSource() },
                                 text = {
-                                    Text(
+                                    TapTapText(
                                         text = title,
                                         style = TapTapTheme.typography.titleMedium.copy(
                                             fontSize = 18.sp,
-                                            fontWeight = FontWeight.Bold,
-                                        )
+                                        ),
+                                        fontWeight = FontWeight.Bold
                                     )
                                 })
                         }
@@ -248,7 +247,7 @@ fun MeScreen(
                                     onClick = {
                                         selectedFilter = chipText
                                     },
-                                    label = { Text(text = chipText, style = styleTextBtn) },
+                                    label = { TapTapText(text = chipText, style = styleTextBtn) },
                                     interactionSource = remember { DisabledInteractionSource() },
                                     colors = FilterChipDefaults.filterChipColors(
                                         selectedContainerColor = Green1A,
@@ -284,15 +283,16 @@ fun MeScreen(
                     val density = LocalDensity.current
                     val topPadding by remember {
                         derivedStateOf {
-                            val pagerItem = listState.layoutInfo.visibleItemsInfo.find { it.index == 2 }
+                            val pagerItem =
+                                listState.layoutInfo.visibleItemsInfo.find { it.index == 2 }
                             val itemOffset = pagerItem?.offset ?: 0
-                            
+
                             val stickyHeight = if (page == 0 || page == 1) 136.dp else 72.dp
                             val minPadding = 24.dp
-                            
+
                             val stickyHeightPx = with(density) { stickyHeight.toPx() }
                             val minPaddingPx = with(density) { minPadding.toPx() }
-                            
+
                             val paddingPx = maxOf(minPaddingPx, stickyHeightPx - itemOffset)
                             with(density) { paddingPx.toDp() }
                         }
@@ -306,7 +306,7 @@ fun MeScreen(
                             // Posts
                             TapErrorView(
                                 modifier = contentModifier,
-                                painter = painterResource(id = R.drawable.emoji_3d_lilac_front_sad),
+                                icon = R.drawable.emoji_3d_lilac_front_sad,
                                 title = "Emptier than the void",
                                 subTitle = "Looks like you have scribed all of your thoughts.",
                                 buttonText = "Retry",
@@ -318,7 +318,7 @@ fun MeScreen(
                             // Saved
                             TapErrorView(
                                 modifier = contentModifier,
-                                painter = painterResource(id = R.drawable.emoji_3d_lilac_rightbottom_sad),
+                                icon = R.drawable.emoji_3d_lilac_rightbottom_sad,
                                 title = "Emptier than the void",
                                 subTitle = "Save your favorite content to populate your profile's never-ending journey.",
                                 buttonText = "Retry",
@@ -330,7 +330,7 @@ fun MeScreen(
                             // Drafts
                             TapErrorView(
                                 modifier = contentModifier,
-                                painter = painterResource(id = R.drawable.emoji_3d_lilac_righttop_sad),
+                                icon = R.drawable.emoji_3d_lilac_righttop_sad,
                                 title = "Emptier than the void",
                                 subTitle = "Looks like you have scribed all of your thoughts.",
                                 buttonText = "Retry",
@@ -371,8 +371,8 @@ fun FeedItem(userProfile: UserProfileData?) {
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        Text(
-            text = "hello", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp
+        TapTapText(
+            text = "hello", color = TapTapTheme.colors.onSurface, fontWeight = FontWeight.Bold
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -388,10 +388,10 @@ fun FeedItem(userProfile: UserProfileData?) {
                 error = painterResource(R.drawable.intl_cc_24_general_user_default)
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(
+            TapTapText(
                 text = "${userProfile?.name ?: "Duc Nguyen"} · 05/22",
-                color = Color(0xFF888888),
-                fontSize = 12.sp
+                variant = TapTapTextVariant.XS,
+                color = TapTapTheme.colors.onSurfaceVariant,
             )
             Spacer(modifier = Modifier.weight(1f))
 
@@ -402,8 +402,8 @@ fun FeedItem(userProfile: UserProfileData?) {
                 modifier = Modifier.size(16.dp)
             )
             Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                text = "2", color = Color(0xFF00CC66), fontSize = 12.sp
+            TapTapText(
+                text = "2", variant = TapTapTextVariant.XS, color = TapTapTheme.colors.primary
             )
         }
     }
@@ -441,12 +441,11 @@ fun UserCenterHeader(userProfile: UserProfileData?) {
                     .padding(start = 8.dp)
                     .weight(1f)
             ) {
-                Text(
+                TapTapText(
                     text = userProfile?.name ?: "TapUser",
-                    style = TapTapTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold, fontSize = 16.sp
-                    ), // style="@style/intl_heading_16_bold"
-                    color = Color.White,
+                    style = TapTapTheme.typography.titleMedium, // style="@style/intl_heading_16_bold"
+                    fontWeight = FontWeight.Bold,
+                    color = TapTapTheme.colors.onSurface,
                     maxLines = 2
                 )
 
@@ -463,10 +462,10 @@ fun UserCenterHeader(userProfile: UserProfileData?) {
                         modifier = Modifier.size(16.dp)
                     )
                     // Placeholder for ID logic if needed, or just show text
-                    Text(
+                    TapTapText(
                         text = "ID: ${userProfile?.id ?: ""}",
-                        style = TapTapTheme.typography.bodySmall.copy(fontSize = 12.sp),
-                        color = Color(0xFF999999) // @color/intl_v2_grey_40
+                        variant = TapTapTextVariant.XS,
+                        color = TapTapTheme.colors.textGray // @color/intl_v2_grey_40
                     )
                 }
             }
@@ -508,20 +507,21 @@ fun UserCenterHeader(userProfile: UserProfileData?) {
                     .clickable { }
                     .padding(horizontal = 12.dp, vertical = 4.dp),
                 contentAlignment = Alignment.Center) {
-                Text(
-                    text = "Edit", style = TapTapTheme.typography.bodySmall.copy(
-                        fontSize = 12.sp, fontWeight = FontWeight.Medium
-                    ), color = Color.White
+                TapTapText(
+                    text = "Edit",
+                    variant = TapTapTextVariant.XS,
+                    fontWeight = FontWeight.Medium,
+                    color = TapTapTheme.colors.onSurface
                 )
             }
         }
 
         // Social Link (XML: social_link_info) - Placeholder
         // Bio (XML: whats_up)
-        Text(
+        TapTapText(
             text = userProfile?.intro ?: "Write a bio to help people discover you",
-            style = TapTapTheme.typography.bodyMedium.copy(fontSize = 12.sp),
-            color = IntlV2Grey20, // @color/intl_v2_grey_20
+            variant = TapTapTextVariant.XS,
+            color = TapTapTheme.colors.onSurfaceVariant, // @color/intl_v2_grey_20
             modifier = Modifier
                 .padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
                 .fillMaxWidth(),
@@ -555,12 +555,10 @@ fun UserCenterHeader(userProfile: UserProfileData?) {
                         .fillMaxSize()
                         .padding(top = 12.dp, start = 16.dp, end = 16.dp, bottom = 12.dp)
                 ) {
-                    Text(
+                    TapTapText(
                         text = "My games",
-                        style = TapTapTheme.typography.titleMedium.copy(
-                            fontSize = 16.sp, fontWeight = FontWeight.Bold
-                        ),
-                        color = IntlV2White,
+                        fontWeight = FontWeight.Bold,
+                        color = TapTapTheme.colors.onSurface,
                     )
 
                     Spacer(Modifier.height(8.dp))
@@ -605,7 +603,7 @@ fun UserCenterHeader(userProfile: UserProfileData?) {
                             modifier = Modifier
                                 .padding(start = 6.dp)
                                 .size(12.dp),
-                            tint = IntlV2Grey60
+                            tint = TapTapTheme.colors.onSurfaceVariant
                         )
                     }
 
@@ -626,17 +624,17 @@ fun UserCenterHeader(userProfile: UserProfileData?) {
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                     verticalArrangement = Arrangement.spacedBy(2.dp)
                                 ) {
-                                    Text(
+                                    TapTapText(
                                         text = "${userProfile?.stats?.appWishlistCount ?: 8}",
-                                        style = TapTapTheme.typography.titleMedium.copy(
-                                            fontSize = 12.sp, fontWeight = FontWeight.Bold
-                                        ),
-                                        color = Color.White
+                                        variant = TapTapTextVariant.XS,
+                                        fontWeight = FontWeight.Bold,
+                                        color = TapTapTheme.colors.onSurface
                                     )
-                                    Text(
+                                    TapTapText(
                                         text = "Wishlist",
+                                        variant = TapTapTextVariant.XS,
                                         style = TapTapTheme.typography.bodySmall.copy(fontSize = 11.sp),
-                                        color = Color(0x99FFFFFF)
+                                        color = TapTapTheme.colors.onSurface.copy(alpha = 0.6f)
                                     )
                                 }
                             }
@@ -650,17 +648,17 @@ fun UserCenterHeader(userProfile: UserProfileData?) {
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                     verticalArrangement = Arrangement.spacedBy(2.dp)
                                 ) {
-                                    Text(
+                                    TapTapText(
                                         text = "${userProfile?.stats?.playedAppCount ?: 16}",
-                                        style = TapTapTheme.typography.titleMedium.copy(
-                                            fontSize = 12.sp, fontWeight = FontWeight.Bold
-                                        ),
-                                        color = Color.White
+                                        variant = TapTapTextVariant.XS,
+                                        fontWeight = FontWeight.Bold,
+                                        color = TapTapTheme.colors.onSurface
                                     )
-                                    Text(
+                                    TapTapText(
                                         text = "Played",
+                                        variant = TapTapTextVariant.XS,
                                         style = TapTapTheme.typography.bodySmall.copy(fontSize = 11.sp),
-                                        color = Color(0x99FFFFFF)
+                                        color = TapTapTheme.colors.onSurface.copy(alpha = 0.6f)
                                     )
                                 }
                             }
@@ -674,17 +672,17 @@ fun UserCenterHeader(userProfile: UserProfileData?) {
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                     verticalArrangement = Arrangement.spacedBy(2.dp)
                                 ) {
-                                    Text(
+                                    TapTapText(
                                         text = "${userProfile?.stats?.playingAppCount ?: 0}",
-                                        style = TapTapTheme.typography.titleMedium.copy(
-                                            fontSize = 12.sp, fontWeight = FontWeight.Bold
-                                        ),
-                                        color = Color.White
+                                        variant = TapTapTextVariant.XS,
+                                        fontWeight = FontWeight.Bold,
+                                        color = TapTapTheme.colors.onSurface
                                     )
-                                    Text(
+                                    TapTapText(
                                         text = "Playing",
+                                        variant = TapTapTextVariant.XS,
                                         style = TapTapTheme.typography.bodySmall.copy(fontSize = 11.sp),
-                                        color = Color(0x99FFFFFF)
+                                        color = TapTapTheme.colors.onSurface.copy(alpha = 0.6f)
                                     )
                                 }
                             }
@@ -703,15 +701,16 @@ fun StatsItem(count: Int, label: String, centered: Boolean = false) {
         horizontalAlignment = if (centered) Alignment.CenterHorizontally else Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        Text(
-            text = count.toString(), style = TapTapTheme.typography.titleMedium.copy(
-                fontWeight = FontWeight.Bold, fontSize = 16.sp
-            ), textAlign = TextAlign.Center, color = Color.White
+        TapTapText(
+            text = count.toString(),
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            color = TapTapTheme.colors.onSurface
         )
-        Text(
+        TapTapText(
             text = label,
-            style = TapTapTheme.typography.bodySmall.copy(fontSize = 12.sp),
-            color = Color(0xFF999999)
+            variant = TapTapTextVariant.XS,
+            color = TapTapTheme.colors.textGray
         )
     }
 }
@@ -723,13 +722,11 @@ fun UserCenterBadges(modifier: Modifier = Modifier) {
         modifier = modifier.background(Color(0xFF242424), shape = TapTapShape.corners.dialog)
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
-            Text(
+            TapTapText(
                 text = "Badges",
-                style = TapTapTheme.typography.titleMedium.copy(
-                    fontSize = 16.sp, fontWeight = FontWeight.Bold
-                ),
+                fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
-                color = Color.White,
+                color = TapTapTheme.colors.onSurface,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
 
@@ -747,10 +744,11 @@ fun UserCenterBadges(modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.weight(1f))
 
             // Earn badges text
-            Text(
+            TapTapText(
                 text = "Earn badges",
+                variant = TapTapTextVariant.XS,
                 style = TapTapTheme.typography.bodySmall.copy(fontSize = 11.sp), // @style/intl_caption_11_regular
-                color = Color(0xFF999999),
+                color = TapTapTheme.colors.textGray,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
         }
@@ -771,10 +769,10 @@ fun UserCenterContentEmpty() {
             contentScale = ContentScale.Fit,
             modifier = Modifier.size(width = 150.dp, height = 135.dp)
         )
-        Text(
+        TapTapText(
             text = "There is nothing here...", // @string/uci_user_center_bottom_empty
-            style = TapTapTheme.typography.bodyMedium.copy(fontSize = 12.sp),
-            color = Color(0xFF999999), // @color/v3_common_gray_04
+            variant = TapTapTextVariant.XS,
+            color = TapTapTheme.colors.textGray, // @color/v3_common_gray_04
             modifier = Modifier.padding(top = 16.dp)
         )
     }

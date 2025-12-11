@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,7 +22,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.compose.taptap.core.designsystem.R
 import com.compose.taptap.core.designsystem.component.atoms.textfield.TapTapTextField
+import com.compose.taptap.core.designsystem.component.atoms.text.TapTapText
+import com.compose.taptap.core.designsystem.component.atoms.text.TapTapTextVariant
 import com.compose.taptap.core.designsystem.theme.IntlV2Grey60
+import com.compose.taptap.core.designsystem.theme.TapTapTheme
 
 @Composable
 fun CreateEmail() {
@@ -48,9 +50,9 @@ fun CreateEmail() {
                 Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart
             ) {
                 if (email.isEmpty()) {
-                    Text(
+                    TapTapText(
                         text = "Enter your email",
-                        color = IntlV2Grey60,
+                        color = TapTapTheme.colors.onSurfaceVariant,
                     )
                 }
                 innerTextField()

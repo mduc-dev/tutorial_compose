@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import com.compose.taptap.core.designsystem.R
 import com.compose.taptap.core.designsystem.component.atoms.button.ButtonSize
 import com.compose.taptap.core.designsystem.component.atoms.button.TapTapButton
+import com.compose.taptap.core.designsystem.component.atoms.text.TapTapText
+import com.compose.taptap.core.designsystem.component.atoms.text.TapTapTextVariant
 import com.compose.taptap.core.designsystem.component.organisms.bottomsheet.UpdateCheckBottomSheet
 import com.compose.taptap.core.designsystem.component.templates.MainScreenTemplate
 import com.compose.taptap.core.designsystem.theme.BlackF16
@@ -80,20 +81,22 @@ fun InAppUpdateScreen() {
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
-                    Text(
+                    TapTapText(
                         text = "Version",
+                        variant = TapTapTextVariant.SM,
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.Gray
                     )
-                    Text(
+                    TapTapText(
                         text = "3.56.7-marketFull.100000",
-                        style = TapTapTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        style = TapTapTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
                         color = WhitePrimary
                     )
                 }
             }
             Spacer(modifier = Modifier.height(24.dp))
-            Text(
+            TapTapText(
                 text = "Ding! TapTap is leveling up with patched out bugs and performance improvements.",
                 style = TapTapTheme.typography.bodyLarge,
                 color = Color.Gray

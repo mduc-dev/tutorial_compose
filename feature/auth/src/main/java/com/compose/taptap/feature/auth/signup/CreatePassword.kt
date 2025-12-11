@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +29,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import com.compose.taptap.core.designsystem.R
 import com.compose.taptap.core.designsystem.component.atoms.textfield.TapTapTextField
+import com.compose.taptap.core.designsystem.component.atoms.text.TapTapText
+import com.compose.taptap.core.designsystem.component.atoms.text.TapTapTextVariant
 import com.compose.taptap.core.designsystem.theme.IntlV2Grey60
 import com.compose.taptap.core.designsystem.theme.PrimaryTextDisabledMaterialDark
 import com.compose.taptap.core.designsystem.theme.TapTapDimens.FieldMinHeight
@@ -75,9 +76,9 @@ fun CreatePassword() {
                 Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart
             ) {
                 if (password.isEmpty()) {
-                    Text(
+                    TapTapText(
                         text = "Enter your password",
-                        color = IntlV2Grey60,
+                        color = TapTapTheme.colors.onSurfaceVariant,
                     )
                 }
                 innerTextField()
@@ -123,12 +124,12 @@ fun RequirementRow(
             contentDescription = null,
             modifier = Modifier.size(RequirementIconSize)
         )
-        Text(
-            text,
-            style = TapTapTheme.typography.bodySmall.copy(
-                fontWeight = FontWeight.Normal,
-                color = PrimaryTextDisabledMaterialDark
-            )
+        TapTapText(
+            text = text,
+            variant = TapTapTextVariant.XS,
+            style = TapTapTheme.typography.bodySmall,
+            fontWeight = FontWeight.Normal,
+            color = TapTapTheme.colors.onSurface.copy(alpha = 0.38f),
         )
     }
 }

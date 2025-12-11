@@ -19,12 +19,12 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -48,14 +48,14 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.compose.taptap.core.designsystem.R
-import com.compose.taptap.core.designsystem.component.molecules.appbar.TapTapAppBar
 import com.compose.taptap.core.designsystem.component.atoms.button.DDButton
+import com.compose.taptap.core.designsystem.component.atoms.text.TapTapText
+import com.compose.taptap.core.designsystem.component.atoms.text.TapTapTextVariant
 import com.compose.taptap.core.designsystem.component.atoms.textfield.TapTapTextField
+import com.compose.taptap.core.designsystem.component.molecules.appbar.TapTapAppBar
 import com.compose.taptap.core.designsystem.component.molecules.state.EmptyStateView
 import com.compose.taptap.core.designsystem.theme.BlackDisable
 import com.compose.taptap.core.designsystem.theme.IntlCcGreenPrimary
-import com.compose.taptap.core.designsystem.theme.IntlV2Grey60
-import com.compose.taptap.core.designsystem.theme.PrimaryTextDisabledMaterialDark
 import com.compose.taptap.core.designsystem.theme.TapTapDimens.FieldMinHeight
 import com.compose.taptap.core.designsystem.theme.TapTapDimens.FieldVerticalSpacing
 import com.compose.taptap.core.designsystem.theme.TapTapDimens.TabBottomPadding
@@ -70,6 +70,7 @@ import kotlinx.coroutines.launch
 
 val tabs = listOf("Email", "Phone")
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen() {
     val composeNavigator = currentComposeNavigator
@@ -128,18 +129,18 @@ fun LoginScreen() {
                             pagerState.animateScrollToPage(tabIndex)
                         }
                     }) {
-                    Text(
+                    TapTapText(
                         text = item,
-                        style = TapTapTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                        ),
+                        style = TapTapTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                             .padding(bottom = TabBottomPadding),
                         onTextLayout = { textLayoutResult ->
                             tabWidths[tabIndex] =
                                 with(density) { textLayoutResult.size.width.toDp() }
-                        })
+                        }
+                    )
                 }
             }
         }
@@ -201,9 +202,9 @@ fun PageContent(
                                 Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart
                             ) {
                                 if (email.isEmpty()) {
-                                    Text(
+                                    TapTapText(
                                         text = "Enter your email",
-                                        color = IntlV2Grey60,
+                                        color = TapTapTheme.colors.onSurfaceVariant,
                                     )
                                 }
                                 innerTextField()
@@ -239,9 +240,9 @@ fun PageContent(
                                 Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart
                             ) {
                                 if (password.isEmpty()) {
-                                    Text(
+                                    TapTapText(
                                         text = "Enter your password",
-                                        color = IntlV2Grey60,
+                                        color = TapTapTheme.colors.onSurfaceVariant,
                                     )
                                 }
                                 innerTextField()
@@ -261,24 +262,24 @@ fun PageContent(
                                 }
                             }
                         })
-                    Text(
-                        "Forgot password?",
+                    TapTapText(
+                        text = "Forgot password?",
+                        variant = TapTapTextVariant.SM,
                         color = TapTapTheme.colors.primary,
-                        style = TapTapTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        ),
+                        style = TapTapTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
                         modifier = Modifier
                             .align(Alignment.End)
                             .clickable { composeNavigator.navigate(TapTapScreen.ForgotPassword) })
 
                     Spacer(Modifier.weight(1f))
 
-                    Text(
-                        "Log in without password",
-                        color = PrimaryTextDisabledMaterialDark,
-                        style = TapTapTheme.typography.bodySmall.copy(
-                            fontWeight = FontWeight.Normal
-                        ),
+                    TapTapText(
+                        text = "Log in without password",
+                        variant = TapTapTextVariant.XS,
+                        color = TapTapTheme.colors.onSurface.copy(alpha = 0.38f),
+                        style = TapTapTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Normal,
                         modifier = Modifier.clickable { composeNavigator.navigate(TapTapScreen.LoginWithoutPassword) })
                     DDButton(
                         label = "Log in",

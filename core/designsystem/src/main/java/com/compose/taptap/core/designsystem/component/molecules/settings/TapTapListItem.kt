@@ -6,24 +6,24 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+//import androidx.compose.material.icons.Icons
+//import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.compose.taptap.core.designsystem.component.atoms.text.TapTapText
+import com.compose.taptap.core.designsystem.component.atoms.text.TapTapTextVariant
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
-import com.compose.taptap.core.designsystem.theme.WhitePrimary
 
 @Composable
 fun TapTapListItem(
     headline: String,
     supportingText: String? = null,
-    textColor: Color = WhitePrimary,
+    textColor: Color = TapTapTheme.colors.onSurface,
     trailingContent: @Composable (() -> Unit)? = null,
     showTrailingIcon: Boolean = true,
     onClick: () -> Unit
@@ -36,26 +36,30 @@ fun TapTapListItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Text(
+            TapTapText(
                 text = headline,
-                style = TapTapTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                style = TapTapTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
                 color = textColor
             )
             if (supportingText != null) {
-                Text(
-                    text = supportingText, style = TapTapTheme.typography.bodyMedium, color = Color.Gray
+                TapTapText(
+                    text = supportingText,
+                    variant = TapTapTextVariant.SM,
+                    style = TapTapTheme.typography.bodyMedium,
+                    color = TapTapTheme.colors.onSurfaceVariant
                 )
             }
         }
         if (trailingContent != null) {
             trailingContent()
         } else if (showTrailingIcon) {
-             Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = null,
-                tint = Color.Gray,
-                modifier = Modifier.size(24.dp)
-            )
+//             Icon(
+//                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+//                contentDescription = null,
+//                tint = TapTapTheme.colors.onSurfaceVariant,
+//                modifier = Modifier.size(24.dp)
+//            )
         }
     }
 }

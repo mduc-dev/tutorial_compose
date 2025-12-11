@@ -1,19 +1,26 @@
 package com.compose.taptap.navigation
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalDensity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.compose.taptap.core.designsystem.theme.BlackF16
+import com.compose.taptap.core.designsystem.theme.TapTapDimens
+import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.feature.auth.AuthState
 import com.compose.taptap.feature.auth.welcome.LocalWelcomeViewModel
@@ -44,7 +51,7 @@ private fun TapAuthNavigationHost(navHostController: NavHostController) {
         navHostController,
         startDestination = TapTapScreen.AuthGraph,
         modifier = Modifier
-            .background(BlackF16)
+            .background(TapTapTheme.colors.scrim)
             .fillMaxSize()
     ) {
         tapAuthNavigation()
@@ -73,46 +80,60 @@ private fun TapMainNavigationHost(navHostController: NavHostController) {
         else -> null
     }
 
+    val bottomBarHeightPx =
+        with(LocalDensity.current) { TapTapDimens.BottomBarHeight.roundToPx().toFloat() }
+
+    val isBottomBarVisible = currentScreen != null && currentScreen.isTabItem()
+
+    val bottomBarOffsetY by animateFloatAsState(
+        targetValue = if (isBottomBarVisible) 0f else bottomBarHeightPx,
+        animationSpec = tween(durationMillis = 300),
+        label = "BottomBarOffset"
+    )
+    val bottomBarAlpha by animateFloatAsState(
+        targetValue = if (isBottomBarVisible) 1f else 0f,
+        animationSpec = tween(durationMillis = 300),
+        label = "BottomBarAlpha"
+    )
+
     Scaffold(
         bottomBar = {
-            if (currentScreen != null && currentScreen.isTabItem()) {
-                TapBottomTab(
-                    modifier = Modifier,
-                    currentRoute = currentScreen,
-                    isFlipped = isFlipped,
-                    flipBackImageUrl = flipBackImageUrl,
-                    onFlip = {
-                        // TODO: Implement flip click logic, e.g., trigger random play.
-                    },
-                    onItemClick = { screen ->
-                        if (screen != currentScreen) {
-                            navHostController.navigate(screen) {
-                                popUpTo(navHostController.graph.startDestinationId) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
+            TapBottomTab(
+                modifier = Modifier.graphicsLayer {
+                    translationY = bottomBarOffsetY
+                    alpha = bottomBarAlpha
+                    compositingStrategy = CompositingStrategy.ModulateAlpha
+                },
+                currentRoute = currentScreen,
+                isFlipped = isFlipped,
+                flipBackImageUrl = flipBackImageUrl,
+                onFlip = {
+                    // TODO: Implement flip click logic, e.g., trigger random play.
+                },
+                onItemClick = { screen ->
+                    if (screen != currentScreen) {
+                        navHostController.navigate(screen) {
+                            popUpTo(navHostController.graph.startDestinationId) {
+                                saveState = true
                             }
+                            launchSingleTop = true
+                            restoreState = true
                         }
                     }
-                )
-            }
+                })
         }) { innerPadding ->
         NavHost(
             navHostController,
             startDestination = TapTapScreen.MainGraph,
             modifier = Modifier
-                .padding(innerPadding)
+                .padding(top = innerPadding.calculateTopPadding())
                 .fillMaxSize()
         ) {
             tapMainNavigation(
                 onToggleFlip = { shouldFlip, imageUrl ->
-                    if (imageUrl != null) {
-                        setFlipBackImageUrl(imageUrl)
-                    }
+                    if (imageUrl != null) setFlipBackImageUrl(imageUrl)
                     setIsFlipped(shouldFlip)
-                }
-            )
+                })
         }
     }
 }

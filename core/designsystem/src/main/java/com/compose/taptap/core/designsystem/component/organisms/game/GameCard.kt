@@ -20,8 +20,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
@@ -39,13 +37,18 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.compose.taptap.core.designsystem.R
+import com.compose.taptap.core.designsystem.component.atoms.button.ButtonSize
+import com.compose.taptap.core.designsystem.component.atoms.button.TapTapButton
+import com.compose.taptap.core.designsystem.component.atoms.button.Variant
+import com.compose.taptap.core.designsystem.component.atoms.image.TapTapNetworkImage
+import com.compose.taptap.core.designsystem.component.atoms.text.TapTapText
+import com.compose.taptap.core.designsystem.component.atoms.text.TapTapTextVariant
+import com.compose.taptap.core.designsystem.component.molecules.game.GamePortraitItem
+import com.compose.taptap.core.designsystem.component.molecules.header.TapTapSectionHeader
 import com.compose.taptap.core.designsystem.theme.TapTapShape
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.core.designsystem.util.DisableParentPagerSwipeConnection
 import com.compose.taptap.core.designsystem.util.bouncingEffect
-import com.compose.taptap.core.designsystem.component.atoms.image.TapTapNetworkImage
-import com.compose.taptap.core.designsystem.component.molecules.header.TapTapSectionHeader
-import com.compose.taptap.core.designsystem.component.molecules.game.GamePortraitItem
 import com.compose.taptap.core.model.App
 import com.compose.taptap.core.model.DailiesItem
 import com.compose.taptap.core.model.Icon
@@ -165,15 +168,17 @@ fun TagLine(items: ImmutableList<String>?) {
 
             val next = items.getOrNull(index + 1)
             if (next != null && !isPlatform(next)) {
-                Text(
+                TapTapText(
                     text = " •",
+                    variant = TapTapTextVariant.XS,
                     color = TapTapTheme.colors.onSurface.copy(alpha = 0.6f),
                     style = TapTapTheme.typography.labelSmall
                 )
             }
         } else {
-            Text(
+            TapTapText(
                 text = if (!isLast) "$item •" else item,
+                variant = TapTapTextVariant.XS,
                 color = TapTapTheme.colors.onSurface.copy(alpha = 0.6f),
                 style = TapTapTheme.typography.labelSmall,
                 maxLines = 1,
@@ -339,7 +344,7 @@ private fun StandardGameCard(
     modifier: Modifier = Modifier,
     onClick: (String) -> Unit,
 ) {
-    val placeholder = remember { ColorPainter(Color.DarkGray) }
+    val placeholder = remember { ColorPainter(Color.DarkGray) } // Kept as debug placeholder
     val clickAction = remember(uiState.id, onClick) { { onClick(uiState.id) } }
     val isPreview = LocalInspectionMode.current
 
@@ -372,7 +377,7 @@ private fun StandardGameCard(
                 }
 
                 Column {
-                    Text(
+                    TapTapText(
                         text = uiState.title,
                         style = TapTapTheme.typography.titleMedium,
                         color = TapTapTheme.colors.onSurface,
@@ -392,19 +397,21 @@ private fun StandardGameCard(
                                 .size(TapTapTheme.spacing.iconButton)
                                 .offset(y = (-TapTapTheme.spacing.xSmall / 2))
                         )
-                        Text(
+                        TapTapText(
                             text = uiState.rating ?: "--",
+                            variant = TapTapTextVariant.XS,
                             color = TapTapTheme.colors.onSurface.copy(alpha = 0.6f),
-                            style = TapTapTheme.typography.bodySmall,
-                            lineHeight = TapTapTheme.typography.bodySmall.lineHeight
+                            style = TapTapTheme.typography.bodySmall
                         )
                         TagLine(uiState.tagLineItems)
                     }
                 }
             }
 
-            OutlinedButton(
-                onClick = clickAction,
+            TapTapButton(
+                onPress = clickAction,
+                variant = Variant.BORDERED,
+                size = ButtonSize.SM,
                 border = BorderStroke(
                     width = TapTapTheme.spacing.xSmall, color = TapTapTheme.colors.primary
                 ),
@@ -413,11 +420,12 @@ private fun StandardGameCard(
                     vertical = TapTapTheme.spacing.xSmall
                 ),
                 modifier = Modifier
-                    .height(TapTapTheme.spacing.xLarge)
-                    .padding(end = TapTapTheme.spacing.mediumLarge)
+                    .padding(end = TapTapTheme.spacing.mediumLarge),
+                contentColor = TapTapTheme.colors.primary
             ) {
-                Text(
+                TapTapText(
                     "Get",
+                    variant = TapTapTextVariant.SM,
                     color = TapTapTheme.colors.primary,
                     style = TapTapTheme.typography.labelLarge
                 )
@@ -461,8 +469,9 @@ private fun StandardGameCard(
                     modifier = Modifier.size(16.dp) // Adjust size as needed, maybe TapTapTheme.spacing.medium
                 )
 
-                Text(
+                TapTapText(
                     text = uiState.recReason,
+                    variant = TapTapTextVariant.SM,
                     style = TapTapTheme.typography.bodyMedium,
                     color = TapTapTheme.colors.onSurface.copy(alpha = 0.7f)
                 )
@@ -483,9 +492,7 @@ private fun FeaturedGameCard(
     modifier: Modifier = Modifier,
     onClick: (String) -> Unit,
 ) {
-    val placeholder = remember { ColorPainter(Color.DarkGray) }
     val clickAction = remember(uiState.id, onClick) { { onClick(uiState.id) } }
-    val isPreview = LocalInspectionMode.current
 
     Column(
         modifier = modifier
@@ -515,8 +522,9 @@ private fun FeaturedGameCard(
                     )
 
                     // "Game of the Day" badge at top left
-                    Text(
+                    TapTapText(
                         text = "Game of the Day",
+                        variant = TapTapTextVariant.SM,
                         style = TapTapTheme.typography.labelLarge,
                         color = TapTapTheme.colors.onBackground,
                         modifier = Modifier
@@ -541,7 +549,7 @@ private fun FeaturedGameCard(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
+                    TapTapText(
                         text = uiState.title,
                         style = TapTapTheme.typography.titleMedium,
                         color = TapTapTheme.colors.onSurface,
@@ -561,8 +569,9 @@ private fun FeaturedGameCard(
                             modifier = Modifier.height(TapTapTheme.spacing.medium),
                             tint = TapTapTheme.colors.primary
                         )
-                        Text(
+                        TapTapText(
                             text = uiState.rating,
+                            variant = TapTapTextVariant.LG,
                             style = TapTapTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
                             color = TapTapTheme.colors.primary
                         )
@@ -572,7 +581,7 @@ private fun FeaturedGameCard(
             
             // Description below the card
             if (uiState.description.isNotBlank()) {
-                Text(
+                TapTapText(
                     text = uiState.description,
                     style = TapTapTheme.typography.bodyLarge,
                     color = TapTapTheme.colors.onSurface.copy(alpha = 0.7f),

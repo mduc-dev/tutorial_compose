@@ -27,11 +27,10 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.TabRowDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -44,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -51,10 +51,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.compose.ui.platform.testTag
 import coil3.compose.AsyncImage
 import com.compose.taptap.core.designsystem.R
+import com.compose.taptap.core.designsystem.component.atoms.button.ButtonSize
+import com.compose.taptap.core.designsystem.component.atoms.button.TapTapButton
 import com.compose.taptap.core.designsystem.component.atoms.divider.TapTapDivider
+import com.compose.taptap.core.designsystem.component.atoms.text.TapTapText
+import com.compose.taptap.core.designsystem.component.atoms.text.TapTapTextVariant
 import com.compose.taptap.core.designsystem.theme.BlackF16
 import com.compose.taptap.core.designsystem.theme.GreenPrimary
 import com.compose.taptap.core.designsystem.theme.IntlCcGreenPrimary
@@ -72,7 +75,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 val tabPlays = persistentListOf("Games", "Recently")
 
@@ -260,8 +263,9 @@ fun CardGame(item: InstantGameItem, onClick: () -> Unit) {
                         tint = WhitePrimary
                     )
 
-                    Text(
+                    TapTapText(
                         text = score,
+                        variant = TapTapTextVariant.XS,
                         color = WhitePrimary,
                         style = TapTapTheme.typography.labelSmall.copy(
                             fontWeight = FontWeight.Bold
@@ -271,19 +275,20 @@ fun CardGame(item: InstantGameItem, onClick: () -> Unit) {
             }
         }
 
-        Text(
+        TapTapText(
             text = item.title,
+            variant = TapTapTextVariant.SM,
             color = TapTapTheme.colors.onBackground,
-            style = TapTapTheme.typography.titleSmall.copy(
-                fontWeight = FontWeight.Bold
-            ),
+            style = TapTapTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.padding(top = TitleTopPadding)
         )
 
-        Text(
+        TapTapText(
             text = item.subtitle.ifBlank { "Unknown" },
+            variant = TapTapTextVariant.XS,
             color = IntlV2Grey20,
             style = TapTapTheme.typography.labelSmall.copy(
                 fontWeight = FontWeight.Medium
@@ -312,42 +317,42 @@ fun RecentlyEmptyState(
             modifier = Modifier.size(120.dp)
         )
         Spacer(modifier = Modifier.height(TapTapTheme.spacing.mediumLarge))
-        Text(
+        TapTapText(
             text = "Your Game Profile",
-            style = TapTapTheme.typography.headlineSmall.copy(
-                fontWeight = FontWeight.W500,
-                color = TapTapTheme.colors.onBackground
-            )
+            variant = TapTapTextVariant.LG, // 22sp vs 24sp? user said don't change. 24sp is headlineSmall.
+            style = TapTapTheme.typography.headlineSmall, // keeping style to ensure 24sp
+            fontWeight = FontWeight.W500,
+            color = TapTapTheme.colors.onBackground
         )
         Spacer(modifier = Modifier.height(TapTapTheme.spacing.medium))
-        Text(
+        TapTapText(
             text = "Start your first game adventure!",
-            style = TapTapTheme.typography.bodyLarge.copy(
-                color = TapTapTheme.colors.surfaceContainerHighest,
-                fontWeight = FontWeight.Normal
-            ),
+            style = TapTapTheme.typography.bodyLarge,
+            color = TapTapTheme.colors.surfaceContainerHighest,
+            fontWeight = FontWeight.Normal,
             modifier = Modifier.padding(horizontal = TapTapTheme.spacing.large)
         )
         Spacer(modifier = Modifier.height(TapTapTheme.spacing.large))
-        Button(
-            onClick = onRandomPlay,
+        TapTapButton(
+            onPress = onRandomPlay,
             shape = TapTapShape.corners.circle,
             contentPadding = PaddingValues(
                 horizontal = TapTapTheme.spacing.large,
                 vertical = TapTapTheme.spacing.medium
-            )
+            ),
+            size = ButtonSize.XL
         ) {
-            Text(
+            TapTapText(
                 text = "Random Play",
-                style = TapTapTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                    color = BlackF16
-                )
+                style = TapTapTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = BlackF16
             )
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PlayTabRow(
     tabs: ImmutableList<String>,
@@ -396,7 +401,7 @@ private fun PlayTabRow(
                         .padding(horizontal = TapTapTheme.spacing.medium),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(
+                    TapTapText(
                         text = title,
                         style = style,
                         color = color,

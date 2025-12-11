@@ -9,8 +9,7 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-
+    implementation(libs.androidx.core)
     implementation(libs.kotlinx.coroutines.android)
 
     api(libs.androidx.navigation.compose)

@@ -18,17 +18,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.compose.taptap.core.designsystem.R
-import com.compose.taptap.core.designsystem.component.molecules.appbar.TapTapAppBar
 import com.compose.taptap.core.designsystem.component.atoms.button.DDButton
-import com.compose.taptap.core.designsystem.theme.BlackF16
-import com.compose.taptap.core.designsystem.theme.IntlV2Grey40
+import com.compose.taptap.core.designsystem.component.molecules.appbar.TapTapAppBar
+import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.core.navigation.currentComposeNavigator
 
 fun extraSafeBottomPadding(): Dp {
@@ -44,14 +42,14 @@ fun SignupScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BlackF16)
+            .background(TapTapTheme.colors.scrim)
             .statusBarsPadding()
             .pointerInput(Unit) {
                 detectTapGestures(onTap = {
                     focusManager.clearFocus()
                 })
             }) {
-        TapTapAppBar("Sign up", contentColor = IntlV2Grey40, navigationIcon = {
+        TapTapAppBar("Sign up", contentColor = TapTapTheme.colors.textGray40, navigationIcon = {
             IconButton(
                 onClick = {
                     composeNavigator.navigateUp()
@@ -59,7 +57,7 @@ fun SignupScreen() {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_back_v2),
                     contentDescription = "Back",
-                    tint = Color.White
+                    tint = TapTapTheme.colors.onPrimary
                 )
             }
         })
