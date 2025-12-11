@@ -4,47 +4,95 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color.Companion.Unspecified
+
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.compose.taptap.core.designsystem.R
 import com.compose.taptap.core.designsystem.component.atoms.divider.TapTapDivider
-import com.compose.taptap.core.designsystem.component.atoms.text.TapTapText
+import com.compose.taptap.core.designsystem.component.molecules.tabs.BottomTabIcon
 import com.compose.taptap.core.designsystem.component.molecules.tabs.MeTabIcon
 import com.compose.taptap.core.designsystem.component.molecules.tabs.TapHomeBottomFlipView
 import com.compose.taptap.core.designsystem.theme.TapTapDimens.BottomBarHeight
-import com.compose.taptap.core.designsystem.theme.TapTapDimens.BottomBarIconSize
 import com.compose.taptap.core.designsystem.theme.TapTapDimens.BottomBarItemHeight
 import com.compose.taptap.core.designsystem.theme.TapTapDimens.BottomBarItemMarginTop
 import com.compose.taptap.core.designsystem.theme.TapTapDimens.FlipViewSize
 import com.compose.taptap.core.designsystem.theme.TapTapDimens.FlipViewTranslationY
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
-import com.compose.taptap.core.designsystem.theme.WhitePrimary
-import com.compose.taptap.core.designsystem.util.BOTTOM_TAB
+import com.compose.taptap.core.designsystem.util.BottomTab
 import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.feature.me.MeUiState
 import com.compose.taptap.feature.me.MeViewModel
 import org.koin.compose.viewmodel.koinViewModel
+
+/**
+ * Bottom tab items for the main navigation.
+ */
+private val bottomTabs: List<BottomTab>
+    @Composable get() = listOf(
+        BottomTab(
+            title = "Games",
+            route = TapTapScreen.Game,
+            content = { selected ->
+                BottomTabIcon(
+                    title = "Games",
+                    iconRes = R.drawable.cw_home_bottom_games_icon_unselect,
+                    selectedIconRes = R.drawable.cw_home_bottom_games_icon_selected,
+                    selected = selected
+                )
+            }
+        ),
+        BottomTab(
+            title = "Play",
+            route = TapTapScreen.Play,
+            content = { selected ->
+                BottomTabIcon(
+                    title = "Play",
+                    iconRes = R.drawable.intl_cc_24_bottom_bar_games_unselect,
+                    selectedIconRes = R.drawable.intl_cc_24_bottom_bar_games_select,
+                    selected = selected
+                )
+            }
+        ),
+        BottomTab(
+            title = "Tavern",
+            route = TapTapScreen.Tavern,
+            content = { selected ->
+                BottomTabIcon(
+                    title = "Tavern",
+                    iconRes = R.drawable.home_bottom_icon_tavern_unselect,
+                    selectedIconRes = R.drawable.home_bottom_icon_tavern_selected,
+                    selected = selected
+                )
+            }
+        ),
+        BottomTab(
+            title = "You",
+            route = TapTapScreen.Me,
+            content = { selected ->
+                val meViewModel: MeViewModel = koinViewModel()
+                val uiState by meViewModel.uiState.collectAsStateWithLifecycle()
+                val userProfile = (uiState as? MeUiState.Success)?.data
+                MeTabIcon(
+                    selected = selected,
+                    userProfile = userProfile
+                )
+            }
+        ),
+    )
 
 @Composable
 fun TapBottomTab(
@@ -56,8 +104,8 @@ fun TapBottomTab(
     onItemClick: (TapTapScreen) -> Unit,
 ) {
 
-    val firstHalf = BOTTOM_TAB.take(2)
-    val secondHalf = BOTTOM_TAB.drop(2)
+    val firstHalf = bottomTabs.take(2)
+    val secondHalf = bottomTabs.drop(2)
     val tabItems = remember { firstHalf + null + secondHalf }
 
     Box(
@@ -80,46 +128,19 @@ fun TapBottomTab(
                 if (item == null) {
                     Spacer(modifier = Modifier.weight(1f))
                 } else {
-                    // Normal Item
+                    // Tab Item
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .height(BottomBarItemHeight + BottomBarItemMarginTop) // Space for content + margin
+                            .height(BottomBarItemHeight + BottomBarItemMarginTop)
                             .clickable(
                                 interactionSource = remember { MutableInteractionSource() },
-                                indication = null // Disable ripple if not needed/custom
-                            ) { onItemClick(item.route) }, contentAlignment = Alignment.TopCenter
+                                indication = null
+                            ) { onItemClick(item.route) },
+                        contentAlignment = Alignment.TopCenter
                     ) {
-                        if (item.route == TapTapScreen.Me) {
-                            val meViewModel: MeViewModel = koinViewModel()
-                            val uiState by meViewModel.uiState.collectAsStateWithLifecycle()
-                            val userProfile = (uiState as? MeUiState.Success)?.data
-                            Box(modifier = Modifier.padding(top = BottomBarItemMarginTop)) {
-                                MeTabIcon(
-                                    selected = currentRoute == item.route,
-                                    userProfile = userProfile
-                                )
-                            }
-                        } else {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.padding(top = BottomBarItemMarginTop),
-                                verticalArrangement = Arrangement.spacedBy(5.dp)
-                            ) {
-                                if (currentRoute == item.route) item.selectedIcon else item.icon?.let {
-                                    Icon(
-                                        painter = it,
-                                        contentDescription = item.title,
-                                        tint = if (item.title == "You") WhitePrimary else Unspecified,
-                                        modifier = Modifier.size(BottomBarIconSize)
-                                    )
-                                }
-                                TapTapText(
-                                    text = item.title,
-                                    color = if (currentRoute == item.route) TapTapTheme.colors.onBackground else TapTapTheme.colors.onSurfaceVariant,
-                                    style = TapTapTheme.typography.labelMedium
-                                )
-                            }
+                        Box(modifier = Modifier.padding(top = BottomBarItemMarginTop)) {
+                            item.content(currentRoute == item.route)
                         }
                     }
                 }
@@ -130,8 +151,8 @@ fun TapBottomTab(
         TapHomeBottomFlipView(
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .offset(y = FlipViewTranslationY) // android:translationY="-12.0dip"
-                .size(FlipViewSize), // android:layout_width="60.0dip"
+                .offset(y = FlipViewTranslationY)
+                .size(FlipViewSize),
             isFlipped = isFlipped, backImageUrl = flipBackImageUrl, onFlip = onFlip
         )
     }

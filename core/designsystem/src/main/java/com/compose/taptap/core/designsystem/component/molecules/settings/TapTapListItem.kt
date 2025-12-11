@@ -6,15 +6,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-//import androidx.compose.material.icons.Icons
-//import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.compose.taptap.core.designsystem.R
 import com.compose.taptap.core.designsystem.component.atoms.text.TapTapText
 import com.compose.taptap.core.designsystem.component.atoms.text.TapTapTextVariant
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
@@ -54,12 +54,12 @@ fun TapTapListItem(
         if (trailingContent != null) {
             trailingContent()
         } else if (showTrailingIcon) {
-//             Icon(
-//                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-//                contentDescription = null,
-//                tint = TapTapTheme.colors.onSurfaceVariant,
-//                modifier = Modifier.size(24.dp)
-//            )
+            Icon(
+                painter = painterResource(R.drawable.ico_24_top_bars_forward_center),
+                contentDescription = "More",
+                tint = TapTapTheme.colors.onSurface,
+                modifier = Modifier.size(24.dp)
+            )
         }
     }
 }
