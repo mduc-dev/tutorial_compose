@@ -7,9 +7,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+//import androidx.compose.material.icons.Icons
+//import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,10 +21,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.compose.taptap.core.designsystem.R
-import com.compose.taptap.core.designsystem.theme.TapTapTheme
-import com.compose.taptap.core.model.User
 import com.compose.taptap.core.designsystem.component.atoms.image.TapTapNetworkImage
 import com.compose.taptap.core.designsystem.theme.TapTapShape
+import com.compose.taptap.core.designsystem.theme.TapTapTheme
+import com.compose.taptap.core.model.User
 
 @Composable
 fun TapTapSectionHeader(
@@ -77,13 +76,13 @@ fun TapTapSectionHeader(
             }
         }
 
-
-        Icon(
-            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-            contentDescription = "More",
-            tint = TapTapTheme.colors.onSurface,
-            modifier = Modifier.size(32.dp)
-        )
+//dong tam
+//        Icon(
+//            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+//            contentDescription = "More",
+//            tint = TapTapTheme.colors.onSurface,
+//            modifier = Modifier.size(32.dp)
+//        )
     }
 }
 

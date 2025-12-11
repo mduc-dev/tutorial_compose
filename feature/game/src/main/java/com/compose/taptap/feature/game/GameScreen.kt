@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -21,27 +20,26 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.compose.ui.platform.testTag
-import com.compose.taptap.core.designsystem.component.organisms.paging.AppendLoadingIndicator
-import com.compose.taptap.core.designsystem.component.organisms.game.CardGame
-import com.compose.taptap.core.designsystem.component.organisms.game.FeaturedGamesPager
-import com.compose.taptap.core.designsystem.component.organisms.game.GameCardUiState
-import com.compose.taptap.core.designsystem.component.molecules.state.LoadingView
-import com.compose.taptap.core.designsystem.component.organisms.paging.PagingAppendErrorFooter
-import com.compose.taptap.core.designsystem.component.organisms.paging.PagingErrorState
+import com.compose.taptap.core.designsystem.component.atoms.text.TapTapText
 import com.compose.taptap.core.designsystem.component.molecules.chips.TapTapChipGroup
 import com.compose.taptap.core.designsystem.component.molecules.notifications.TapTapNotificationBell
 import com.compose.taptap.core.designsystem.component.molecules.search.TapTapSearchBar
+import com.compose.taptap.core.designsystem.component.molecules.state.LoadingView
 import com.compose.taptap.core.designsystem.component.molecules.tabs.TapTapTabRow
+import com.compose.taptap.core.designsystem.component.organisms.game.CardGame
+import com.compose.taptap.core.designsystem.component.organisms.game.FeaturedGamesPager
+import com.compose.taptap.core.designsystem.component.organisms.game.GameCardUiState
 import com.compose.taptap.core.designsystem.component.organisms.game.toCardUiState
-import com.compose.taptap.core.designsystem.theme.BlackF16
+import com.compose.taptap.core.designsystem.component.organisms.paging.AppendLoadingIndicator
+import com.compose.taptap.core.designsystem.component.organisms.paging.PagingAppendErrorFooter
+import com.compose.taptap.core.designsystem.component.organisms.paging.PagingErrorState
 import com.compose.taptap.core.designsystem.theme.IntlCcDivider
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.core.designsystem.util.LoadingResult
@@ -55,6 +53,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.flowOf
 import org.koin.compose.viewmodel.koinViewModel
+
 
 val topTabs: List<String> = listOf("Discover", "Top charts", "Calendar", "Gamelist")
 
@@ -203,7 +202,7 @@ fun GameContent(
                 else -> Box(
                     modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
                 ) {
-                    Text("Page ${page + 1}", color = White)
+                    TapTapText("Page ${page + 1}", color = TapTapTheme.colors.onBackground)
                 }
             }
         }
@@ -225,7 +224,7 @@ fun DiscoverPageContent(
     val isInitialLoad = loadState.refresh is LoadState.Loading && games.itemCount == 0
 
     if (isInitialLoad) {
-        LoadingView(modifier = Modifier.background(BlackF16))
+        LoadingView(modifier = Modifier.background(TapTapTheme.colors.background))
         return
     }
 
@@ -240,7 +239,7 @@ fun DiscoverPageContent(
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .background(BlackF16)
+            .background(TapTapTheme.colors.background)
             .testTag("game_list"),
     ) {
         // Sub-tabs as first item - scrolls with content

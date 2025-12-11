@@ -44,4 +44,8 @@ object TapTapDimens {
     val ProtocolBottomPadding: Dp = 72.dp
     val ButtonHeight: Dp = 44.dp
     val ListBottomPadding: Dp = 100.dp
+    
+    // Error View
+    val ErrorImageWidth: Dp = 150.dp
+    val ErrorImageHeight: Dp = 135.dp
 }

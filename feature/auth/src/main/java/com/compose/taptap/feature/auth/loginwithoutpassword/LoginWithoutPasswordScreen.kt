@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +28,8 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import com.compose.taptap.core.designsystem.R
 import com.compose.taptap.core.designsystem.component.atoms.button.DDButton
+import com.compose.taptap.core.designsystem.component.atoms.text.TapTapText
+import com.compose.taptap.core.designsystem.component.atoms.text.TapTapTextVariant
 import com.compose.taptap.core.designsystem.component.atoms.textfield.TapTapTextField
 import com.compose.taptap.core.designsystem.theme.IntlV2Grey40
 import com.compose.taptap.core.designsystem.theme.PrimaryTextDisabledMaterialDark
@@ -48,11 +49,11 @@ fun LoginWithoutPasswordScreen() {
             .padding(horizontal = spacing.gutter)
     ) {
         var email by remember { mutableStateOf("") }
-        Text(
+        TapTapText(
             text = "Reset password",
-            style = TapTapTheme.typography.titleLarge.copy(
-                fontWeight = FontWeight.Bold
-            ),
+            variant = TapTapTextVariant.LG,
+            style = TapTapTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
             color = TapTapTheme.colors.onBackground,
         )
         TapTapTextField(
@@ -74,7 +75,7 @@ fun LoginWithoutPasswordScreen() {
                     Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart
                 ) {
                     if (email.isEmpty()) {
-                        Text(
+                        TapTapText(
                             text = "Enter your email",
                             color = IntlV2Grey40,
                         )
@@ -92,11 +93,11 @@ fun LoginWithoutPasswordScreen() {
                 }
             })
 
-        Text(
-            "We’ll email you a code to log in.",
-            style = TapTapTheme.typography.bodyMedium.copy(
-                fontWeight = FontWeight.Normal
-            ),
+        TapTapText(
+            text = "We’ll email you a code to log in.",
+            variant = TapTapTextVariant.SM,
+            style = TapTapTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Normal,
             color = PrimaryTextDisabledMaterialDark,
         )
 

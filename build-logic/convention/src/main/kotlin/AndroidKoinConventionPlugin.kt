@@ -10,11 +10,11 @@ class AndroidKoinConventionPlugin : Plugin<Project> {
       val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
       dependencies {
-        add("implementation", libs.findLibrary("koin.core").get())
-        add("implementation", libs.findLibrary("koin.compose").get())
-        add("implementation", libs.findLibrary("koin.composeViewModel").get())
+//        add("implementation", libs.findLibrary("koin.core").get())
+//        add("implementation", libs.findLibrary("koin.compose").get())
+        add("implementation", libs.findLibrary("koin-compose-viewmodel").get())
         add("implementation", libs.findLibrary("koin.android").get())
-        add("implementation", libs.findLibrary("koin.androidx.compose").get())
+//        add("implementation", libs.findLibrary("koin.androidx.compose").get())
       }
     }
   }

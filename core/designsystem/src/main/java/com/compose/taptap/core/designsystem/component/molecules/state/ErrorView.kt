@@ -6,7 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
+import com.compose.taptap.core.designsystem.component.atoms.button.ButtonSize
+import com.compose.taptap.core.designsystem.component.atoms.button.TapTapButton
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
@@ -14,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.compose.taptap.core.designsystem.component.atoms.text.TapTapText
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
 
 @Composable
@@ -31,7 +33,7 @@ fun ErrorView(
             style = TapTapTheme.typography.titleMedium,
             modifier = Modifier.padding(bottom = TapTapTheme.spacing.large)
         )
-        Button(onClick = onRetry) {
+        TapTapButton(onPress = onRetry, size = ButtonSize.MD) {
             AnimatedVisibility(visible = isLoading) {
                 CircularProgressIndicator(
                     color = LocalContentColor.current,
@@ -40,7 +42,7 @@ fun ErrorView(
                         .size(14.dp)
                 )
             }
-            Text("Try again", style = TapTapTheme.typography.bodyLarge)
+            TapTapText("Try again", style = TapTapTheme.typography.bodyLarge)
         }
     }
 }

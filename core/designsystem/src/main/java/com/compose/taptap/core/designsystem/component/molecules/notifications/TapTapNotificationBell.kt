@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.compose.taptap.core.designsystem.R
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
 
@@ -33,7 +32,7 @@ fun TapTapNotificationBell(
             modifier = Modifier
                 .offset(x = -(7).dp)
                 .height(12.dp)
-                .width(16.dp),
+                .width(16.dp).align(Alignment.CenterEnd),
             containerColor = TapTapTheme.colors.error,
             contentColor = TapTapTheme.colors.onError,
         ) {

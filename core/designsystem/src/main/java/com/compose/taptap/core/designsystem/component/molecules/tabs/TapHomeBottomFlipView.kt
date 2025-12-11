@@ -24,7 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.compose.taptap.core.designsystem.R
-import com.compose.taptap.core.designsystem.theme.BlackF16
+import com.compose.taptap.core.designsystem.theme.TapTapTheme
 
 @Composable
 fun TapHomeBottomFlipView(
@@ -41,7 +41,7 @@ fun TapHomeBottomFlipView(
         ),
         label = "FlipAnimation"
     )
-
+    val circleColor = TapTapTheme.colors.scrim
     Box(
         modifier = modifier
             .clip(CircleShape)
@@ -53,7 +53,7 @@ fun TapHomeBottomFlipView(
             val strokeWidth = 2.dp.toPx()
             val radius = (size.minDimension / 2) - (strokeWidth / 2)
             drawCircle(
-                color = BlackF16,
+                color = circleColor,
                 radius = radius,
                 style = Stroke(width = strokeWidth)
             )
@@ -65,6 +65,7 @@ fun TapHomeBottomFlipView(
                 .fillMaxSize()
                 .graphicsLayer {
                     rotationY = rotation
+                    cameraDistance = 12f * density
                     alpha = if (rotation <= 90f) 1f else 0f
                 },
             contentAlignment = Alignment.Center

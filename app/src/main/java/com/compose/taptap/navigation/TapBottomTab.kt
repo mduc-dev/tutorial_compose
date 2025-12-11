@@ -24,15 +24,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.Color.Companion.Unspecified
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.compose.taptap.core.designsystem.component.atoms.divider.TapTapDivider
+import com.compose.taptap.core.designsystem.component.atoms.text.TapTapText
+import com.compose.taptap.core.designsystem.component.molecules.tabs.MeTabIcon
 import com.compose.taptap.core.designsystem.component.molecules.tabs.TapHomeBottomFlipView
-import com.compose.taptap.core.designsystem.theme.BlackF16
 import com.compose.taptap.core.designsystem.theme.TapTapDimens.BottomBarHeight
 import com.compose.taptap.core.designsystem.theme.TapTapDimens.BottomBarIconSize
 import com.compose.taptap.core.designsystem.theme.TapTapDimens.BottomBarItemHeight
@@ -43,11 +42,9 @@ import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.core.designsystem.theme.WhitePrimary
 import com.compose.taptap.core.designsystem.util.BOTTOM_TAB
 import com.compose.taptap.core.navigation.TapTapScreen
-import com.compose.taptap.core.designsystem.component.molecules.tabs.MeTabIcon
-import com.compose.taptap.feature.me.MeViewModel
 import com.compose.taptap.feature.me.MeUiState
+import com.compose.taptap.feature.me.MeViewModel
 import org.koin.compose.viewmodel.koinViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun TapBottomTab(
@@ -58,16 +55,15 @@ fun TapBottomTab(
     onFlip: () -> Unit,
     onItemClick: (TapTapScreen) -> Unit,
 ) {
-    // List of items, with null for the middle spacer
+
     val firstHalf = BOTTOM_TAB.take(2)
     val secondHalf = BOTTOM_TAB.drop(2)
     val tabItems = remember { firstHalf + null + secondHalf }
 
     Box(
         modifier = modifier
-            .windowInsetsPadding(WindowInsets.navigationBars)
             .height(BottomBarHeight)
-            .background(BlackF16)
+            .background(TapTapTheme.colors.scrim)
     ) {
         // Divider at the top
         TapTapDivider(
@@ -99,7 +95,10 @@ fun TapBottomTab(
                             val uiState by meViewModel.uiState.collectAsStateWithLifecycle()
                             val userProfile = (uiState as? MeUiState.Success)?.data
                             Box(modifier = Modifier.padding(top = BottomBarItemMarginTop)) {
-                                MeTabIcon(selected = currentRoute == item.route, userProfile = userProfile)
+                                MeTabIcon(
+                                    selected = currentRoute == item.route,
+                                    userProfile = userProfile
+                                )
                             }
                         } else {
                             Column(
@@ -107,13 +106,15 @@ fun TapBottomTab(
                                 modifier = Modifier.padding(top = BottomBarItemMarginTop),
                                 verticalArrangement = Arrangement.spacedBy(5.dp)
                             ) {
-                                Icon(
-                                    painter = if (currentRoute == item.route) item.selectedIcon else item.icon,
-                                    contentDescription = item.title,
-                                    tint = if (item.title == "You") WhitePrimary else Unspecified,
-                                    modifier = Modifier.size(BottomBarIconSize)
-                                )
-                                Text(
+                                if (currentRoute == item.route) item.selectedIcon else item.icon?.let {
+                                    Icon(
+                                        painter = it,
+                                        contentDescription = item.title,
+                                        tint = if (item.title == "You") WhitePrimary else Unspecified,
+                                        modifier = Modifier.size(BottomBarIconSize)
+                                    )
+                                }
+                                TapTapText(
                                     text = item.title,
                                     color = if (currentRoute == item.route) TapTapTheme.colors.onBackground else TapTapTheme.colors.onSurfaceVariant,
                                     style = TapTapTheme.typography.labelMedium
@@ -130,8 +131,8 @@ fun TapBottomTab(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .offset(y = FlipViewTranslationY) // android:translationY="-12.0dip"
-                .size(FlipViewSize) // android:layout_width="60.0dip"
-                .zIndex(1f), isFlipped = isFlipped, backImageUrl = flipBackImageUrl, onFlip = onFlip
+                .size(FlipViewSize), // android:layout_width="60.0dip"
+            isFlipped = isFlipped, backImageUrl = flipBackImageUrl, onFlip = onFlip
         )
     }
 }

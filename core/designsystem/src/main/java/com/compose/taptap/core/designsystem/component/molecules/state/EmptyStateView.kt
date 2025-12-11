@@ -55,9 +55,11 @@ fun EmptyStateView(
 @Composable
 @Preview(apiLevel = 36, showBackground = true, backgroundColor = 0xFF1A1A1A, showSystemUi = true)
 fun PreviewNoExistData() {
-    EmptyStateView(
-        subTextNull = "Write a post to start your profile’s never-ending journey",
-        painterResourceName = R.drawable.confuse_icon,
-        modifier = Modifier
-    )
+    TapTapTheme(darkTheme = true, dynamicColor = false) {
+        EmptyStateView(
+            subTextNull = "Write a post to start your profile’s never-ending journey",
+            painterResourceName = R.drawable.confuse_icon,
+            modifier = Modifier
+        )
+    }
 }

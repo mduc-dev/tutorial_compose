@@ -1,11 +1,10 @@
 package com.compose.taptap.core.designsystem.util
 
 import android.util.Log
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.rounded.AccountCircle
+//import androidx.compose.material.icons.Icons
+//import androidx.compose.material.icons.outlined.AccountCircle
+//import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import com.compose.taptap.core.designsystem.R
 import com.compose.taptap.core.navigation.TapTapScreen
@@ -48,8 +47,8 @@ val BOTTOM_TAB: List<BottomTab>
         ),
         BottomTab(
             title = "Me",
-            icon = rememberVectorPainter(Icons.Outlined.AccountCircle),
-            selectedIcon = rememberVectorPainter(Icons.Rounded.AccountCircle),
+//            icon = rememberVectorPainter(Icons.Outlined.AccountCircle),
+//            selectedIcon = rememberVectorPainter(Icons.Rounded.AccountCircle),
             route = TapTapScreen.Me
         ),
     )
