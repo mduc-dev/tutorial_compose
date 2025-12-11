@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -57,6 +58,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
@@ -278,29 +280,9 @@ fun MeScreen(
                         .fillParentMaxSize(), // Allow Pager to take full screen height to enable scrolling past header
                     verticalAlignment = Alignment.Top
                 ) { page ->
-
-
-                    val density = LocalDensity.current
-                    val topPadding by remember {
-                        derivedStateOf {
-                            val pagerItem =
-                                listState.layoutInfo.visibleItemsInfo.find { it.index == 2 }
-                            val itemOffset = pagerItem?.offset ?: 0
-
-                            val stickyHeight = if (page == 0 || page == 1) 136.dp else 72.dp
-                            val minPadding = 24.dp
-
-                            val stickyHeightPx = with(density) { stickyHeight.toPx() }
-                            val minPaddingPx = with(density) { minPadding.toPx() }
-
-                            val paddingPx = maxOf(minPaddingPx, stickyHeightPx - itemOffset)
-                            with(density) { paddingPx.toDp() }
-                        }
-                    }
-
                     val contentModifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = topPadding)
+                        .stickyHeaderOffset(listState, page)
                     when (page) {
                         0 -> {
                             // Posts
@@ -856,4 +838,17 @@ fun GameListContent(
             }
         }
     }
+}
+
+private fun Modifier.stickyHeaderOffset(listState: LazyListState, page: Int) = graphicsLayer {
+    val pagerItem = listState.layoutInfo.visibleItemsInfo.find { it.index == 2 }
+    val itemOffset = pagerItem?.offset ?: 0
+
+    val stickyHeight = if (page == 0 || page == 1) 136.dp else 72.dp
+    val minPadding = 24.dp
+
+    val stickyHeightPx = stickyHeight.toPx()
+    val minPaddingPx = minPadding.toPx()
+
+    translationY = maxOf(minPaddingPx, stickyHeightPx - itemOffset)
 }

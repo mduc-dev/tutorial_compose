@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -41,6 +42,7 @@ import com.compose.taptap.core.designsystem.component.organisms.paging.AppendLoa
 import com.compose.taptap.core.designsystem.component.organisms.paging.PagingAppendErrorFooter
 import com.compose.taptap.core.designsystem.component.organisms.paging.PagingErrorState
 import com.compose.taptap.core.designsystem.theme.IntlCcDivider
+import com.compose.taptap.core.designsystem.theme.TapTapDimens.ListBottomPadding
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.core.designsystem.util.LoadingResult
 import com.compose.taptap.core.model.ListGameItem
@@ -241,6 +243,7 @@ fun DiscoverPageContent(
             .fillMaxSize()
             .background(TapTapTheme.colors.background)
             .testTag("game_list"),
+        contentPadding = PaddingValues(bottom = ListBottomPadding)
     ) {
         // Sub-tabs as first item - scrolls with content
         item {
@@ -308,25 +311,24 @@ fun DiscoverPageContent(
 }
 
 
-
 @Preview()
 @Composable
 private fun GameScreenPreview() {
     val games = flowOf(PagingData.from(PreviewUtils.mockGames.map {
-        ListGameItem(app = it) 
+        ListGameItem(app = it)
     })).collectAsLazyPagingItems()
-    
+
     TapTapPreviewTheme {
         CompositionLocalProvider(LocalGameList provides games) {
             GameScreen(
                 uiState = GameUiState(
-                searchPlaceholder = "Discover Superb Games",
-                unreadNotifications = 5,
-                selectedTopTab = 0,
-                selectedSubTab = 0,
-            ),
-            featuredGames = persistentListOf(),
-            onEvent = {} // No-op for preview
+                    searchPlaceholder = "Discover Superb Games",
+                    unreadNotifications = 5,
+                    selectedTopTab = 0,
+                    selectedSubTab = 0,
+                ),
+                featuredGames = persistentListOf(),
+                onEvent = {} // No-op for preview
             )
         }
     }
