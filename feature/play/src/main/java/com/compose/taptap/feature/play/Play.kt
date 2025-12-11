@@ -174,7 +174,7 @@ fun PageContent(
                 0 -> LazyVerticalGrid(
                     state = gamesGridState,
                     columns = GridCells.Fixed(2),
-                    modifier = Modifier.fillMaxWidth().testTag("play_grid"),
+                    modifier = Modifier.fillMaxSize().testTag("play_grid"),
                     horizontalArrangement = Arrangement.spacedBy(GridSpacing),
                     verticalArrangement = Arrangement.spacedBy(GridSpacing),
                     contentPadding = PaddingValues(bottom = ListBottomPadding)

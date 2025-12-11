@@ -3,6 +3,7 @@ package com.compose.taptap.core.designsystem.theme
 import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
@@ -13,8 +14,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.core.view.WindowCompat
 
 
@@ -30,12 +34,14 @@ object TapTapTheme {
         content: @Composable () -> Unit,
     ) {
         val tapTapColors = if (darkTheme) TapTapTokens.darkColors else TapTapTokens.lightColors
-        
+
         val colorScheme =
             when {
                 dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
                     val context = LocalContext.current
-                    if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+                    if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(
+                        context
+                    )
                 }
 
                 darkTheme -> darkColorScheme(
@@ -54,6 +60,7 @@ object TapTapTheme {
                     // We'll leave outlineVariant as default or map it if we want consistency.
                     // outlineVariant = tapTapColors.divider 
                 )
+
                 else -> lightColorScheme(
                     primary = tapTapColors.primary,
                     onPrimary = tapTapColors.onPrimary,
@@ -71,7 +78,8 @@ object TapTapTheme {
         if (!view.isInEditMode) {
             SideEffect {
                 val window = (view.context as Activity).window
-                WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+                WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =
+                    !darkTheme
             }
         }
 
@@ -84,7 +92,15 @@ object TapTapTheme {
                 colorScheme = colorScheme,
                 typography = TapTapTypography,
                 shapes = TapTapShapes,
-                content = content
+                content = {
+                    Box(
+                        modifier = Modifier.semantics {
+                            testTagsAsResourceId = true
+                        }
+                    ) {
+                        content()
+                    }
+                }
             )
         }
     }
