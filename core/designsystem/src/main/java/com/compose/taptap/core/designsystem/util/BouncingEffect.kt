@@ -5,7 +5,6 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.offset
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -14,11 +13,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.round
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 fun Modifier.bouncingEffect(): Modifier = composed {
     val offset = remember { Animatable(Offset.Zero, Offset.VectorConverter) }
@@ -67,7 +64,7 @@ fun Modifier.bouncingEffect(): Modifier = composed {
                 
                 // Only allow overscroll during Drag. Fling events should not create new overscroll 
                 // linearly as it leads to massive offsets (flying off screen).
-                if (source == NestedScrollSource.Drag) {
+                if (source == NestedScrollSource.UserInput) {
                     val newOffset = offset.value + available * resistance
                     scope.launch {
                         offset.snapTo(newOffset)

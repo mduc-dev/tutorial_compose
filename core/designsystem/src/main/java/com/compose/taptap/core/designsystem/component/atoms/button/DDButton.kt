@@ -27,12 +27,11 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.compose.taptap.core.designsystem.util.nonScaledSp
 import com.compose.taptap.core.designsystem.theme.TapTapShape
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
+import com.compose.taptap.core.designsystem.util.nonScaledSp
 import kotlinx.coroutines.delay
 
 //TODO: border {color,width}, disable {color},
@@ -168,7 +167,7 @@ fun DDButton(
                         }
                     }
                     CircularProgressIndicator(
-                        progress = progress,
+                        progress = { progress },
                         modifier = Modifier.size(ButtonDefaults.IconSize),
                         color = TapTapTheme.colors.onPrimary,
                         strokeWidth = 2.dp,

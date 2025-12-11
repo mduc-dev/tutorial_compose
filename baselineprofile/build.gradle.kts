@@ -13,6 +13,10 @@ android {
     targetCompatibility = JavaVersion.VERSION_17
   }
 
+  kotlin {
+    jvmToolchain(17)
+  }
+
   defaultConfig {
     minSdk = 24
     targetSdk = 36
@@ -56,7 +60,6 @@ dependencies {
 androidComponents {
   onVariants { v ->
     // testedApks is an incubating API
-    @Suppress("UnstableApiUsage")
     val artifactsLoader = v.artifacts.getBuiltArtifactsLoader()
     v.instrumentationRunnerArguments.put(
       "targetAppId",
