@@ -61,6 +61,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -70,10 +71,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import coil3.compose.AsyncImage
 import com.compose.taptap.core.designsystem.R
 import com.compose.taptap.core.designsystem.component.atoms.text.TapTapText
 import com.compose.taptap.core.designsystem.component.atoms.text.TapTapTextVariant
+import com.compose.taptap.core.designsystem.component.atoms.video.VideoCacheManager
 import com.compose.taptap.core.designsystem.component.molecules.state.TapErrorView
 import com.compose.taptap.core.designsystem.theme.Black1A
 import com.compose.taptap.core.designsystem.theme.BlackDisable
@@ -83,16 +86,17 @@ import com.compose.taptap.core.designsystem.theme.IntlCcGreenPrimary
 import com.compose.taptap.core.designsystem.theme.TapTapShape
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.core.designsystem.util.DisabledInteractionSource
+import com.compose.taptap.core.designsystem.util.LoadingResult
+import com.compose.taptap.core.model.BadgeWearInfoData
+import com.compose.taptap.core.model.FeedItem
+import com.compose.taptap.core.model.UserAppStatusItem
 import com.compose.taptap.core.model.UserProfileData
 import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.core.navigation.currentComposeNavigator
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
-private val tabs = persistentListOf("Posts", "Saved", "Drafts")
-private val enumValuesChip = persistentListOf("All", "Gamelists", "Articles", "Videos")
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -102,16 +106,26 @@ fun MeScreen(
     val composeNavigator = currentComposeNavigator
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
-    val pagerState = rememberPagerState(pageCount = { tabs.size })
+    val pagerState = rememberPagerState(pageCount = { tabYou.size })
 
     val spacing = TapTapTheme.spacing
-    var selectedFilter by remember { mutableStateOf(enumValuesChip[0]) } // String selection for snippet
+    val context = LocalContext.current
+    
+    // Preload Badge Screen video to ensure instant playback when navigating
+    LaunchedEffect(Unit) {
+        val badgeVideoUri = "android.resource://${context.packageName}/${R.raw.uci_badge_anim}".toUri()
+        // VideoCacheManager is in core.designsystem
+       VideoCacheManager.preloadVideo(context, badgeVideoUri)
+    }
+
+    var selectedFilter by remember { mutableStateOf(chipYou[0]) } // String selection for snippet
     val styleTextBtn = TapTapTheme.typography.titleMedium.copy(
         color = TapTapTheme.colors.onSecondary, fontWeight = FontWeight.Bold
     )
 
     val uiState by viewModel.uiState.collectAsState()
-    val userProfile = (uiState as? MeUiState.Success)?.data
+    val userProfileState by viewModel.userProfileState.collectAsState(initial = LoadingResult.Loading)
+    val userProfile = (userProfileState as? LoadingResult.Success)?.value
 
     val avatarAlpha by remember {
         derivedStateOf {
@@ -213,7 +227,7 @@ fun MeScreen(
                             )
                         },
                         divider = {}) {
-                        tabs.forEachIndexed { index, title ->
+                        tabYou.forEachIndexed { index, title ->
                             Tab(
                                 selectedContentColor = Color.White,
                                 unselectedContentColor = BlackDisable,
@@ -243,7 +257,7 @@ fun MeScreen(
                             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            items(enumValuesChip) { chipText ->
+                            items(chipYou) { chipText ->
                                 FilterChip(
                                     selected = chipText == selectedFilter,
                                     onClick = {
@@ -286,21 +300,33 @@ fun MeScreen(
                     when (page) {
                         0 -> {
                             // Posts
-                            TapErrorView(
-                                modifier = contentModifier,
-                                icon = R.drawable.emoji_3d_lilac_front_sad,
-                                title = "Emptier than the void",
-                                subTitle = "Looks like you have scribed all of your thoughts.",
-                                buttonText = "Retry",
-                                onRetry = {}
-                            )
+                            if (uiState.posts.isNotEmpty()) {
+                                LazyColumn(
+                                    modifier = contentModifier,
+                                    contentPadding = PaddingValues(bottom = 16.dp),
+                                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                                ) {
+                                    items(uiState.posts, key = { it.post?.id ?: 0 }) { item ->
+                                        FeedItem(item = item)
+                                    }
+                                }
+                            } else {
+                                TapErrorView(
+                                    modifier = contentModifier,
+                                    icon = R.drawable.emoji_3d_lilac_front_sad,
+                                    title = "Emptier than the void",
+                                    subTitle = "Looks like you have scribed all of your thoughts.",
+                                    buttonText = "Retry",
+                                    onRetry = {}
+                                )
+                            }
                         }
 
                         1 -> {
                             // Saved
                             TapErrorView(
                                 modifier = contentModifier,
-                                icon = R.drawable.emoji_3d_lilac_rightbottom_sad,
+                                icon = R.drawable.emoji_3d_lilac_righttop_sad,
                                 title = "Emptier than the void",
                                 subTitle = "Save your favorite content to populate your profile's never-ending journey.",
                                 buttonText = "Retry",
@@ -312,7 +338,7 @@ fun MeScreen(
                             // Drafts
                             TapErrorView(
                                 modifier = contentModifier,
-                                icon = R.drawable.emoji_3d_lilac_righttop_sad,
+                                icon = R.drawable.emoji_3d_lilac_rightbottom_sad,
                                 title = "Emptier than the void",
                                 subTitle = "Looks like you have scribed all of your thoughts.",
                                 buttonText = "Retry",
@@ -327,7 +353,10 @@ fun MeScreen(
 }
 
 @Composable
-fun FeedItem(userProfile: UserProfileData?) {
+fun FeedItem(item: FeedItem) {
+    val post = item.post ?: return
+    val user = post.user
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -343,25 +372,28 @@ fun FeedItem(userProfile: UserProfileData?) {
         ) {
             // Mock content
             AsyncImage(
-                model = "https://example.com/mock_video_thumb.jpg",
+                model = post.listFields?.cover?.url,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
-                error = painterResource(R.drawable.sad_icon_top) // Just a placeholder
+                placeholder = painterResource(R.drawable.sad_icon_top),
+                error = painterResource(R.drawable.sad_icon_top)
             )
         }
 
         Spacer(modifier = Modifier.height(12.dp))
 
         TapTapText(
-            text = "hello", color = TapTapTheme.colors.onSurface, fontWeight = FontWeight.Bold
+            text = post.listFields?.title ?: "",
+            color = TapTapTheme.colors.onSurface,
+            fontWeight = FontWeight.Bold
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             AsyncImage(
-                model = userProfile?.avatar,
+                model = user?.avatar,
                 contentDescription = null,
                 modifier = Modifier
                     .size(20.dp)
@@ -371,7 +403,7 @@ fun FeedItem(userProfile: UserProfileData?) {
             )
             Spacer(modifier = Modifier.width(8.dp))
             TapTapText(
-                text = "${userProfile?.name ?: "Duc Nguyen"} · 05/22",
+                text = "${user?.name ?: "TapUser"} · 05/23/24",
                 variant = TapTapTextVariant.XS,
                 color = TapTapTheme.colors.onSurfaceVariant,
             )
@@ -385,14 +417,18 @@ fun FeedItem(userProfile: UserProfileData?) {
             )
             Spacer(modifier = Modifier.width(4.dp))
             TapTapText(
-                text = "2", variant = TapTapTextVariant.XS, color = TapTapTheme.colors.primary
+                text = "${post.stat?.ups ?: 0}", variant = TapTapTextVariant.XS, color = TapTapTheme.colors.primary
             )
         }
     }
 }
 
 @Composable
-fun UserCenterHeader(userProfile: UserProfileData?) {
+fun UserCenterHeader(
+    userProfile: UserProfileData?,
+    viewModel: MeViewModel = koinViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
 
     Column(modifier = Modifier.fillMaxWidth()) {
         // Banner (XML h=0dp, seemingly invisible or collapsed initially)
@@ -517,10 +553,13 @@ fun UserCenterHeader(userProfile: UserProfileData?) {
                 .padding(start = 16.dp, end = 16.dp, bottom = 20.dp)
         ) {
             // Badges
+            val navigator = currentComposeNavigator
             UserCenterBadges(
+                badges = uiState.badges,
                 modifier = Modifier
                     .width(90.dp)
                     .height(135.dp)
+                    .clickable { navigator.navigate(TapTapScreen.Badge) }
             )
 
             Spacer(modifier = Modifier.width(12.dp))
@@ -555,23 +594,10 @@ fun UserCenterHeader(userProfile: UserProfileData?) {
                             .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        val gameIcons = remember {
-                            persistentListOf(
-                                "https://example.com/0.jpg",
-                                "https://example.com/1.jpg",
-                                "https://example.com/2.jpg",
-                                "https://example.com/3.jpg",
-                                "https://example.com/4.jpg",
-                                "https://example.com/5.jpg",
-                                "https://example.com/6.jpg",
-                                "https://example.com/7.jpg",
-                            )
-                        }
-
                         // Max 5 items: 4 icons + 1 overflow if needed
                         // Add padding end to reduce width -> smaller items while keeping 3.66 ratio
                         GameListContent(
-                            gameIcons = gameIcons,
+                            games = uiState.myGames,
                             spacing = spacing,
                             modifier = Modifier
                                 .weight(1f)
@@ -699,7 +725,10 @@ fun StatsItem(count: Int, label: String, centered: Boolean = false) {
 
 //color intl_v2_grey_90
 @Composable
-fun UserCenterBadges(modifier: Modifier = Modifier) {
+fun UserCenterBadges(
+    badges: BadgeWearInfoData?,
+    modifier: Modifier = Modifier
+) {
     Box(
         modifier = modifier.background(Color(0xFF242424), shape = TapTapShape.corners.dialog)
     ) {
@@ -737,32 +766,10 @@ fun UserCenterBadges(modifier: Modifier = Modifier) {
     }
 }
 
-@Composable
-fun UserCenterContentEmpty() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 40.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.sad_icon_top), // Placeholder for uci_user_content_empty_ic
-            contentDescription = null,
-            contentScale = ContentScale.Fit,
-            modifier = Modifier.size(width = 150.dp, height = 135.dp)
-        )
-        TapTapText(
-            text = "There is nothing here...", // @string/uci_user_center_bottom_empty
-            variant = TapTapTextVariant.XS,
-            color = TapTapTheme.colors.textGray, // @color/v3_common_gray_04
-            modifier = Modifier.padding(top = 16.dp)
-        )
-    }
-}
 
 @Composable
 fun GameListContent(
-    gameIcons: ImmutableList<String>,
+    games: ImmutableList<UserAppStatusItem>,
     spacing: Dp,
     modifier: Modifier = Modifier,
     onItemWidthChange: (Dp) -> Unit
@@ -797,15 +804,13 @@ fun GameListContent(
                 horizontalArrangement = Arrangement.spacedBy(spacing)
             ) {
                 val displayLimit = 5
-                val showOverflow = gameIcons.size > displayLimit
+                val showOverflow = games.size > displayLimit
                 // If overflow, we show 5 items + 1 overflow item (total 6).
                 // If not, we show all items (size <= 5).
-                val displayCount = if (showOverflow) displayLimit + 1 else gameIcons.size
+                val displayCount = if (showOverflow) displayLimit + 1 else games.size
 
                 items(displayCount) { index ->
                     if (showOverflow && index == displayLimit) {
-                        // This is the overflow item (e.g. index 5)
-                        val remaining = gameIcons.size - displayLimit
                         Box(
                             modifier = Modifier
                                 .size(itemWidth, itemHeight)
@@ -813,7 +818,7 @@ fun GameListContent(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "+$remaining",
+                                text = "${games.size} +",
                                 style = TapTapTheme.typography.titleSmall.copy(
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Bold
@@ -824,7 +829,7 @@ fun GameListContent(
                     } else {
                         // Regular game item
                         AsyncImage(
-                            model = gameIcons[index],
+                            model = games[index].app?.icon?.url,
                             contentDescription = "my-games-item",
                             modifier = Modifier
                                 .size(itemWidth, itemHeight)

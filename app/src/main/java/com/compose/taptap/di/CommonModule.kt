@@ -19,6 +19,7 @@ import com.compose.taptap.feature.play.PlayViewModel
 import com.compose.taptap.feature.search.SearchViewModel
 import com.compose.taptap.feature.auth.welcome.WelcomeViewModel
 import com.compose.taptap.feature.me.MeViewModel
+import com.compose.taptap.feature.me.badge.BadgeViewModel
 import com.compose.taptap.feature.notifications.NotificationViewModel
 import com.compose.taptap.feature.tavern.TavernViewModel
 import org.koin.android.ext.koin.androidContext
@@ -58,6 +59,7 @@ fun commonModule() = module {
     viewModelOf(::PlayViewModel)
 
     viewModelOf(::MeViewModel)
+    viewModelOf(::BadgeViewModel)
     viewModelOf(::NotificationViewModel)
     viewModelOf(::TavernViewModel)
 }

@@ -1,5 +1,7 @@
 package com.compose.taptap.feature.play
 
+import androidx.compose.foundation.layout.statusBarsPadding
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -118,10 +120,13 @@ fun Play(
         }
     }
 
+
+
     CompositionLocalProvider(LocalInstantGameList provides instantGames) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .statusBarsPadding()
                 .background(TapTapTheme.colors.background)
         ) {
             PlayTabRow(

@@ -14,4 +14,5 @@ dependencies {
     implementation(libs.bundles.coil)
     implementation(libs.kotlinx.collections.immutable)
     implementation(project(":feature:auth"))
+    implementation(libs.kotlinx.serialization.json)
 }

@@ -1,5 +1,7 @@
 package com.compose.taptap.feature.game
 
+import androidx.compose.foundation.layout.statusBarsPadding
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -108,6 +110,8 @@ fun GameRoute(
     }
 }
 
+
+
 @Composable
 fun GameScreen(
     modifier: Modifier = Modifier,
@@ -116,7 +120,9 @@ fun GameScreen(
     onEvent: (GameUiEvent) -> Unit,
 ) {
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .statusBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         TopBar(

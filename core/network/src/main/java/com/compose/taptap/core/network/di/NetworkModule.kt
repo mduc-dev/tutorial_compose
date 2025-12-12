@@ -122,6 +122,15 @@ object BUILDCONFIG {
         return "$BASE_URL/i/badge/v1/list-by-me?limit=50&X-UA=$xua&from=0"
     }
 
+    //TODO: ở đây cần header Authorization: MAC, XDT, S-SMFP, X-UT
+    //| Header                 | Dùng để làm gì                                         | Ai tạo                  |
+    //| ---------------------- | ------------------------------------------------------ | ----------------------- |
+    //| **Authorization: MAC** | Xác thực request, chống giả mạo                        | App + secret key        |
+    //| **X-DT**               | Device Trust Token: fingerprint thiết bị + anti-tamper | App (native layer)      |
+    //| **X-SMFP**             | Fingerprint phiên làm việc                             | App                     |
+    //| **X-UT**               | User token (login)                                     | Server trả về sau login |
+    //| **User-Agent**         | Thư viện OkHttp                                        | App                     |
+
     fun userProfileUrl(xua: String = newXUA()): String {
         return "$BASE_URL/user-profile/v1/me?X-UA=$xua"
     }

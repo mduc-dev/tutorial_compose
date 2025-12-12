@@ -6,7 +6,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.compose.taptap.core.navigation.TapTapScreen
-import com.compose.taptap.feature.me.MeScreen
 import com.compose.taptap.feature.auth.forgotpassword.ForgotPasswordScreen
 import com.compose.taptap.feature.auth.login.LoginScreen
 import com.compose.taptap.feature.auth.loginwithoutpassword.LoginWithoutPasswordScreen
@@ -14,6 +13,8 @@ import com.compose.taptap.feature.auth.signup.SignupScreen
 import com.compose.taptap.feature.auth.welcome.WelcomeScreen
 import com.compose.taptap.feature.game.GameRoute
 import com.compose.taptap.feature.game_detail.GameDetail
+import com.compose.taptap.feature.me.MeScreen
+import com.compose.taptap.feature.me.badge.BadgeScreen
 import com.compose.taptap.feature.notifications.Notifications
 import com.compose.taptap.feature.play.Play
 import com.compose.taptap.feature.search.SearchRoute
@@ -97,6 +98,7 @@ fun NavGraphBuilder.tapMainNavigation(
         composable<TapTapScreen.Play> { Play(onToggleFlip = onToggleFlip) }
         composable<TapTapScreen.Tavern> { Tavern() }
         composable<TapTapScreen.Me> { MeScreen() }
+        composable<TapTapScreen.Badge> { BadgeScreen() }
         composable<TapTapScreen.Search> {
             SearchRoute()
         }

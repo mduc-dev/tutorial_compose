@@ -37,6 +37,9 @@ sealed interface TapTapScreen {
     @Serializable
     data object Me : TapTapScreen
 
+    @Serializable
+    data object Badge : TapTapScreen
+
 
     //common screens
     @Serializable

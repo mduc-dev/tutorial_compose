@@ -25,4 +25,10 @@ dependencies {
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.androidx.appcompat)
     debugImplementation(libs.androidx.compose.ui.tooling)
+
+    api(libs.media3.exoplayer)
+    api(libs.media3.ui)
+    api(libs.media3.ui.compose)
+    api(libs.media3.database)
+    api(libs.media3.datasource)
 }
