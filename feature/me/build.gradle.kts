@@ -11,8 +11,9 @@ android {
 }
 
 dependencies {
-    implementation(libs.bundles.coil)
-    implementation(libs.kotlinx.collections.immutable)
     implementation(project(":feature:auth"))
+
+    implementation(libs.bundles.coil)
+    implementation(libs.kotlinx.immutable.collections)
     implementation(libs.kotlinx.serialization.json)
 }
