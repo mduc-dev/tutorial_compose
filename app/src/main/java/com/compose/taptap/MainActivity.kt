@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.CompositionLocalProvider
+import com.compose.taptap.core.designsystem.component.atoms.video.VideoCacheManager
 import com.compose.taptap.core.navigation.AppComposeNavigator
 import com.compose.taptap.core.navigation.LocalComposeNavigator
 import com.compose.taptap.core.navigation.TapTapScreen
@@ -26,6 +27,11 @@ class MainActivity : ComponentActivity() {
                 TapTapMain(composeNavigator = composeNavigator)
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        VideoCacheManager.release()
     }
 }
 

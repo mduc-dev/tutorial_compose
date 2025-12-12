@@ -33,8 +33,9 @@ import com.compose.taptap.core.designsystem.theme.TapTapDimens.FlipViewSize
 import com.compose.taptap.core.designsystem.theme.TapTapDimens.FlipViewTranslationY
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.core.designsystem.util.BottomTab
+import com.compose.taptap.core.designsystem.util.LoadingResult
 import com.compose.taptap.core.navigation.TapTapScreen
-import com.compose.taptap.feature.me.MeUiState
+
 import com.compose.taptap.feature.me.MeViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -84,8 +85,8 @@ private val bottomTabs: List<BottomTab>
             route = TapTapScreen.Me,
             content = { selected ->
                 val meViewModel: MeViewModel = koinViewModel()
-                val uiState by meViewModel.uiState.collectAsStateWithLifecycle()
-                val userProfile = (uiState as? MeUiState.Success)?.data
+                val userProfileState by meViewModel.userProfileState.collectAsStateWithLifecycle()
+                val userProfile = (userProfileState as? LoadingResult.Success)?.value
                 MeTabIcon(
                     selected = selected,
                     userProfile = userProfile

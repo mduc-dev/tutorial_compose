@@ -1,5 +1,6 @@
 package com.compose.taptap.core.model
 
+import androidx.compose.runtime.Immutable
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
@@ -11,6 +12,7 @@ import kotlinx.serialization.json.JsonElement
  */
 typealias FeedByMeData = PaginationData<FeedItem>
 
+@Immutable
 @Serializable
 data class FeedItem(
     @SerialName("type") val type: String? = null,

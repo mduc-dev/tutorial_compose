@@ -4,7 +4,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -121,19 +121,18 @@ private fun TapMainNavigationHost(navHostController: NavHostController) {
                         }
                     }
                 })
-        }) { innerPadding ->
-        NavHost(
-            navHostController,
-            startDestination = TapTapScreen.MainGraph,
-            modifier = Modifier
-                .padding(top = innerPadding.calculateTopPadding())
-                .fillMaxSize()
-        ) {
-            tapMainNavigation(
-                onToggleFlip = { shouldFlip, imageUrl ->
-                    if (imageUrl != null) setFlipBackImageUrl(imageUrl)
-                    setIsFlipped(shouldFlip)
-                })
-        }
-    }
+        }, content = { _ ->
+            NavHost(
+                navHostController,
+                startDestination = TapTapScreen.MainGraph,
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                tapMainNavigation(
+                    onToggleFlip = { shouldFlip, imageUrl ->
+                        if (imageUrl != null) setFlipBackImageUrl(imageUrl)
+                        setIsFlipped(shouldFlip)
+                    })
+            }
+        })
 }

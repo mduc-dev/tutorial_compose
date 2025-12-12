@@ -1,5 +1,7 @@
 package com.compose.taptap.feature.search
 
+import androidx.compose.foundation.layout.statusBarsPadding
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +19,8 @@ fun SearchRoute(
     SearchScreen()
 }
 
+
+
 @Composable
 fun SearchScreen(
     modifier: Modifier = Modifier
@@ -24,6 +28,7 @@ fun SearchScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .statusBarsPadding()
             .background(BlackF16)
     ) {
         TapTapText(
