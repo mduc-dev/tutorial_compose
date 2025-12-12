@@ -62,7 +62,8 @@ import com.compose.taptap.core.designsystem.theme.TapTapDimens.TabBottomPadding
 import com.compose.taptap.core.designsystem.theme.TapTapShape
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
 import com.compose.taptap.core.designsystem.util.DisabledInteractionSource
-import com.compose.taptap.core.navigation.AppComposeNavigator
+import com.compose.taptap.core.navigation.TapTapNavigator
+
 import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.core.navigation.currentComposeNavigator
 import com.compose.taptap.feature.auth.signup.extraSafeBottomPadding
@@ -161,7 +162,7 @@ fun LoginScreen() {
 fun PageContent(
     pagerState: PagerState,
     modifier: Modifier = Modifier,
-    composeNavigator: AppComposeNavigator<TapTapScreen>
+    composeNavigator: TapTapNavigator
 ) {
     val spacing = TapTapTheme.spacing
     HorizontalPager(

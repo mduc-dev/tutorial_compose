@@ -7,7 +7,7 @@ plugins {
     id("compose.taptap.android.application")
     id("compose.taptap.android.application.compose")
     id("compose.taptap.android.koin")
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ktLint)
     alias(libs.plugins.compose.compiler)

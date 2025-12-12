@@ -11,9 +11,6 @@ import com.compose.taptap.core.domain.usecases.play.GetRandomInstantGameUseCase
 import com.compose.taptap.core.domain.usecases.play.MarkGameAsPlayedUseCase
 import com.compose.taptap.core.domain.usecases.search.GetSearchPlaceholderFlowUseCase
 import com.compose.taptap.core.domain.usecases.me.GetUserProfileUseCase
-import com.compose.taptap.core.navigation.AppComposeNavigator
-import com.compose.taptap.core.navigation.TapComposeNavigator
-import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.feature.game.GameViewModel
 import com.compose.taptap.feature.play.PlayViewModel
 import com.compose.taptap.feature.search.SearchViewModel
@@ -43,8 +40,6 @@ fun commonModule() = module {
     factory<MarkGameAsPlayedUseCase> { MarkGameAsPlayedUseCase(get()) }
     factory<GetGameHistoryUseCase> { GetGameHistoryUseCase(get()) }
     factory { GetUserProfileUseCase(get()) }
-
-    single<AppComposeNavigator<TapTapScreen>> { TapComposeNavigator() }
 
     viewModel {
         WelcomeViewModel(

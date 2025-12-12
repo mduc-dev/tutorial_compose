@@ -4,7 +4,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -16,11 +15,12 @@ import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
 import com.compose.taptap.core.designsystem.theme.TapTapDimens
 import com.compose.taptap.core.designsystem.theme.TapTapTheme
+import com.compose.taptap.core.navigation.LocalComposeNavigator
+import com.compose.taptap.core.navigation.TapTapNavigatorImpl
 import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.feature.auth.AuthState
 import com.compose.taptap.feature.auth.welcome.LocalWelcomeViewModel
@@ -28,57 +28,45 @@ import com.compose.taptap.feature.auth.welcome.WelcomeViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun TapNavHost(
-    navHostController: NavHostController
-) {
+fun TapNavHost() {
     val welcomeViewModel: WelcomeViewModel = koinViewModel()
     val authState = welcomeViewModel.uiState.collectAsStateWithLifecycle().value
 
     CompositionLocalProvider(LocalWelcomeViewModel provides welcomeViewModel) {
         when (authState) {
-            is AuthState.Authenticated -> TapMainNavigationHost(navHostController)
-
+            is AuthState.Authenticated -> TapMainNavigationHost()
             is AuthState.Unauthenticated, is AuthState.Idle, is AuthState.Error, is AuthState.Loading -> {
-                TapAuthNavigationHost(navHostController)
+                TapAuthNavigationHost()
             }
         }
     }
 }
 
 @Composable
-private fun TapAuthNavigationHost(navHostController: NavHostController) {
-    NavHost(
-        navHostController,
-        startDestination = TapTapScreen.AuthGraph,
-        modifier = Modifier
-            .background(TapTapTheme.colors.scrim)
-            .fillMaxSize()
-    ) {
-        tapAuthNavigation()
+private fun TapAuthNavigationHost() {
+    val backStack = rememberNavBackStack(TapTapScreen.Welcome)
+    val navigator = remember(backStack) { TapTapNavigatorImpl(backStack) }
+
+    CompositionLocalProvider(LocalComposeNavigator provides navigator) {
+        NavDisplay(
+            backStack = backStack,
+            entryProvider = tapAuthEntryProvider,
+            modifier = Modifier
+                .background(TapTapTheme.colors.scrim)
+                .fillMaxSize()
+        )
     }
 }
 
 @Composable
-private fun TapMainNavigationHost(navHostController: NavHostController) {
+private fun TapMainNavigationHost() {
     val (isFlipped, setIsFlipped) = remember { mutableStateOf(false) }
     val (flipBackImageUrl, setFlipBackImageUrl) = remember { mutableStateOf<String?>(null) }
-
-    val currentRoute =
-        navHostController.currentBackStackEntryAsState().value?.destination?.route?.substringBefore(
-            '?'
-        )
-    val currentScreen = when (currentRoute) {
-        TapTapScreen.Game::class.qualifiedName -> TapTapScreen.Game
-        TapTapScreen.Play::class.qualifiedName -> TapTapScreen.Play
-        TapTapScreen.Tavern::class.qualifiedName -> TapTapScreen.Tavern
-        TapTapScreen.Me::class.qualifiedName -> TapTapScreen.Me
-        TapTapScreen.Search::class.qualifiedName -> TapTapScreen.Search
-        TapTapScreen.Notifications::class.qualifiedName -> TapTapScreen.Notifications
-        TapTapScreen.GameDetail::class.qualifiedName -> TapTapScreen.GameDetail
-        TapTapScreen.Settings::class.qualifiedName -> TapTapScreen.Settings
-        TapTapScreen.InAppUpdate::class.qualifiedName -> TapTapScreen.InAppUpdate
-        else -> null
-    }
+    
+    val backStack = rememberNavBackStack(TapTapScreen.Game)
+    val navigator = remember(backStack) { TapTapNavigatorImpl(backStack) }
+    
+    val currentScreen = backStack.lastOrNull() as? TapTapScreen
 
     val bottomBarHeightPx =
         with(LocalDensity.current) { TapTapDimens.BottomBarHeight.roundToPx().toFloat() }
@@ -96,43 +84,36 @@ private fun TapMainNavigationHost(navHostController: NavHostController) {
         label = "BottomBarAlpha"
     )
 
-    Scaffold(
-        bottomBar = {
-            TapBottomTab(
-                modifier = Modifier.graphicsLayer {
-                    translationY = bottomBarOffsetY
-                    alpha = bottomBarAlpha
-                    compositingStrategy = CompositingStrategy.ModulateAlpha
-                },
-                currentRoute = currentScreen,
-                isFlipped = isFlipped,
-                flipBackImageUrl = flipBackImageUrl,
-                onFlip = {
-                    // TODO: Implement flip click logic, e.g., trigger random play.
-                },
-                onItemClick = { screen ->
-                    if (screen != currentScreen) {
-                        navHostController.navigate(screen) {
-                            popUpTo(navHostController.graph.startDestinationId) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
+    CompositionLocalProvider(LocalComposeNavigator provides navigator) {
+        Scaffold(
+            bottomBar = {
+                TapBottomTab(
+                    modifier = Modifier.graphicsLayer {
+                        translationY = bottomBarOffsetY
+                        alpha = bottomBarAlpha
+                        compositingStrategy = CompositingStrategy.ModulateAlpha
+                    },
+                    currentRoute = currentScreen,
+                    isFlipped = isFlipped,
+                    flipBackImageUrl = flipBackImageUrl,
+                    onFlip = {
+                        // TODO: Implement flip click logic, e.g., trigger random play.
+                    },
+                    onItemClick = { screen ->
+                        if (screen != currentScreen) {
+                            navigator.navigate(screen)
                         }
-                    }
-                })
-        }, content = { _ ->
-            NavHost(
-                navHostController,
-                startDestination = TapTapScreen.MainGraph,
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                tapMainNavigation(
-                    onToggleFlip = { shouldFlip, imageUrl ->
-                        if (imageUrl != null) setFlipBackImageUrl(imageUrl)
-                        setIsFlipped(shouldFlip)
                     })
-            }
-        })
+            }, content = { _ ->
+                NavDisplay(
+                    backStack = backStack,
+                    entryProvider = tapMainEntryProvider(
+                        onToggleFlip = { shouldFlip, imageUrl ->
+                            if (imageUrl != null) setFlipBackImageUrl(imageUrl)
+                            setIsFlipped(shouldFlip)
+                        }),
+                    modifier = Modifier.fillMaxSize()
+                )
+            })
+    }
 }

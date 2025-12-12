@@ -1,12 +1,9 @@
 package com.compose.taptap.core.navigation
 
-import androidx.compose.runtime.Immutable
+import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
-@Immutable
-sealed interface TapTapScreen {
-    @Serializable data object AuthGraph : TapTapScreen
-    @Serializable data object MainGraph : TapTapScreen
+sealed interface TapTapScreen: NavKey {
 
     //auth screens
     @Serializable

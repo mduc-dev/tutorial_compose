@@ -22,8 +22,8 @@ dependencies {
     api(libs.androidx.compose.foundation)
     api(libs.androidx.compose.foundation.layout)
     
-    implementation(libs.kotlinx.collections.immutable)
-    implementation(libs.androidx.appcompat)
+    implementation(libs.kotlinx.immutable.collections)
+
     debugImplementation(libs.androidx.compose.ui.tooling)
 
     api(libs.media3.exoplayer)
