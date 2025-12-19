@@ -31,4 +31,5 @@ dependencies {
     api(libs.media3.ui.compose)
     api(libs.media3.database)
     api(libs.media3.datasource)
+    testImplementation(libs.junit)
 }

@@ -9,4 +9,5 @@ android {
 
 dependencies {
     implementation(libs.kotlinx.immutable.collections)
+    testImplementation(libs.junit)
 }

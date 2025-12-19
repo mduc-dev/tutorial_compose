@@ -1,5 +1,6 @@
 package com.compose.taptap.navigation
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -62,10 +63,10 @@ private fun TapAuthNavigationHost() {
 private fun TapMainNavigationHost() {
     val (isFlipped, setIsFlipped) = remember { mutableStateOf(false) }
     val (flipBackImageUrl, setFlipBackImageUrl) = remember { mutableStateOf<String?>(null) }
-    
+
     val backStack = rememberNavBackStack(TapTapScreen.Game)
     val navigator = remember(backStack) { TapTapNavigatorImpl(backStack) }
-    
+
     val currentScreen = backStack.lastOrNull() as? TapTapScreen
 
     val bottomBarHeightPx =
@@ -85,35 +86,33 @@ private fun TapMainNavigationHost() {
     )
 
     CompositionLocalProvider(LocalComposeNavigator provides navigator) {
-        Scaffold(
-            bottomBar = {
-                TapBottomTab(
-                    modifier = Modifier.graphicsLayer {
-                        translationY = bottomBarOffsetY
-                        alpha = bottomBarAlpha
-                        compositingStrategy = CompositingStrategy.ModulateAlpha
-                    },
-                    currentRoute = currentScreen,
-                    isFlipped = isFlipped,
-                    flipBackImageUrl = flipBackImageUrl,
-                    onFlip = {
-                        // TODO: Implement flip click logic, e.g., trigger random play.
-                    },
-                    onItemClick = { screen ->
-                        if (screen != currentScreen) {
-                            navigator.navigate(screen)
-                        }
-                    })
-            }, content = { _ ->
-                NavDisplay(
-                    backStack = backStack,
-                    entryProvider = tapMainEntryProvider(
-                        onToggleFlip = { shouldFlip, imageUrl ->
-                            if (imageUrl != null) setFlipBackImageUrl(imageUrl)
-                            setIsFlipped(shouldFlip)
-                        }),
-                    modifier = Modifier.fillMaxSize()
-                )
-            })
+        @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter") Scaffold(bottomBar = {
+            TapBottomTab(
+                modifier = Modifier.graphicsLayer {
+                    translationY = bottomBarOffsetY
+                    alpha = bottomBarAlpha
+                    compositingStrategy = CompositingStrategy.ModulateAlpha
+                },
+                currentRoute = currentScreen,
+                isFlipped = isFlipped,
+                flipBackImageUrl = flipBackImageUrl,
+                onFlip = {
+                    // TODO: Implement flip click logic, e.g., trigger random play.
+                },
+                onItemClick = { screen ->
+                    if (screen != currentScreen) {
+                        backStack.clear()
+                        backStack.add(screen)
+                    }
+                })
+        }, content = { _ ->
+            NavDisplay(
+                backStack = backStack, entryProvider = tapMainEntryProvider(
+                    onToggleFlip = { shouldFlip, imageUrl ->
+                        if (imageUrl != null) setFlipBackImageUrl(imageUrl)
+                        setIsFlipped(shouldFlip)
+                    }), modifier = Modifier.fillMaxSize()
+            )
+        })
     }
 }

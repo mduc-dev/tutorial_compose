@@ -9,11 +9,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 
 class MeRepositoryImpl(
-    private val client: TapTapService,
+    private val tapTapService: TapTapService,
     private val dispatcher: CoroutineDispatcher,
 ) : BaseRepository(), MeRepository {
     override fun getUserProfile(): Flow<UserProfileData> = safeFlow(dispatcher) {
-        val response = client.getUserProfile()
+        val response = tapTapService.getUserProfile()
         if (response.success == true && response.data != null) {
             response.data!!
         } else {
