@@ -1,10 +1,8 @@
 package com.compose.taptap.core.data.repository.play
 
-import android.content.SharedPreferences
-import androidx.core.content.edit
-import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.compose.taptap.core.data.datasource.local.LocalStorage
 import com.compose.taptap.core.data.paging.CursorPage
 import com.compose.taptap.core.data.paging.CursorPagingSource
 import com.compose.taptap.core.data.repository.base.BaseRepository
@@ -19,7 +17,7 @@ import kotlinx.serialization.json.Json
 
 class PlayRepositoryImpl(
     private val tapTapService: TapTapService,
-    private val prefs: SharedPreferences,
+    private val localStorage: LocalStorage,
     private val json: Json,
     private val dispatcher: CoroutineDispatcher
 ) : BaseRepository(), PlayRepository {
@@ -44,13 +42,13 @@ class PlayRepositoryImpl(
     }
 
     override fun getHistory(): List<InstantGameItem> {
-        val jsonStr = prefs.getString(KEY_HISTORY, null) ?: return emptyList()
+        val jsonStr = localStorage.getString(KEY_HISTORY) ?: return emptyList()
         return runCatching { json.decodeFromString<List<InstantGameItem>>(jsonStr) }.getOrElse { emptyList() }
     }
 
     override fun saveHistory(list: List<InstantGameItem>) {
         val jsonStr = json.encodeToString(list)
-        prefs.edit { putString(KEY_HISTORY, jsonStr) }
+        localStorage.putString(KEY_HISTORY, jsonStr)
     }
 
     override fun addToHistory(game: InstantGameItem) {
@@ -67,12 +65,12 @@ class PlayRepositoryImpl(
         val playedList = getPlayed().toMutableList()
         if (!playedList.contains(gameId)) {
             playedList.add(gameId)
-            prefs.edit { putString(KEY_PLAYED, json.encodeToString(playedList)) }
+            localStorage.putString(KEY_PLAYED, json.encodeToString(playedList))
         }
     }
 
     override fun getPlayed(): List<String> {
-        val jsonStr = prefs.getString(KEY_PLAYED, null) ?: return emptyList()
+        val jsonStr = localStorage.getString(KEY_PLAYED) ?: return emptyList()
         return runCatching {
             json.decodeFromString<List<String>>(jsonStr)
         }.getOrElse { emptyList() }
@@ -80,7 +78,8 @@ class PlayRepositoryImpl(
 
     override suspend fun getRandomInstantGame(): InstantGameRandomData {
         val response = tapTapService.getRandomInstantGame()
-        return response.data ?: throw IllegalStateException("Random instant game data is unavailable")
+        return response.data
+            ?: throw IllegalStateException("Random instant game data is unavailable")
     }
 
     companion object {

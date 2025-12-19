@@ -142,6 +142,7 @@ dependencies {
     
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.paging.compose)
+    implementation(libs.mmkv)
 
     // baseline profile
     implementation(libs.profileinstaller)
