@@ -26,6 +26,8 @@ import com.compose.taptap.core.navigation.TapTapScreen
 import com.compose.taptap.feature.auth.AuthState
 import com.compose.taptap.feature.auth.welcome.LocalWelcomeViewModel
 import com.compose.taptap.feature.auth.welcome.WelcomeViewModel
+import com.compose.taptap.feature.me.MeViewModel
+import com.compose.taptap.core.designsystem.util.LoadingResult
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -61,6 +63,10 @@ private fun TapAuthNavigationHost() {
 
 @Composable
 private fun TapMainNavigationHost() {
+    val meViewModel: MeViewModel = koinViewModel()
+    val userProfileState by meViewModel.userProfileState.collectAsStateWithLifecycle()
+    val userProfile = (userProfileState as? LoadingResult.Success)?.value
+
     val (isFlipped, setIsFlipped) = remember { mutableStateOf(false) }
     val (flipBackImageUrl, setFlipBackImageUrl) = remember { mutableStateOf<String?>(null) }
 
@@ -96,13 +102,14 @@ private fun TapMainNavigationHost() {
                 currentRoute = currentScreen,
                 isFlipped = isFlipped,
                 flipBackImageUrl = flipBackImageUrl,
+                userProfile = userProfile,
                 onFlip = {
                     // TODO: Implement flip click logic, e.g., trigger random play.
                 },
                 onItemClick = { screen ->
                     if (screen != currentScreen) {
                         backStack.clear()
-                        backStack.add(screen)
+                        navigator.navigate(screen)
                     }
                 })
         }, content = { _ ->

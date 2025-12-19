@@ -147,7 +147,7 @@ fun MeScreen(
             ), navigationIcon = {
                 // Scroll-to-show Avatar
                 AsyncImage(
-                    model = userProfile?.avatar,
+                    model = userProfile?.mediumAvatar.takeUnless { it.isNullOrBlank() } ?: userProfile?.avatar,
                     contentDescription = null,
                     modifier = Modifier
                         .padding(start = 16.dp)
@@ -372,7 +372,7 @@ fun FeedItem(item: FeedItem) {
         ) {
             // Mock content
             AsyncImage(
-                model = post.listFields?.cover?.url,
+                model = post.listFields?.cover?.mediumUrl ?: post.listFields?.cover?.url,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
@@ -443,7 +443,7 @@ fun UserCenterHeader(
         ) {
             // User Portrait
             AsyncImage(
-                model = userProfile?.avatar,
+                model = userProfile?.mediumAvatar.takeUnless { it.isNullOrBlank() } ?: userProfile?.avatar,
                 contentDescription = null,
                 modifier = Modifier
                     .size(60.dp) // XML: 60dp

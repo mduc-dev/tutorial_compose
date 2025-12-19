@@ -13,6 +13,7 @@ import com.compose.taptap.core.network.service.TapTapService
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 
 class PlayRepositoryImpl(
@@ -41,17 +42,17 @@ class PlayRepositoryImpl(
         )
     }
 
-    override fun getHistory(): List<InstantGameItem> {
-        val jsonStr = localStorage.getString(KEY_HISTORY) ?: return emptyList()
-        return runCatching { json.decodeFromString<List<InstantGameItem>>(jsonStr) }.getOrElse { emptyList() }
+    override suspend fun getHistory(): List<InstantGameItem> = withContext(dispatcher) {
+        val jsonStr = localStorage.getString(KEY_HISTORY) ?: return@withContext emptyList()
+        runCatching { json.decodeFromString<List<InstantGameItem>>(jsonStr) }.getOrElse { emptyList() }
     }
 
-    override fun saveHistory(list: List<InstantGameItem>) {
+    override suspend fun saveHistory(list: List<InstantGameItem>) = withContext(dispatcher) {
         val jsonStr = json.encodeToString(list)
         localStorage.putString(KEY_HISTORY, jsonStr)
     }
 
-    override fun addToHistory(game: InstantGameItem) {
+    override suspend fun addToHistory(game: InstantGameItem) = withContext(dispatcher) {
         val history = getHistory().toMutableList()
         history.removeAll { it.identification == game.identification }
         history.add(0, game)
@@ -61,7 +62,7 @@ class PlayRepositoryImpl(
         saveHistory(history)
     }
 
-    override fun markPlayed(gameId: String) {
+    override suspend fun markPlayed(gameId: String) = withContext(dispatcher) {
         val playedList = getPlayed().toMutableList()
         if (!playedList.contains(gameId)) {
             playedList.add(gameId)
@@ -69,16 +70,16 @@ class PlayRepositoryImpl(
         }
     }
 
-    override fun getPlayed(): List<String> {
-        val jsonStr = localStorage.getString(KEY_PLAYED) ?: return emptyList()
-        return runCatching {
+    override suspend fun getPlayed(): List<String> = withContext(dispatcher) {
+        val jsonStr = localStorage.getString(KEY_PLAYED) ?: return@withContext emptyList()
+        runCatching {
             json.decodeFromString<List<String>>(jsonStr)
         }.getOrElse { emptyList() }
     }
 
-    override suspend fun getRandomInstantGame(): InstantGameRandomData {
+    override suspend fun getRandomInstantGame(): InstantGameRandomData = withContext(dispatcher) {
         val response = tapTapService.getRandomInstantGame()
-        return response.data
+        response.data
             ?: throw IllegalStateException("Random instant game data is unavailable")
     }
 

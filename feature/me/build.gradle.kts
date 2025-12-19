@@ -12,6 +12,7 @@ android {
 
 dependencies {
     implementation(project(":feature:auth"))
+    implementation(projects.core.preview)
 
     implementation(libs.bundles.coil)
     implementation(libs.kotlinx.immutable.collections)

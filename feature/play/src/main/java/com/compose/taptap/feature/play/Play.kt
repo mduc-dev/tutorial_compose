@@ -45,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -242,6 +243,7 @@ fun CardGame(item: InstantGameItem, onClick: () -> Unit) {
                 model = item.cover.mediumUrl.ifBlank { item.cover.url },
                 contentDescription = item.title,
                 modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
                 placeholder = ColorPainter(Color.DarkGray),
             )
 

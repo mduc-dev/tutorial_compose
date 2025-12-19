@@ -30,6 +30,8 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
 
 // ============================================================================
 // UI State Models
@@ -116,6 +118,7 @@ class GameViewModel(
                     }
                 }
         }
+        .flowOn(Dispatchers.IO)
         .cachedIn(viewModelScope)
 
     val searchPlaceholderState =
@@ -123,6 +126,7 @@ class GameViewModel(
             .map<Search, LoadingResult<Search>> { LoadingResult.Success(it) }
             .onStart { emit(LoadingResult.Loading) }
             .catch { emit(LoadingResult.Failure(it)) }
+            .flowOn(Dispatchers.IO)
             .stateInViewModel(initial = LoadingResult.Loading)
 
     /**

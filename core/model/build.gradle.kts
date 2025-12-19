@@ -8,7 +8,7 @@ android {
 }
 
 dependencies {
-    implementation(libs.kotlinx.serialization.json)
+    api(libs.kotlinx.serialization.json)
     
     // Compose runtime for @Immutable/@Stable annotations
     // This is lightweight and only adds annotation support

@@ -30,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.compose.taptap.core.designsystem.component.atoms.text.TapTapText
 import com.compose.taptap.core.designsystem.component.molecules.chips.TapTapChipGroup
 import com.compose.taptap.core.designsystem.component.molecules.notifications.TapTapNotificationBell
@@ -272,7 +273,10 @@ fun DiscoverPageContent(
         }
 
         // Display other items (categories and regular games)
-        items(games.itemCount) { index ->
+        items(
+            count = games.itemCount,
+            key = games.itemKey { it.identification ?: it.app?.id ?: it.category?.id ?: 0 }
+        ) { index ->
             games[index]?.let { item ->
                 when {
                     item.category != null -> {

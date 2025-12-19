@@ -2,8 +2,8 @@ package com.compose.taptap.core.data.di
 
 import com.compose.taptap.core.data.datasource.local.LocalStorage
 import com.compose.taptap.core.data.datasource.local.MMKVStorageImpl
-import com.compose.taptap.core.data.repository.MeRepositoryImpl
 import com.compose.taptap.core.data.repository.game.GamesRepositoryImpl
+import com.compose.taptap.core.data.repository.me.MeRepositoryImpl
 import com.compose.taptap.core.data.repository.play.PlayRepositoryImpl
 import com.compose.taptap.core.data.repository.search.SearchRepositoryImpl
 import com.compose.taptap.core.data.repository.welcome.WelcomeRepositoryImpl
@@ -35,7 +35,9 @@ fun repoModule() = module {
     single<MeRepository> {
         MeRepositoryImpl(
             tapTapService = get(),
-            dispatcher = get<CoroutineDispatcher>(named(TapTapAppDispatcher.IO))
+            dispatcher = get<CoroutineDispatcher>(named(TapTapAppDispatcher.IO)),
+            localStorage = get(),
+            json = get()
         )
     }
 }

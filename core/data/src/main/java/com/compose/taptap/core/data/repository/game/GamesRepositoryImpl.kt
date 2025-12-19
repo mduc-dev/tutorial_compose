@@ -1,6 +1,5 @@
 package com.compose.taptap.core.data.repository.game
 
-import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.compose.taptap.core.data.paging.CursorPage
@@ -51,7 +50,6 @@ class GamesRepositoryImpl(
     override suspend fun refreshGames(): Result<Unit> = safeApiCall {
         withContext(dispatcher) {
             // TODO: Implement cache invalidation when local database is added
-            Unit
         }
     }
 

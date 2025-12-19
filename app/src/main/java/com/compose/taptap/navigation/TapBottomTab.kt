@@ -36,64 +36,12 @@ import com.compose.taptap.core.designsystem.util.BottomTab
 import com.compose.taptap.core.designsystem.util.LoadingResult
 import com.compose.taptap.core.navigation.TapTapScreen
 
-import com.compose.taptap.feature.me.MeViewModel
-import org.koin.compose.viewmodel.koinViewModel
+import com.compose.taptap.core.model.UserProfileData
 
 /**
  * Bottom tab items for the main navigation.
  */
-private val bottomTabs: List<BottomTab>
-    @Composable get() = listOf(
-        BottomTab(
-            title = "Games",
-            route = TapTapScreen.Game,
-            content = { selected ->
-                BottomTabIcon(
-                    title = "Games",
-                    iconRes = R.drawable.cw_home_bottom_games_icon_unselect,
-                    selectedIconRes = R.drawable.cw_home_bottom_games_icon_selected,
-                    selected = selected
-                )
-            }
-        ),
-        BottomTab(
-            title = "Play",
-            route = TapTapScreen.Play,
-            content = { selected ->
-                BottomTabIcon(
-                    title = "Play",
-                    iconRes = R.drawable.intl_cc_24_bottom_bar_games_unselect,
-                    selectedIconRes = R.drawable.intl_cc_24_bottom_bar_games_select,
-                    selected = selected
-                )
-            }
-        ),
-        BottomTab(
-            title = "Tavern",
-            route = TapTapScreen.Tavern,
-            content = { selected ->
-                BottomTabIcon(
-                    title = "Tavern",
-                    iconRes = R.drawable.home_bottom_icon_tavern_unselect,
-                    selectedIconRes = R.drawable.home_bottom_icon_tavern_selected,
-                    selected = selected
-                )
-            }
-        ),
-        BottomTab(
-            title = "You",
-            route = TapTapScreen.Me,
-            content = { selected ->
-                val meViewModel: MeViewModel = koinViewModel()
-                val userProfileState by meViewModel.userProfileState.collectAsStateWithLifecycle()
-                val userProfile = (userProfileState as? LoadingResult.Success)?.value
-                MeTabIcon(
-                    selected = selected,
-                    userProfile = userProfile
-                )
-            }
-        ),
-    )
+
 
 @Composable
 fun TapBottomTab(
@@ -101,13 +49,64 @@ fun TapBottomTab(
     currentRoute: TapTapScreen?,
     isFlipped: Boolean,
     flipBackImageUrl: String?,
+    userProfile: UserProfileData? = null,
     onFlip: () -> Unit,
     onItemClick: (TapTapScreen) -> Unit,
 ) {
 
-    val firstHalf = bottomTabs.take(2)
-    val secondHalf = bottomTabs.drop(2)
-    val tabItems = remember { firstHalf + null + secondHalf }
+    val tabItems = remember(userProfile) {
+        val allTabs = listOf(
+            BottomTab(
+                title = "Games",
+                route = TapTapScreen.Game,
+                content = { selected ->
+                    BottomTabIcon(
+                        title = "Games",
+                        iconRes = R.drawable.cw_home_bottom_games_icon_unselect,
+                        selectedIconRes = R.drawable.cw_home_bottom_games_icon_selected,
+                        selected = selected
+                    )
+                }
+            ),
+            BottomTab(
+                title = "Play",
+                route = TapTapScreen.Play,
+                content = { selected ->
+                    BottomTabIcon(
+                        title = "Play",
+                        iconRes = R.drawable.intl_cc_24_bottom_bar_games_unselect,
+                        selectedIconRes = R.drawable.intl_cc_24_bottom_bar_games_select,
+                        selected = selected
+                    )
+                }
+            ),
+            BottomTab(
+                title = "Tavern",
+                route = TapTapScreen.Tavern,
+                content = { selected ->
+                    BottomTabIcon(
+                        title = "Tavern",
+                        iconRes = R.drawable.home_bottom_icon_tavern_unselect,
+                        selectedIconRes = R.drawable.home_bottom_icon_tavern_selected,
+                        selected = selected
+                    )
+                }
+            ),
+            BottomTab(
+                title = "You",
+                route = TapTapScreen.Me,
+                content = { selected ->
+                    MeTabIcon(
+                        selected = selected,
+                        userProfile = userProfile
+                    )
+                }
+            ),
+        )
+        val firstHalf = allTabs.take(2)
+        val secondHalf = allTabs.drop(2)
+        firstHalf + null + secondHalf
+    }
 
     Box(
         modifier = modifier

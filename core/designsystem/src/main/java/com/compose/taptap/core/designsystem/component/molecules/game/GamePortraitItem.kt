@@ -46,7 +46,7 @@ fun GamePortraitItem(
         } else null
 
         TapTapNetworkImage(
-            imageUrl = item.icon?.url,
+            imageUrl = item.icon?.mediumUrl ?: item.icon?.smallUrl ?: item.icon?.url,
             contentDescription = item.title,
             modifier = Modifier
                 .size(TapTapTheme.spacing.xxxxLarge)
